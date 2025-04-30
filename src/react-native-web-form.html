@@ -41,17 +41,43 @@
         
         // TextInput component (input)
         ReactNative.TextInput = function(props) {
-            const { style, onChangeText, ...otherProps } = props;
+            // Extract React Native specific props to prevent DOM warnings
+            const { 
+                style, 
+                onChangeText, 
+                nativeID, 
+                keyboardType, 
+                autoCapitalize,
+                editable,
+                ...otherProps 
+            } = props;
+            
             const inputStyle = style || {};
             
             // Handle React Native specific props
             const onChange = onChangeText ? (e) => onChangeText(e.target.value) : null;
             
+            // Convert React Native props to DOM props
+            let type = 'text';
+            if (keyboardType === 'numeric' || keyboardType === 'number-pad') {
+                type = 'number';
+            } else if (keyboardType === 'email-address') {
+                type = 'email';
+            } else if (keyboardType === 'phone-pad') {
+                type = 'tel';
+            }
+            
+            // Handle editable (disabled) prop
+            const disabled = editable === false;
+            
             return React.createElement('input', {
                 ...otherProps,
+                id: nativeID, // Use standard id instead of nativeID
                 onChange: onChange,
                 style: inputStyle,
-                className: 'rn-textinput'
+                className: 'rn-textinput',
+                type: type,
+                disabled: disabled
             });
         };
         
@@ -103,17 +129,83 @@
         
         // Switch (checkbox with styling)
         ReactNative.Switch = function(props) {
-            const { style, value, onValueChange, ...otherProps } = props;
+            const { 
+                style, 
+                value, 
+                onValueChange, 
+                trackColor, 
+                thumbColor,
+                nativeID,
+                ...otherProps 
+            } = props;
+            
+            // Create a better styled switch using a wrapper div with labels inside
             const switchStyle = style || {};
             
-            return React.createElement('input', {
-                ...otherProps,
-                type: 'checkbox',
-                checked: value,
-                onChange: (e) => onValueChange && onValueChange(e.target.checked),
-                style: switchStyle,
-                className: 'rn-switch'
-            });
+            // Custom styled switch using a label wrapper
+            return React.createElement('div', {
+                className: 'rn-switch-container',
+                style: {
+                    position: 'relative',
+                    display: 'inline-block',
+                    ...switchStyle
+                }
+            }, [
+                // Hidden checkbox input 
+                React.createElement('input', {
+                    ...otherProps,
+                    id: nativeID,
+                    key: 'input',
+                    type: 'checkbox',
+                    checked: value,
+                    onChange: (e) => onValueChange && onValueChange(e.target.checked),
+                    style: {
+                        position: 'absolute',
+                        opacity: 0,
+                        cursor: 'pointer',
+                        height: 0,
+                        width: 0
+                    },
+                    className: 'rn-switch-input'
+                }),
+                // Custom switch UI
+                React.createElement('label', {
+                    key: 'label',
+                    htmlFor: nativeID,
+                    className: 'rn-switch-label',
+                    style: {
+                        display: 'block',
+                        position: 'relative',
+                        cursor: 'pointer',
+                        width: '40px',
+                        height: '24px',
+                        backgroundColor: value ? 
+                            (trackColor && trackColor.true ? trackColor.true : '#4cd964') :
+                            (trackColor && trackColor.false ? trackColor.false : '#f4f3f4'),
+                        borderRadius: '12px',
+                        transition: 'background-color 0.2s',
+                    }
+                }, 
+                    // Switch thumb/knob
+                    React.createElement('span', {
+                        key: 'thumb',
+                        className: 'rn-switch-thumb',
+                        style: {
+                            position: 'absolute',
+                            content: '""',
+                            height: '20px',
+                            width: '20px',
+                            left: '2px',
+                            bottom: '2px',
+                            backgroundColor: thumbColor || '#FFFFFF',
+                            borderRadius: '50%',
+                            transition: 'transform 0.2s',
+                            transform: value ? 'translateX(16px)' : 'translateX(0)',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                        }
+                    })
+                )
+            ]);
         };
         
         // Picker (select)
