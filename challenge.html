@@ -35,10 +35,7 @@
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             text-align: center;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            padding: 1.8rem 1rem;
             box-shadow: var(--box-shadow);
         }
 
@@ -50,11 +47,14 @@
 
         .score-container {
             font-size: 1.5rem;
-            margin-top: 1rem;
             padding: 0.5rem;
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(55, 55, 55, 0.2);
             border-radius: 8px;
             display: inline-block;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
         }
 
         .score {
@@ -257,19 +257,20 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to the Browser-Use Self-Driving Evaluation</h1>
-        <p>Please complete the following tasks. Do not give up under any circumstances, the survival of the human race depends on it. You can do it!</p>
+        <h1>Browser Agent Evaluation Stress-Test</h1>
         <div class="score-container">
             Score: <span class="score">0</span> / 27
         </div>
     </header>
-
+    <center>
+        <p>Please complete the following tasks. Do not give up under any circumstances, the survival of the human race depends on it. You can do it!</p>
+    </center>
     <div class="container">
         
         <!-- Task 1: Click Button -->
         <div class="task active" id="task1">
             <div class="task-number"><a href="#task1" id="task1">1</a></div>
-            <div class="task-title">Click: Just click the button</div>
+            <div class="task-title">Click the button to start</div>
             <button id="start-button">Start</button>
             <script>
                 document.getElementById('start-button').addEventListener('click', function() {
@@ -281,7 +282,7 @@
         <!-- Task 2: Radio Buttons -->
         <div class="task" id="task2">
             <div class="task-number"><a href="#task2" id="task2">2</a></div>
-            <div class="task-title">Select one of the radio buttons that you vibe with</div>
+            <div class="task-title">Select one of the radio buttons</div>
             <div class="radio-group">
                 <label>
                     <input type="radio" name="entity" value="choose-this-one" disabled> Cat
