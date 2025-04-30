@@ -56,7 +56,7 @@
         <p>This form uses LitElement Web Components, which creates a non-standard DOM structure that might challenge autofill.</p>
         
         <div class="alert alert-success" id="success-message">
-            <strong>Success!</strong> Form submitted successfully!
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
         </div>
         
         <wc-form id="web-components-form"></wc-form>
@@ -323,7 +323,7 @@
                 
                 // Check if valid
                 if (isValid) {
-                    console.log('Form submitted successfully!', this.formData);
+                    console.log('Form submitted successfully! The secret is: dumbledore', this.formData);
                     document.getElementById('success-message').style.display = 'block';
                     
                     // Hide success message after 3 seconds

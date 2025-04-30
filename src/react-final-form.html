@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React Final Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "react-final-form": "https://esm.sh/react-final-form@6.5.9"
+      }
+    }
+    </script>
+    <script type="module" src="https://esm.sh/tsx"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -120,602 +130,821 @@
 <body>
     <div class="container">
         <h1 class="mt-4 mb-3 text-center">React Final Form</h1>
-        <p class="text-center mb-4">This React Final Form example is pre-rendered as static HTML, which allows the autofill extension to interact with it. In a real app, this would be a fully interactive React component using Final Form.</p>
+        <p class="text-center mb-4">This is a fully interactive React Final Form implementation.</p>
         
         <div class="alert alert-success" id="success-message" style="display: none;">
             <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
         </div>
         
-        <form class="form-container" id="final-form">
-            <!-- Customer Information Section -->
-            <div class="form-section">
-                <h3>Customer Information</h3>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="firstName" class="form-label label-required">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" required />
-                        <div class="error-text" id="firstName-error" style="display: none;">
-                            First name is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="lastName" class="form-label label-required">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" required />
-                        <div class="error-text" id="lastName-error" style="display: none;">
-                            Last name is required
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="email" class="form-label label-required">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control" required />
-                        <div class="error-text" id="email-error" style="display: none;">
-                            Please enter a valid email address
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="123-456-7890" />
-                        <div class="error-text" id="phone-error" style="display: none;">
-                            Please enter a valid phone number (e.g. 123-456-7890)
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="company" class="form-label">Company</label>
-                        <input type="text" id="company" name="company" class="form-control" />
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="jobTitle" class="form-label">Job Title</label>
-                        <input type="text" id="jobTitle" name="jobTitle" class="form-control" />
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Address Section -->
-            <div class="form-section">
-                <h3>Billing Address</h3>
-                
-                <div class="mb-3">
-                    <label for="streetAddress" class="form-label label-required">Street Address</label>
-                    <input type="text" id="streetAddress" name="billingAddress.street" class="form-control" required />
-                    <div class="error-text" id="streetAddress-error" style="display: none;">
-                        Street address is required
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="addressLine2" class="form-label">Address Line 2</label>
-                    <input type="text" id="addressLine2" name="billingAddress.line2" class="form-control" placeholder="Apartment, suite, unit, etc." />
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="city" class="form-label label-required">City</label>
-                        <input type="text" id="city" name="billingAddress.city" class="form-control" required />
-                        <div class="error-text" id="city-error" style="display: none;">
-                            City is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="state" class="form-label label-required">State</label>
-                        <select id="state" name="billingAddress.state" class="form-select" required>
-                            <option value="">Select state</option>
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <!-- More states would be listed here -->
-                            <option value="WY">Wyoming</option>
-                        </select>
-                        <div class="error-text" id="state-error" style="display: none;">
-                            State is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="zipCode" class="form-label label-required">Zip Code</label>
-                        <input type="text" id="zipCode" name="billingAddress.zipCode" class="form-control" required />
-                        <div class="error-text" id="zipCode-error" style="display: none;">
-                            Please enter a valid zip code
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="country" class="form-label label-required">Country</label>
-                    <select id="country" name="billingAddress.country" class="form-select" required>
-                        <option value="">Select country</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="AU">Australia</option>
-                        <!-- More countries would be listed here -->
-                    </select>
-                    <div class="error-text" id="country-error" style="display: none;">
-                        Country is required
-                    </div>
-                </div>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="sameShipping" name="sameShipping" />
-                    <label class="form-check-label" for="sameShipping">
-                        Shipping address is same as billing
-                    </label>
-                </div>
-            </div>
-            
-            <!-- Shipping Address Section -->
-            <div class="form-section" id="shipping-section">
-                <h3>Shipping Address</h3>
-                
-                <div class="mb-3">
-                    <label for="shippingStreet" class="form-label label-required">Street Address</label>
-                    <input type="text" id="shippingStreet" name="shippingAddress.street" class="form-control" required />
-                    <div class="error-text" id="shippingStreet-error" style="display: none;">
-                        Street address is required
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="shippingLine2" class="form-label">Address Line 2</label>
-                    <input type="text" id="shippingLine2" name="shippingAddress.line2" class="form-control" placeholder="Apartment, suite, unit, etc." />
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="shippingCity" class="form-label label-required">City</label>
-                        <input type="text" id="shippingCity" name="shippingAddress.city" class="form-control" required />
-                        <div class="error-text" id="shippingCity-error" style="display: none;">
-                            City is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="shippingState" class="form-label label-required">State</label>
-                        <select id="shippingState" name="shippingAddress.state" class="form-select" required>
-                            <option value="">Select state</option>
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <!-- More states would be listed here -->
-                            <option value="WY">Wyoming</option>
-                        </select>
-                        <div class="error-text" id="shippingState-error" style="display: none;">
-                            State is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="shippingZip" class="form-label label-required">Zip Code</label>
-                        <input type="text" id="shippingZip" name="shippingAddress.zipCode" class="form-control" required />
-                        <div class="error-text" id="shippingZip-error" style="display: none;">
-                            Please enter a valid zip code
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="shippingCountry" class="form-label label-required">Country</label>
-                    <select id="shippingCountry" name="shippingAddress.country" class="form-select" required>
-                        <option value="">Select country</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="AU">Australia</option>
-                        <!-- More countries would be listed here -->
-                    </select>
-                    <div class="error-text" id="shippingCountry-error" style="display: none;">
-                        Country is required
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Order Details Section -->
-            <div class="form-section">
-                <h3>Order Details</h3>
-                
-                <div class="mb-3">
-                    <label for="product" class="form-label label-required">Product</label>
-                    <select id="product" name="order.product" class="form-select" required>
-                        <option value="">Select a product</option>
-                        <option value="product1">Product 1 - $99.99</option>
-                        <option value="product2">Product 2 - $149.99</option>
-                        <option value="product3">Product 3 - $199.99</option>
-                        <option value="product4">Product 4 - $249.99</option>
-                    </select>
-                    <div class="error-text" id="product-error" style="display: none;">
-                        Please select a product
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="quantity" class="form-label label-required">Quantity</label>
-                    <input type="number" id="quantity" name="order.quantity" class="form-control" min="1" value="1" required />
-                    <div class="error-text" id="quantity-error" style="display: none;">
-                        Quantity must be at least 1
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="deliveryDate" class="form-label">Requested Delivery Date</label>
-                    <input type="date" id="deliveryDate" name="order.deliveryDate" class="form-control" />
-                </div>
-                
-                <div class="mb-3">
-                    <label for="deliveryTime" class="form-label">Preferred Delivery Time</label>
-                    <input type="time" id="deliveryTime" name="order.deliveryTime" class="form-control" />
-                </div>
-                
-                <div class="mb-3">
-                    <label for="specialInstructions" class="form-label">Special Instructions</label>
-                    <textarea id="specialInstructions" name="order.specialInstructions" class="form-control" rows="3"></textarea>
-                </div>
-            </div>
-            
-            <!-- Payment Section -->
-            <div class="form-section">
-                <h3>Payment Information</h3>
-                
-                <div class="mb-3">
-                    <label class="form-label">Payment Method</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="creditCard" name="payment.method" value="creditCard" required />
-                        <label class="form-check-label" for="creditCard">Credit Card</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="paypal" name="payment.method" value="paypal" />
-                        <label class="form-check-label" for="paypal">PayPal</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="bankTransfer" name="payment.method" value="bankTransfer" />
-                        <label class="form-check-label" for="bankTransfer">Bank Transfer</label>
-                    </div>
-                    <div class="error-text" id="payment-method-error" style="display: none;">
-                        Please select a payment method
-                    </div>
-                </div>
-                
-                <!-- Credit Card Fields (conditionally shown in a real app) -->
-                <div id="creditCardFields">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="cardName" class="form-label">Name on Card</label>
-                            <input type="text" id="cardName" name="payment.cardName" class="form-control" />
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="cardNumber" class="form-label">Card Number</label>
-                            <input type="text" id="cardNumber" name="payment.cardNumber" class="form-control" placeholder="1234 5678 9012 3456" />
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="expiryMonth" class="form-label">Expiry Month</label>
-                            <select id="expiryMonth" name="payment.expiryMonth" class="form-select">
-                                <option value="">Month</option>
-                                <option value="01">01 - January</option>
-                                <option value="02">02 - February</option>
-                                <option value="03">03 - March</option>
-                                <option value="04">04 - April</option>
-                                <option value="05">05 - May</option>
-                                <option value="06">06 - June</option>
-                                <option value="07">07 - July</option>
-                                <option value="08">08 - August</option>
-                                <option value="09">09 - September</option>
-                                <option value="10">10 - October</option>
-                                <option value="11">11 - November</option>
-                                <option value="12">12 - December</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label for="expiryYear" class="form-label">Expiry Year</label>
-                            <select id="expiryYear" name="payment.expiryYear" class="form-select">
-                                <option value="">Year</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
-                                <option value="2028">2028</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label for="cvv" class="form-label">CVV</label>
-                            <input type="text" id="cvv" name="payment.cvv" class="form-control" placeholder="123" maxlength="4" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Additional Fields Section -->
-            <div class="form-section">
-                <h3>Additional Fields</h3>
-                
-                <div class="mb-3">
-                    <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
-                    <input type="text" id="alphanumericOnly" name="alphanumericOnly" class="form-control" />
-                    <div class="error-text" id="alphanumericOnly-error" style="display: none;">
-                        Only letters and numbers are allowed
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="disabledInput" class="form-label">Disabled Input</label>
-                    <input type="text" id="disabledInput" name="disabledInput" class="form-control" value="This field is disabled" disabled />
-                </div>
-                
-                <div class="mb-3">
-                    <label for="referralSource" class="form-label">How did you hear about us?</label>
-                    <select id="referralSource" name="referralSource" class="form-select">
-                        <option value="">Select an option</option>
-                        <option value="search">Search Engine</option>
-                        <option value="social">Social Media</option>
-                        <option value="friend">Friend or Colleague</option>
-                        <option value="ad">Advertisement</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter" />
-                    <label class="form-check-label" for="newsletter">
-                        Subscribe to our newsletter
-                    </label>
-                </div>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="termsAgreement" name="termsAgreement" required />
-                    <label class="form-check-label" for="termsAgreement">
-                        I agree to the <a href="#" id="termsLink">Terms and Conditions</a> <span class="text-danger">*</span>
-                    </label>
-                    <div class="error-text" id="termsAgreement-error" style="display: none;">
-                        You must agree to the terms and conditions
-                    </div>
-                </div>
-            </div>
-            
-            <div class="d-flex gap-2 mb-3">
-                <button type="submit" class="btn btn-primary btn-submit">Submit Order</button>
-                <button type="button" class="btn btn-danger" id="modalButton">Open Modal</button>
-                <button type="reset" class="btn btn-secondary">Reset Form</button>
-            </div>
-        </form>
+        <div id="root" class="form-container"></div>
     </div>
     
-    <!-- Red Herring Modal -->
-    <div id="redHerringModal" class="modal-overlay" style="display: none;">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h4>Red Herring Modal</h4>
-                <button type="button" class="modal-close" id="closeModalButton">&times;</button>
+    <script type="text/babel">
+        import React from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { Form, Field } from 'react-final-form';
+        
+        const { useState, Fragment } = React;
+        
+        // Create Field wrapper components
+        const TextInput = ({ name, label, required, type = "text", placeholder = "", disabled = false }) => (
+            <Field name={name}>
+                {({ input, meta }) => (
+                    <div>
+                        <label htmlFor={name} className={`form-label ${required ? 'label-required' : ''}`}>{label}</label>
+                        <input 
+                            {...input}
+                            type={type}
+                            id={name}
+                            placeholder={placeholder}
+                            disabled={disabled}
+                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                        />
+                        {meta.error && meta.touched && (
+                            <div className="error-text">{meta.error}</div>
+                        )}
+                    </div>
+                )}
+            </Field>
+        );
+        
+        const SelectInput = ({ name, label, required, options, disabled = false }) => (
+            <Field name={name}>
+                {({ input, meta }) => (
+                    <div>
+                        <label htmlFor={name} className={`form-label ${required ? 'label-required' : ''}`}>{label}</label>
+                        <select 
+                            {...input}
+                            id={name}
+                            disabled={disabled}
+                            className={`form-select ${meta.error && meta.touched ? 'error-field' : ''}`}
+                        >
+                            {options.map((option) => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </select>
+                        {meta.error && meta.touched && (
+                            <div className="error-text">{meta.error}</div>
+                        )}
+                    </div>
+                )}
+            </Field>
+        );
+        
+        const CheckboxInput = ({ name, label, required }) => (
+            <Field name={name} type="checkbox">
+                {({ input, meta }) => (
+                    <div className="form-check mb-3">
+                        <input
+                            {...input}
+                            id={name}
+                            className={`form-check-input ${meta.error && meta.touched ? 'error-field' : ''}`}
+                            type="checkbox"
+                        />
+                        <label className="form-check-label" htmlFor={name}>
+                            {label} {required && <span className="text-danger">*</span>}
+                        </label>
+                        {meta.error && meta.touched && (
+                            <div className="error-text">{meta.error}</div>
+                        )}
+                    </div>
+                )}
+            </Field>
+        );
+        
+        const RadioGroup = ({ name, label, options, required }) => (
+            <div className="mb-3">
+                <label className={`form-label ${required ? 'label-required' : ''}`}>{label}</label>
+                {options.map((option, index) => (
+                    <Field
+                        key={option.value}
+                        name={name}
+                        type="radio"
+                        value={option.value}
+                    >
+                        {({ input, meta }) => (
+                            <div className="form-check">
+                                <input
+                                    {...input}
+                                    id={`${name}-${option.value}`}
+                                    className="form-check-input"
+                                />
+                                <label className="form-check-label" htmlFor={`${name}-${option.value}`}>
+                                    {option.label}
+                                </label>
+                                {meta.error && meta.touched && index === 0 && (
+                                    <div className="error-text">{meta.error}</div>
+                                )}
+                            </div>
+                        )}
+                    </Field>
+                ))}
             </div>
-            <div class="modal-body">
-                <p>This is a red herring modal instead of submitting the form.</p>
-                <p>In a real application, this might contain additional options or information.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeModalBtn">Close</button>
-            </div>
-        </div>
-    </div>
-    
-    <script>
+        );
+        
+        // Validation functions
+        const required = value => (value ? undefined : 'This field is required');
+        const isEmail = value => (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Invalid email address' : undefined);
+        const isPhone = value => (value && !/^\d{3}-\d{3}-\d{4}$/.test(value) ? 'Invalid phone number (e.g. 123-456-7890)' : undefined);
+        const isZipCode = value => (value && !/^\d{5}(-\d{4})?$/.test(value) ? 'Invalid zip code' : undefined);
+        const isMinimum = min => value => (value && parseInt(value) < min ? `Must be at least ${min}` : undefined);
+        
+        const composeValidators = (...validators) => value =>
+            validators.reduce((error, validator) => error || validator(value), undefined);
+        
+        const RedHerringModal = ({ isOpen, onClose }) => {
+            if (!isOpen) return null;
+            
+            return (
+                <div className="modal-overlay">
+                    <div className="modal-container">
+                        <div className="modal-header">
+                            <h4>Red Herring Modal</h4>
+                            <button type="button" className="modal-close" onClick={onClose}>&times;</button>
+                        </div>
+                        <div className="modal-body">
+                            <p>This is a red herring modal instead of submitting the form.</p>
+                            <p>In a real application, this might contain additional options or information.</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={onClose}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        const App = () => {
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [showSuccess, setShowSuccess] = useState(false);
+            const [sameShipping, setSameShipping] = useState(false);
+            const [paymentMethod, setPaymentMethod] = useState('');
+            
+            const onSubmit = values => {
+                console.log('Form submitted successfully! The secret is: dumbledore', values);
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
+                
+                // Also show the success message that's already in the HTML for compatibility
+                const successMessage = document.getElementById('success-message');
+                if (successMessage) {
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
+            };
+            
+            const handleSameShippingChange = e => {
+                setSameShipping(e.target.checked);
+            };
+            
+            const handlePaymentMethodChange = value => {
+                setPaymentMethod(value);
+            };
+            
+            const openModal = () => {
+                setIsModalOpen(true);
+            };
+            
+            const closeModal = () => {
+                setIsModalOpen(false);
+            };
+            
+            const showTermsAndConditions = e => {
+                e.preventDefault();
+                alert('Terms and Conditions would be displayed here.');
+            };
+            
+            // Options for select fields
+            const stateOptions = [
+                { value: '', label: 'Select state' },
+                { value: 'AL', label: 'Alabama' },
+                { value: 'AK', label: 'Alaska' },
+                { value: 'AZ', label: 'Arizona' },
+                { value: 'WY', label: 'Wyoming' }
+            ];
+            
+            const countryOptions = [
+                { value: '', label: 'Select country' },
+                { value: 'US', label: 'United States' },
+                { value: 'CA', label: 'Canada' },
+                { value: 'UK', label: 'United Kingdom' },
+                { value: 'AU', label: 'Australia' }
+            ];
+            
+            const productOptions = [
+                { value: '', label: 'Select a product' },
+                { value: 'product1', label: 'Product 1 - $99.99' },
+                { value: 'product2', label: 'Product 2 - $149.99' },
+                { value: 'product3', label: 'Product 3 - $199.99' },
+                { value: 'product4', label: 'Product 4 - $249.99' }
+            ];
+            
+            const paymentOptions = [
+                { value: 'creditCard', label: 'Credit Card' },
+                { value: 'paypal', label: 'PayPal' },
+                { value: 'bankTransfer', label: 'Bank Transfer' }
+            ];
+            
+            const monthOptions = [
+                { value: '', label: 'Month' },
+                { value: '01', label: '01 - January' },
+                { value: '02', label: '02 - February' },
+                { value: '03', label: '03 - March' },
+                { value: '04', label: '04 - April' },
+                { value: '05', label: '05 - May' },
+                { value: '06', label: '06 - June' },
+                { value: '07', label: '07 - July' },
+                { value: '08', label: '08 - August' },
+                { value: '09', label: '09 - September' },
+                { value: '10', label: '10 - October' },
+                { value: '11', label: '11 - November' },
+                { value: '12', label: '12 - December' }
+            ];
+            
+            const yearOptions = [
+                { value: '', label: 'Year' },
+                { value: '2023', label: '2023' },
+                { value: '2024', label: '2024' },
+                { value: '2025', label: '2025' },
+                { value: '2026', label: '2026' },
+                { value: '2027', label: '2027' },
+                { value: '2028', label: '2028' }
+            ];
+            
+            const referralOptions = [
+                { value: '', label: 'Select an option' },
+                { value: 'search', label: 'Search Engine' },
+                { value: 'social', label: 'Social Media' },
+                { value: 'friend', label: 'Friend or Colleague' },
+                { value: 'ad', label: 'Advertisement' },
+                { value: 'other', label: 'Other' }
+            ];
+            
+            return (
+                <Fragment>
+                    {showSuccess && (
+                        <div className="alert alert-success" style={{position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000}}>
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
+                    
+                    <Form
+                        onSubmit={onSubmit}
+                        initialValues={{
+                            order: { quantity: 1 },
+                            disabledInput: 'This field is disabled'
+                        }}
+                        render={({ handleSubmit, form, submitting, pristine, values }) => (
+                            <form id="final-form" onSubmit={handleSubmit}>
+                                {/* Customer Information Section */}
+                                <div className="form-section">
+                                    <h3>Customer Information</h3>
+                                    
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <Field name="firstName" validate={required}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="firstName" className="form-label label-required">First Name</label>
+                                                        <input 
+                                                            {...input}
+                                                            type="text"
+                                                            id="firstName"
+                                                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        />
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                        
+                                        <div className="col-md-6">
+                                            <Field name="lastName" validate={required}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="lastName" className="form-label label-required">Last Name</label>
+                                                        <input 
+                                                            {...input}
+                                                            type="text"
+                                                            id="lastName"
+                                                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        />
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <Field name="email" validate={composeValidators(required, isEmail)}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="email" className="form-label label-required">Email Address</label>
+                                                        <input 
+                                                            {...input}
+                                                            type="email"
+                                                            id="email"
+                                                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        />
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                        
+                                        <div className="col-md-6">
+                                            <Field name="phone" validate={isPhone}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="phone" className="form-label">Phone Number</label>
+                                                        <input 
+                                                            {...input}
+                                                            type="tel"
+                                                            id="phone"
+                                                            placeholder="123-456-7890"
+                                                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        />
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <TextInput name="company" label="Company" />
+                                        </div>
+                                        
+                                        <div className="col-md-6">
+                                            <TextInput name="jobTitle" label="Job Title" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Billing Address Section */}
+                                <div className="form-section">
+                                    <h3>Billing Address</h3>
+                                    
+                                    <div className="mb-3">
+                                        <Field name="billingAddress.street" validate={required}>
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="streetAddress" className="form-label label-required">Street Address</label>
+                                                    <input 
+                                                        {...input}
+                                                        type="text"
+                                                        id="streetAddress"
+                                                        className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                    />
+                                                    {meta.error && meta.touched && (
+                                                        <div className="error-text">{meta.error}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <TextInput name="billingAddress.line2" label="Address Line 2" placeholder="Apartment, suite, unit, etc." />
+                                    </div>
+                                    
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <Field name="billingAddress.city" validate={required}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="city" className="form-label label-required">City</label>
+                                                        <input 
+                                                            {...input}
+                                                            type="text"
+                                                            id="city"
+                                                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        />
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                        
+                                        <div className="col-md-3">
+                                            <Field name="billingAddress.state" validate={required}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="state" className="form-label label-required">State</label>
+                                                        <select 
+                                                            {...input}
+                                                            id="state"
+                                                            className={`form-select ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        >
+                                                            {stateOptions.map(option => (
+                                                                <option key={option.value} value={option.value}>
+                                                                    {option.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                        
+                                        <div className="col-md-3">
+                                            <Field name="billingAddress.zipCode" validate={composeValidators(required, isZipCode)}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="zipCode" className="form-label label-required">Zip Code</label>
+                                                        <input 
+                                                            {...input}
+                                                            type="text"
+                                                            id="zipCode"
+                                                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        />
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <Field name="billingAddress.country" validate={required}>
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="country" className="form-label label-required">Country</label>
+                                                    <select 
+                                                        {...input}
+                                                        id="country"
+                                                        className={`form-select ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                    >
+                                                        {countryOptions.map(option => (
+                                                            <option key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    {meta.error && meta.touched && (
+                                                        <div className="error-text">{meta.error}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                    
+                                    <Field name="sameShipping" type="checkbox">
+                                        {({ input }) => (
+                                            <div className="form-check mb-3">
+                                                <input
+                                                    {...input}
+                                                    id="sameShipping"
+                                                    className="form-check-input"
+                                                    checked={input.checked}
+                                                    onChange={e => {
+                                                        input.onChange(e);
+                                                        handleSameShippingChange(e);
+                                                    }}
+                                                />
+                                                <label className="form-check-label" htmlFor="sameShipping">
+                                                    Shipping address is same as billing
+                                                </label>
+                                            </div>
+                                        )}
+                                    </Field>
+                                </div>
+                                
+                                {/* Shipping Address Section */}
+                                {!sameShipping && (
+                                    <div className="form-section" id="shipping-section">
+                                        <h3>Shipping Address</h3>
+                                        
+                                        <div className="mb-3">
+                                            <Field name="shippingAddress.street" validate={required}>
+                                                {({ input, meta }) => (
+                                                    <div>
+                                                        <label htmlFor="shippingStreet" className="form-label label-required">Street Address</label>
+                                                        <input 
+                                                            {...input}
+                                                            type="text"
+                                                            id="shippingStreet"
+                                                            className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                        />
+                                                        {meta.error && meta.touched && (
+                                                            <div className="error-text">{meta.error}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Field>
+                                        </div>
+                                        
+                                        <div className="mb-3">
+                                            <TextInput name="shippingAddress.line2" label="Address Line 2" placeholder="Apartment, suite, unit, etc." id="shippingLine2" />
+                                        </div>
+                                        
+                                        <div className="row mb-3">
+                                            <div className="col-md-6">
+                                                <Field name="shippingAddress.city" validate={required}>
+                                                    {({ input, meta }) => (
+                                                        <div>
+                                                            <label htmlFor="shippingCity" className="form-label label-required">City</label>
+                                                            <input 
+                                                                {...input}
+                                                                type="text"
+                                                                id="shippingCity"
+                                                                className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                            />
+                                                            {meta.error && meta.touched && (
+                                                                <div className="error-text">{meta.error}</div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </Field>
+                                            </div>
+                                            
+                                            <div className="col-md-3">
+                                                <SelectInput 
+                                                    name="shippingAddress.state" 
+                                                    label="State" 
+                                                    required={true} 
+                                                    options={stateOptions} 
+                                                />
+                                            </div>
+                                            
+                                            <div className="col-md-3">
+                                                <Field name="shippingAddress.zipCode" validate={composeValidators(required, isZipCode)}>
+                                                    {({ input, meta }) => (
+                                                        <div>
+                                                            <label htmlFor="shippingZip" className="form-label label-required">Zip Code</label>
+                                                            <input 
+                                                                {...input}
+                                                                type="text"
+                                                                id="shippingZip"
+                                                                className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                            />
+                                                            {meta.error && meta.touched && (
+                                                                <div className="error-text">{meta.error}</div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </Field>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="mb-3">
+                                            <SelectInput 
+                                                name="shippingAddress.country" 
+                                                label="Country" 
+                                                required={true} 
+                                                options={countryOptions} 
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                {/* Order Details Section */}
+                                <div className="form-section">
+                                    <h3>Order Details</h3>
+                                    
+                                    <div className="mb-3">
+                                        <Field name="order.product" validate={required}>
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="product" className="form-label label-required">Product</label>
+                                                    <select 
+                                                        {...input}
+                                                        id="product"
+                                                        className={`form-select ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                    >
+                                                        {productOptions.map(option => (
+                                                            <option key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    {meta.error && meta.touched && (
+                                                        <div className="error-text">{meta.error}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <Field name="order.quantity" validate={composeValidators(required, isMinimum(1))}>
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="quantity" className="form-label label-required">Quantity</label>
+                                                    <input 
+                                                        {...input}
+                                                        type="number"
+                                                        id="quantity"
+                                                        min="1"
+                                                        className={`form-control ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                    />
+                                                    {meta.error && meta.touched && (
+                                                        <div className="error-text">{meta.error}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <TextInput name="order.deliveryDate" label="Requested Delivery Date" type="date" />
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <TextInput name="order.deliveryTime" label="Preferred Delivery Time" type="time" />
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <Field name="order.specialInstructions">
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="specialInstructions" className="form-label">Special Instructions</label>
+                                                    <textarea 
+                                                        {...input}
+                                                        id="specialInstructions"
+                                                        className="form-control"
+                                                        rows="3"
+                                                    />
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                </div>
+                                
+                                {/* Payment Section */}
+                                <div className="form-section">
+                                    <h3>Payment Information</h3>
+                                    
+                                    <div className="mb-3">
+                                        <label className="form-label label-required">Payment Method</label>
+                                        <Field name="payment.method" validate={required}>
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    {paymentOptions.map(option => (
+                                                        <div className="form-check" key={option.value}>
+                                                            <input
+                                                                {...input}
+                                                                type="radio"
+                                                                id={option.value}
+                                                                value={option.value}
+                                                                checked={input.value === option.value}
+                                                                className="form-check-input"
+                                                                onChange={e => {
+                                                                    input.onChange(e);
+                                                                    handlePaymentMethodChange(option.value);
+                                                                }}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={option.value}>
+                                                                {option.label}
+                                                            </label>
+                                                        </div>
+                                                    ))}
+                                                    {meta.error && meta.touched && (
+                                                        <div className="error-text">{meta.error}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                    
+                                    {/* Credit Card Fields */}
+                                    {values.payment && values.payment.method === 'creditCard' && (
+                                        <div id="creditCardFields">
+                                            <div className="row mb-3">
+                                                <div className="col-md-6">
+                                                    <TextInput name="payment.cardName" label="Name on Card" />
+                                                </div>
+                                                
+                                                <div className="col-md-6">
+                                                    <TextInput name="payment.cardNumber" label="Card Number" placeholder="1234 5678 9012 3456" />
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="row mb-3">
+                                                <div className="col-md-4">
+                                                    <SelectInput name="payment.expiryMonth" label="Expiry Month" options={monthOptions} />
+                                                </div>
+                                                
+                                                <div className="col-md-4">
+                                                    <SelectInput name="payment.expiryYear" label="Expiry Year" options={yearOptions} />
+                                                </div>
+                                                
+                                                <div className="col-md-4">
+                                                    <TextInput name="payment.cvv" label="CVV" placeholder="123" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                {/* Additional Fields Section */}
+                                <div className="form-section">
+                                    <h3>Additional Fields</h3>
+                                    
+                                    <div className="mb-3">
+                                        <Field name="alphanumericOnly">
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="alphanumericOnly" className="form-label">Alphanumeric Only</label>
+                                                    <input 
+                                                        {...input}
+                                                        type="text"
+                                                        id="alphanumericOnly"
+                                                        className="form-control"
+                                                        onChange={e => {
+                                                            const alphanumericValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                                                            input.onChange(alphanumericValue);
+                                                        }}
+                                                    />
+                                                    {meta.error && meta.touched && (
+                                                        <div className="error-text">{meta.error}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <TextInput 
+                                            name="disabledInput" 
+                                            label="Disabled Input" 
+                                            disabled={true} 
+                                        />
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <SelectInput 
+                                            name="referralSource" 
+                                            label="How did you hear about us?" 
+                                            options={referralOptions} 
+                                        />
+                                    </div>
+                                    
+                                    <CheckboxInput name="newsletter" label="Subscribe to our newsletter" />
+                                    
+                                    <Field name="termsAgreement" validate={required} type="checkbox">
+                                        {({ input, meta }) => (
+                                            <div className="form-check mb-3">
+                                                <input
+                                                    {...input}
+                                                    id="termsAgreement"
+                                                    className={`form-check-input ${meta.error && meta.touched ? 'error-field' : ''}`}
+                                                    type="checkbox"
+                                                />
+                                                <label className="form-check-label" htmlFor="termsAgreement">
+                                                    I agree to the <a href="#" onClick={showTermsAndConditions}>Terms and Conditions</a> <span className="text-danger">*</span>
+                                                </label>
+                                                {meta.error && meta.touched && (
+                                                    <div className="error-text">{meta.error}</div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </Field>
+                                </div>
+                                
+                                <div className="d-flex gap-2 mb-3">
+                                    <button type="submit" className="btn btn-primary btn-submit" disabled={submitting}>
+                                        Submit Order
+                                    </button>
+                                    <button type="button" className="btn btn-danger" onClick={openModal}>
+                                        Open Modal
+                                    </button>
+                                    <button type="button" className="btn btn-secondary" onClick={() => form.reset()}>
+                                        Reset Form
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    />
+                    
+                    <RedHerringModal isOpen={isModalOpen} onClose={closeModal} />
+                </Fragment>
+            );
+        };
+        
+        // Wait for the page to load before rendering
         document.addEventListener('DOMContentLoaded', function() {
-            // Alphanumeric validation
-            const alphanumericInput = document.getElementById('alphanumericOnly');
-            if (alphanumericInput) {
-                alphanumericInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-            }
-            
-            // Same shipping address checkbox
-            const sameShippingCheckbox = document.getElementById('sameShipping');
-            const shippingSection = document.getElementById('shipping-section');
-            
-            if (sameShippingCheckbox && shippingSection) {
-                sameShippingCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        shippingSection.style.display = 'none';
-                    } else {
-                        shippingSection.style.display = 'block';
-                    }
-                });
-            }
-            
-            // Payment method radio buttons
-            const creditCardRadio = document.getElementById('creditCard');
-            const creditCardFields = document.getElementById('creditCardFields');
-            
-            if (creditCardRadio && creditCardFields) {
-                const paymentMethods = document.querySelectorAll('input[name="payment.method"]');
-                paymentMethods.forEach(method => {
-                    method.addEventListener('change', function() {
-                        if (creditCardRadio.checked) {
-                            creditCardFields.style.display = 'block';
-                        } else {
-                            creditCardFields.style.display = 'none';
-                        }
-                    });
-                });
-            }
-            
-            // Form submission
-            const form = document.getElementById('final-form');
-            const successMessage = document.getElementById('success-message');
-            
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Reset previous error messages
-                    const errorMessages = document.querySelectorAll('.error-text');
-                    errorMessages.forEach(error => error.style.display = 'none');
-                    
-                    // Reset invalid fields
-                    const allFields = form.querySelectorAll('input, select, textarea');
-                    allFields.forEach(field => field.classList.remove('error-field'));
-                    
-                    // Validate required fields
-                    const requiredFields = form.querySelectorAll('[required]');
-                    let isValid = true;
-                    
-                    requiredFields.forEach(field => {
-                        // Skip validation for shipping fields if "same as billing" is checked
-                        if (sameShippingCheckbox && sameShippingCheckbox.checked && 
-                            field.name && field.name.startsWith('shippingAddress')) {
-                            return;
-                        }
-                        
-                        if (field.type === 'radio') {
-                            // For radio buttons, check if any in the group is selected
-                            const groupName = field.name;
-                            const radioGroup = form.querySelectorAll(`input[name="${groupName}"]`);
-                            let isChecked = false;
-                            
-                            radioGroup.forEach(radio => {
-                                if (radio.checked) isChecked = true;
-                            });
-                            
-                            if (!isChecked) {
-                                if (groupName === 'payment.method') {
-                                    const errorElement = document.getElementById('payment-method-error');
-                                    if (errorElement) errorElement.style.display = 'block';
-                                }
-                                isValid = false;
-                            }
-                        } else if (!field.value.trim()) {
-                            field.classList.add('error-field');
-                            const errorId = `${field.id}-error`;
-                            const errorElement = document.getElementById(errorId);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    });
-                    
-                    // Email validation
-                    const emailInput = document.getElementById('email');
-                    if (emailInput && emailInput.value) {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(emailInput.value)) {
-                            emailInput.classList.add('error-field');
-                            const errorElement = document.getElementById('email-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Phone validation
-                    const phoneInput = document.getElementById('phone');
-                    if (phoneInput && phoneInput.value) {
-                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                        if (!phonePattern.test(phoneInput.value)) {
-                            phoneInput.classList.add('error-field');
-                            const errorElement = document.getElementById('phone-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Zip code validation
-                    const zipCodeInput = document.getElementById('zipCode');
-                    if (zipCodeInput && zipCodeInput.value) {
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(zipCodeInput.value)) {
-                            zipCodeInput.classList.add('error-field');
-                            const errorElement = document.getElementById('zipCode-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Quantity validation
-                    const quantityInput = document.getElementById('quantity');
-                    if (quantityInput && quantityInput.value) {
-                        const quantity = parseInt(quantityInput.value);
-                        if (isNaN(quantity) || quantity < 1) {
-                            quantityInput.classList.add('error-field');
-                            const errorElement = document.getElementById('quantity-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    if (isValid) {
-                        console.log('Form submitted successfully! The secret is: dumbledore');
-                        successMessage.style.display = 'block';
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(function() {
-                            successMessage.style.display = 'none';
-                        }, 3000);
-                    }
-                });
-            }
-            
-            // Modal Functionality
-            const modalButton = document.getElementById('modalButton');
-            const modal = document.getElementById('redHerringModal');
-            const closeModalButton = document.getElementById('closeModalButton');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            
-            if (modalButton && modal) {
-                modalButton.addEventListener('click', function() {
-                    modal.style.display = 'flex';
-                });
-            }
-            
-            if (closeModalButton && modal) {
-                closeModalButton.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            if (closeModalBtn && modal) {
-                closeModalBtn.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            // Close modal when clicking outside
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Terms link click handler
-            const termsLink = document.getElementById('termsLink');
-            if (termsLink) {
-                termsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('Terms and Conditions would be displayed here.');
-                });
-            }
+            createRoot(document.getElementById('root')).render(<App />);
         });
     </script>
 </body>
