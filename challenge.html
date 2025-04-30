@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser-use AI Challenge</title>
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #ff4a6b;
+            --background-color: #f8f9fa;
+            --task-bg-color: #ffffff;
+            --success-color: #28a745;
+            --text-color: #333;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 0;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--box-shadow);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .score-container {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .score {
+            font-weight: bold;
+            font-size: 2rem;
+            color: #fff;
+            display: inline-block;
+        }
+
+        .score-animation {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .task {
+            background-color: var(--task-bg-color);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .task.active {
+            opacity: 1;
+            transform: translateY(-5px);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .task.completed {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .task-number {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #3755d8;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        input[type="text"], input[type="date"] {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .radio-group, .checkbox-group {
+            margin: 1rem 0;
+        }
+
+        .radio-group label, .checkbox-group label {
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        .slider-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 1rem 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+
+        .hover-area {
+            background-color: #e9ecef;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .hover-area:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .drag-source {
+            background-color: #e9ecef;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            cursor: move;
+            user-select: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .drop-target {
+            background-color: #e9ecef;
+            padding: 2rem;
+            border-radius: 4px;
+            border: 2px dashed #adb5bd;
+            margin-top: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .drop-target.highlight {
+            background-color: rgba(74, 107, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .multi-select {
+            width: 100%;
+            max-width: 300px;
+            height: 100px;
+        }
+
+        .canvas-container {
+            margin: 1rem 0;
+        }
+
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            top: -10px;
+            animation: fall 4s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            0% { top: -10px; transform: translateX(0) rotate(0deg); }
+            100% { top: 100vh; transform: translateX(100px) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Browser-use AI Challenge</h1>
+        <p>Can you complete this form?</p>
+        <div class="score-container">
+            Score: <span class="score">0</span> / 17
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="task active" id="task1">
+            <div class="task-number">1</div>
+            <div class="task-title">Click: Just click the button</div>
+            <button id="start-button">Start</button>
+        </div>
+
+        <div class="task" id="task2">
+            <div class="task-number">2</div>
+            <div class="task-title">Radio-select: Select radio button</div>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="entity" value="ai"> AI
+                </label>
+                <label>
+                    <input type="radio" name="entity" value="human"> Human
+                </label>
+                <label>
+                    <input type="radio" name="entity" value="disabled" disabled> Disabled option
+                </label>
+            </div>
+        </div>
+
+        <div class="task" id="task3">
+            <div class="task-number">3</div>
+            <div class="task-title">Select a checkbox</div>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="challenge-checkbox"> I accept the challenge
+                </label>
+            </div>
+        </div>
+
+        <div class="task" id="task4">
+            <div class="task-number">4</div>
+            <div class="task-title">Input your name (for the leaderboard)</div>
+            <input type="text" id="name-input" placeholder="Enter your name and press Enter">
+        </div>
+
+        <div class="task" id="task5">
+            <div class="task-number">5</div>
+            <div class="task-title">Input today's date in the date picker</div>
+            <input type="date" id="date-picker">
+        </div>
+
+        <div class="task" id="task6">
+            <div class="task-number">6</div>
+            <div class="task-title">Copy this text [abc] into this field</div>
+            <div>Text to copy: <strong>abc</strong></div>
+            <input type="text" id="copy-input" placeholder="Paste here">
+        </div>
+
+        <div class="task" id="task7">
+            <div class="task-number">7</div>
+            <div class="task-title">Drag the slider to the right</div>
+            <div class="slider-container">
+                <input type="range" min="1" max="100" value="1" class="slider" id="range-slider">
+                <div>Value: <span id="slider-value">1</span></div>
+            </div>
+        </div>
+
+        <div class="task" id="task8">
+            <div class="task-number">8</div>
+            <div class="task-title">Hover over this element</div>
+            <div class="hover-area" id="hover-element">Hover over me</div>
+        </div>
+
+        <div class="task" id="task9">
+            <div class="task-number">9</div>
+            <div class="task-title">Drag this element onto this other element</div>
+            <div class="drag-source" id="drag-element" draggable="true">Drag me</div>
+            <div class="drop-target" id="drop-target">Drop here</div>
+        </div>
+
+        <div class="task" id="task10">
+            <div class="task-number">10</div>
+            <div class="task-title">Drag a file into this element</div>
+            <div class="drop-target" id="file-drop-area">Drop a file here</div>
+        </div>
+
+        <div class="task" id="task11">
+            <div class="task-number">11</div>
+            <div class="task-title">Select multiple options in this multi-select-list</div>
+            <select class="multi-select" id="multi-select" multiple>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+                <option value="option4">Option 4</option>
+                <option value="option5">Option 5</option>
+            </select>
+            <div><small>Hold Ctrl/Cmd to select multiple options</small></div>
+        </div>
+
+        <div class="task" id="task12">
+            <div class="task-number">12</div>
+            <div class="task-title">Read the text off this canvas element and type it into this input field</div>
+            <div class="canvas-container">
+                <canvas id="text-canvas" width="300" height="100"></canvas>
+            </div>
+            <input type="text" id="canvas-text-input" placeholder="Type the text you see in the canvas">
+        </div>
+
+        <div class="task" id="task13">
+            <div class="task-number">13</div>
+            <div class="task-title">Drag a slider to the right inside an iframe</div>
+            <iframe id="slider-iframe" style="width: 350px; height: 150px; border: 1px solid #ddd; border-radius: 4px;"></iframe>
+        </div>
+
+        <div class="task" id="task14">
+            <div class="task-number">14</div>
+            <div class="task-title">Double-click a button inside a closed shadow DOM</div>
+            <div id="shadow-host"></div>
+        </div>
+
+        <div class="task" id="task15">
+            <div class="task-number">15</div>
+            <div class="task-title">Right-click something inside a Web Component slot element</div>
+            <right-click-component>
+                <span slot="right-click-target">Right-click me</span>
+            </right-click-component>
+        </div>
+
+        <div class="task" id="task16">
+            <div class="task-number">16</div>
+            <div class="task-title">Scroll an overflowing lorem ipsum element to the bottom</div>
+            <div id="scroll-container" style="height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.</p>
+                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+                <p id="scroll-bottom-marker" style="color: var(--primary-color); font-weight: bold;">You've reached the bottom!</p>
+            </div>
+        </div>
+
+        <div class="task" id="task17">
+            <div class="task-number">17</div>
+            <div class="task-title">Draw a circle with your mouse by hovering</div>
+            <div id="draw-container" style="width: 300px; height: 300px; position: relative; border: 1px solid #ddd; border-radius: 4px;">
+                <canvas id="draw-canvas" width="300" height="300" style="position: absolute; top: 0; left: 0;"></canvas>
+                <div id="draw-instructions" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    Hover your mouse in a circular pattern
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define the web component for right-click task
+        class RightClickComponent extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({ mode: 'open' });
+                
+                const wrapper = document.createElement('div');
+                wrapper.style.padding = '1rem';
+                wrapper.style.border = '1px solid #ddd';
+                wrapper.style.borderRadius = '4px';
+                wrapper.style.backgroundColor = '#f8f9fa';
+                
+                const slot = document.createElement('slot');
+                slot.name = 'right-click-target';
+                slot.style.cursor = 'context-menu';
+                slot.style.userSelect = 'none';
+                slot.style.display = 'inline-block';
+                slot.style.padding = '0.5rem';
+                slot.style.backgroundColor = '#e9ecef';
+                slot.style.borderRadius = '4px';
+                
+                wrapper.appendChild(slot);
+                shadow.appendChild(wrapper);
+            }
+        }
+        
+        // Register the web component
+        customElements.define('right-click-component', RightClickComponent);
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const tasks = document.querySelectorAll('.task');
+            const scoreElement = document.querySelector('.score');
+            let score = 0;
+            let currentTaskIndex = 0;
+
+            function completeTask(taskElement) {
+                if (taskElement.classList.contains('completed')) return;
+
+                taskElement.classList.remove('active');
+                taskElement.classList.add('completed');
+                score++;
+                updateScore();
+
+                // Move to next task
+                if (currentTaskIndex < tasks.length - 1) {
+                    currentTaskIndex++;
+                    tasks[currentTaskIndex].classList.add('active');
+                    const nextElement = tasks[currentTaskIndex].querySelector('input, button, select');
+                    if (nextElement) setTimeout(() => nextElement.focus(), 500);
+                }
+            }
+
+            function updateScore() {
+                scoreElement.textContent = score;
+                scoreElement.classList.add('score-animation');
+                setTimeout(() => scoreElement.classList.remove('score-animation'), 500);
+                createConfetti();
+            }
+
+            function createConfetti() {
+                const colors = ['#ff4a6b', '#4a6bff', '#4aff6b', '#ff4aff', '#ffff4a'];
+                for (let i = 0; i < 20; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+
+                    // Remove confetti after animation ends
+                    setTimeout(() => {
+                        document.body.removeChild(confetti);
+                    }, 5000);
+                }
+            }
+
+            // Task 1: Click Button
+            document.getElementById('start-button').addEventListener('click', function() {
+                completeTask(tasks[0]);
+            });
+
+            // Task 2: Radio Buttons
+            const radioButtons = document.querySelectorAll('input[name="entity"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    completeTask(tasks[1]);
+                });
+            });
+
+            // Task 3: Checkbox
+            document.getElementById('challenge-checkbox').addEventListener('change', function() {
+                if (this.checked) {
+                    completeTask(tasks[2]);
+                }
+            });
+
+            // Task 4: Name Input
+            document.getElementById('name-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    completeTask(tasks[3]);
+                }
+            });
+
+            // Task 5: Date Picker
+            document.getElementById('date-picker').addEventListener('change', function() {
+                if (this.value) {
+                    completeTask(tasks[4]);
+                }
+            });
+
+            // Task 6: Copy Text
+            document.getElementById('copy-input').addEventListener('input', function() {
+                if (this.value === 'abc') {
+                    completeTask(tasks[5]);
+                }
+            });
+
+            // Task 7: Slider
+            const slider = document.getElementById('range-slider');
+            const sliderValue = document.getElementById('slider-value');
+            slider.addEventListener('input', function() {
+                sliderValue.textContent = this.value;
+                if (parseInt(this.value) >= 90) {
+                    completeTask(tasks[6]);
+                }
+            });
+
+            // Task 8: Hover
+            let hoverTimeout;
+            document.getElementById('hover-element').addEventListener('mouseenter', function() {
+                this.textContent = 'Nice hovering!';
+                hoverTimeout = setTimeout(() => {
+                    completeTask(tasks[7]);
+                }, 1000);
+            });
+            
+            document.getElementById('hover-element').addEventListener('mouseleave', function() {
+                this.textContent = 'Hover over me';
+                clearTimeout(hoverTimeout);
+            });
+
+            // Task 9: Drag and Drop
+            const dragElement = document.getElementById('drag-element');
+            const dropTarget = document.getElementById('drop-target');
+
+            dragElement.addEventListener('dragstart', function(e) {
+                e.dataTransfer.setData('text/plain', 'dragged');
+                setTimeout(() => {
+                    this.style.opacity = '0.4';
+                }, 0);
+            });
+
+            dragElement.addEventListener('dragend', function() {
+                this.style.opacity = '1';
+            });
+
+            dropTarget.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('highlight');
+            });
+
+            dropTarget.addEventListener('dragleave', function() {
+                this.classList.remove('highlight');
+            });
+
+            dropTarget.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('highlight');
+                if (e.dataTransfer.getData('text/plain') === 'dragged') {
+                    this.textContent = 'Successfully dropped!';
+                    completeTask(tasks[8]);
+                }
+            });
+
+            // Task 10: File Drop
+            const fileDropArea = document.getElementById('file-drop-area');
+
+            fileDropArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('highlight');
+            });
+
+            fileDropArea.addEventListener('dragleave', function() {
+                this.classList.remove('highlight');
+            });
+
+            fileDropArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('highlight');
+                if (e.dataTransfer.files.length > 0) {
+                    this.textContent = `Dropped file: ${e.dataTransfer.files[0].name}`;
+                    completeTask(tasks[9]);
+                }
+            });
+
+            // Task 11: Multi-select
+            const multiSelect = document.getElementById('multi-select');
+            multiSelect.addEventListener('change', function() {
+                const selectedOptions = Array.from(this.selectedOptions);
+                if (selectedOptions.length >= 2) {
+                    completeTask(tasks[10]);
+                }
+            });
+
+            // Task 12: Canvas Text
+            const canvas = document.getElementById('text-canvas');
+            const ctx = canvas.getContext('2d');
+            const canvasText = 'CAPTCHA123';
+            
+            // Draw text on canvas
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '30px Arial';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Add some noise to make it harder to read
+            for (let i = 0; i < 100; i++) {
+                ctx.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
+            }
+            
+            // Draw wavy text
+            let x = canvas.width / 2;
+            let y = canvas.height / 2;
+            
+            // Draw rotated, slightly distorted text
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(Math.random() * 0.1 - 0.05);
+            ctx.fillText(canvasText, 0, Math.sin(y * 0.01) * 5);
+            ctx.restore();
+            
+            document.getElementById('canvas-text-input').addEventListener('input', function() {
+                if (this.value.toUpperCase() === canvasText) {
+                    completeTask(tasks[11]);
+                }
+            });
+            
+            // Task 13: Iframe slider
+            const sliderIframe = document.getElementById('slider-iframe');
+            sliderIframe.onload = function() {
+                const iframeDoc = sliderIframe.contentDocument || sliderIframe.contentWindow.document;
+                
+                // Create the slider in the iframe
+                iframeDoc.body.innerHTML = `
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            padding: 10px;
+                            margin: 0;
+                        }
+                        .slider-container {
+                            width: 300px;
+                            margin: 10px auto;
+                        }
+                        .slider {
+                            width: 100%;
+                            height: 15px;
+                            border-radius: 5px;
+                            background: #ddd;
+                            outline: none;
+                        }
+                        .value-display {
+                            text-align: center;
+                            margin-top: 10px;
+                        }
+                    </style>
+                    <div class="slider-container">
+                        <input type="range" min="1" max="100" value="1" class="slider" id="iframe-slider">
+                        <div class="value-display">Value: <span id="iframe-slider-value">1</span></div>
+                    </div>
+                `;
+                
+                // Add event listeners for the iframe slider
+                const iframeSlider = iframeDoc.getElementById('iframe-slider');
+                const iframeSliderValue = iframeDoc.getElementById('iframe-slider-value');
+                
+                iframeSlider.addEventListener('input', function() {
+                    iframeSliderValue.textContent = this.value;
+                    if (parseInt(this.value) >= 90) {
+                        completeTask(tasks[12]);
+                    }
+                });
+            };
+            
+            // Set the iframe source to be about:blank and force load event
+            sliderIframe.src = 'about:blank';
+            
+            // Task 14: Shadow DOM double-click
+            const shadowHost = document.getElementById('shadow-host');
+            const shadowRoot = shadowHost.attachShadow({ mode: 'closed' });
+            
+            shadowRoot.innerHTML = `
+                <style>
+                    .shadow-container {
+                        padding: 20px;
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        background-color: #f8f9fa;
+                    }
+                    button {
+                        background-color: var(--primary-color, #4a6bff);
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    }
+                    button:hover {
+                        background-color: #3755d8;
+                    }
+                </style>
+                <div class="shadow-container">
+                    <button id="shadow-button">Double-click me</button>
+                </div>
+            `;
+            
+            const shadowButton = shadowRoot.getElementById('shadow-button');
+            shadowButton.addEventListener('dblclick', function() {
+                this.textContent = 'Double-clicked!';
+                completeTask(tasks[13]);
+            });
+            
+            // Task 15: Right-click in Web Component slot
+            const rightClickTarget = document.querySelector('[slot="right-click-target"]');
+            rightClickTarget.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                this.textContent = 'Right-clicked!';
+                completeTask(tasks[14]);
+            });
+            
+            // Task 16: Scroll to bottom
+            const scrollContainer = document.getElementById('scroll-container');
+            const scrollBottomMarker = document.getElementById('scroll-bottom-marker');
+            
+            scrollContainer.addEventListener('scroll', function() {
+                // Check if scrolled to bottom
+                if (this.scrollHeight - this.scrollTop <= this.clientHeight + 5) {
+                    completeTask(tasks[15]);
+                }
+            });
+            
+            // Task 17: Draw circle by hovering
+            const drawCanvas = document.getElementById('draw-canvas');
+            const drawCtx = drawCanvas.getContext('2d');
+            const drawInstructions = document.getElementById('draw-instructions');
+            const centerX = drawCanvas.width / 2;
+            const centerY = drawCanvas.height / 2;
+            const radius = 100;
+            const pointsNeeded = 20;
+            
+            // Draw circle guide (faint)
+            drawCtx.beginPath();
+            drawCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            drawCtx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
+            drawCtx.stroke();
+            
+            // For tracking points along the circle
+            const points = [];
+            const angleSegments = 8; // Divide circle into segments
+            const segmentStatus = new Array(angleSegments).fill(false);
+            
+            drawCanvas.addEventListener('mousemove', function(e) {
+                const rect = drawCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Draw dot where mouse is
+                drawCtx.beginPath();
+                drawCtx.arc(x, y, 3, 0, Math.PI * 2);
+                drawCtx.fillStyle = 'rgba(74, 107, 255, 0.5)';
+                drawCtx.fill();
+                
+                // Calculate angle from center
+                const dx = x - centerX;
+                const dy = y - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // If within certain range from the circle
+                if (Math.abs(distance - radius) < 20) {
+                    let angle = Math.atan2(dy, dx);
+                    if (angle < 0) angle += Math.PI * 2;
+                    
+                    // Determine which segment this angle falls into
+                    const segment = Math.floor((angle / (Math.PI * 2)) * angleSegments);
+                    segmentStatus[segment] = true;
+                    
+                    // If all segments have been touched
+                    if (segmentStatus.every(status => status)) {
+                        drawInstructions.textContent = "Great job! Circle completed!";
+                        completeTask(tasks[16]);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
