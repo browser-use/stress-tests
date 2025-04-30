@@ -17,6 +17,20 @@
 11. **Vue.js (Vuelidate)** - Vue form validation library
 12. **Material UI Forms** - Material Design styled form components
 13. **Wufoo-style** - Intentionally difficult for autofill with unusual naming patterns
+14. **Shadow DOM Form** - Form elements encapsulated within Shadow DOM
+15. **Dynamic Form** - Dynamically generated form elements
+16. **Web Components** - Lit/Polymer Web Components implementation
+17. **Progressive Form** - Multi-step form with progressive disclosure
+18. **React Native Web** - React Native components rendered to web
+19. **Nested Iframes** - Form elements nested in multiple iframe layers
+20. **Hidden Labels** - Form with visually hidden accessibility labels
+21. **Non-Latin Form** - Form using non-Latin character sets
+22. **Contenteditable Form** - Form using contenteditable elements
+23. **Rich Text Fields** - Form with rich text editor fields
+24. **GraphQL Form** - Form using GraphQL mutations
+25. **Table-based Form** - Form with table-based layout
+26. **Animated Form** - Form with CSS animations and transitions
+27. **Internationalized Form** - Form with internationalization support
 
 ## Features
 

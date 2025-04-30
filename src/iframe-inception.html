@@ -546,7 +546,7 @@
                                             // Email validation
                                             const emailField = document.getElementById('email');
                                             if (emailField && emailField.value) {
-                                                const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+                                                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                                                 if (!emailPattern.test(emailField.value)) {
                                                     isValid = false;
                                                     document.getElementById('email-error').style.display = 'block';
@@ -556,7 +556,7 @@
                                             // Zip code validation
                                             const zipField = document.getElementById('zipCode');
                                             if (zipField && zipField.value) {
-                                                const zipPattern = /^\\d{5}(-\\d{4})?$/;
+                                                const zipPattern = /^\d{5}(-\d{4})?$/;
                                                 if (!zipPattern.test(zipField.value)) {
                                                     isValid = false;
                                                     document.getElementById('zipCode-error').style.display = 'block';
