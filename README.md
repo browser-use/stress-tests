@@ -45,6 +45,7 @@ Each form includes:
 - Red herring modal buttons (opens a modal instead of submitting)
 - Form validation
 - Submit buttons
+- All forms will display `the secret is: dumbledore` upon succesful submission to make evals easy to validate
 
 ## Special Testing Cases
 

@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TanStack Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <!-- Add React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Add TanStack Form -->
+    <script src="https://cdn.jsdelivr.net/npm/@tanstack/react-form@0.12.0/build/umd/index.production.js"></script>
+    <!-- Add Babel for JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         .form-container {
             max-width: 800px;
@@ -95,424 +102,808 @@
 <body>
     <div class="container">
         <h1 class="mt-4 mb-4">TanStack Form</h1>
-        <p>This TanStack Form example is pre-rendered as static HTML, which allows the autofill extension to interact with it. In a real app, this would be a fully interactive React component using TanStack Form.</p>
+        <p>This is a fully interactive React component using TanStack Form for validation.</p>
         
-        <div class="alert alert-success" id="success-message" style="display: none;">
-            <strong>Success!</strong> Form submitted successfully!
-        </div>
-        
-        <form class="form-container" id="tanstack-form">
-            <!-- Personal Information Section -->
-            <div class="form-section">
-                <h3>Personal Information</h3>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" required />
-                        <div class="error-text" id="firstName-error" style="display: none;">
-                            First name is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" required />
-                        <div class="error-text" id="lastName-error" style="display: none;">
-                            Last name is required
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
-                        <input type="email" id="email" name="email" class="form-control" required />
-                        <div class="error-text" id="email-error" style="display: none;">
-                            Please enter a valid email address
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="123-456-7890" />
-                        <div class="error-text" id="phone-error" style="display: none;">
-                            Please enter a valid phone number (e.g. 123-456-7890)
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Employment Information -->
-            <div class="form-section">
-                <h3>Employment Information</h3>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="jobTitle" class="form-label">Job Title <span class="text-danger">*</span></label>
-                        <input type="text" id="jobTitle" name="employment.jobTitle" class="form-control" required />
-                        <div class="error-text" id="jobTitle-error" style="display: none;">
-                            Job title is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="department" class="form-label">Department</label>
-                        <select id="department" name="employment.department" class="form-select">
-                            <option value="">Select Department</option>
-                            <option value="engineering">Engineering</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="sales">Sales</option>
-                            <option value="hr">Human Resources</option>
-                            <option value="finance">Finance</option>
-                            <option value="operations">Operations</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="startDate" class="form-label">Start Date</label>
-                        <input type="date" id="startDate" name="employment.startDate" class="form-control" />
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="salary" class="form-label">Salary</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" id="salary" name="employment.salary" class="form-control" min="0" step="1000" />
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="workSchedule" class="form-label">Work Schedule</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="fullTime" name="employment.workSchedule" value="fullTime" />
-                        <label class="form-check-label" for="fullTime">Full-time</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="partTime" name="employment.workSchedule" value="partTime" />
-                        <label class="form-check-label" for="partTime">Part-time</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="contract" name="employment.workSchedule" value="contract" />
-                        <label class="form-check-label" for="contract">Contract</label>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Skills and Qualifications -->
-            <div class="form-section">
-                <h3>Skills and Qualifications</h3>
-                
-                <div class="mb-3">
-                    <label for="skills" class="form-label">Skills (comma separated) <span class="text-danger">*</span></label>
-                    <input type="text" id="skills" name="qualifications.skills" class="form-control" required />
-                    <div class="error-text" id="skills-error" style="display: none;">
-                        Please enter at least one skill
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="education" class="form-label">Highest Education</label>
-                    <select id="education" name="qualifications.education" class="form-select">
-                        <option value="">Select Education Level</option>
-                        <option value="highSchool">High School</option>
-                        <option value="associates">Associate's Degree</option>
-                        <option value="bachelors">Bachelor's Degree</option>
-                        <option value="masters">Master's Degree</option>
-                        <option value="doctorate">Doctorate</option>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="certifications" class="form-label">Certifications</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cert1" name="qualifications.certifications" value="cert1" />
-                        <label class="form-check-label" for="cert1">Certification 1</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cert2" name="qualifications.certifications" value="cert2" />
-                        <label class="form-check-label" for="cert2">Certification 2</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cert3" name="qualifications.certifications" value="cert3" />
-                        <label class="form-check-label" for="cert3">Certification 3</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cert4" name="qualifications.certifications" value="cert4" />
-                        <label class="form-check-label" for="cert4">Certification 4</label>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="yearsExperience" class="form-label">Years of Experience</label>
-                    <input type="range" id="yearsExperience" name="qualifications.yearsExperience" class="form-range" min="0" max="20" step="1" />
-                    <div class="text-center" id="yearsExperienceValue">0 years</div>
-                </div>
-            </div>
-            
-            <!-- References Section -->
-            <div class="form-section">
-                <h3>References</h3>
-                
-                <div class="card mb-3 p-3">
-                    <h5>Reference 1</h5>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="ref1Name" class="form-label">Name</label>
-                            <input type="text" id="ref1Name" name="references[0].name" class="form-control" />
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="ref1Relationship" class="form-label">Relationship</label>
-                            <input type="text" id="ref1Relationship" name="references[0].relationship" class="form-control" />
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="ref1Email" class="form-label">Email</label>
-                            <input type="email" id="ref1Email" name="references[0].email" class="form-control" />
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="ref1Phone" class="form-label">Phone</label>
-                            <input type="tel" id="ref1Phone" name="references[0].phone" class="form-control" />
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card mb-3 p-3">
-                    <h5>Reference 2</h5>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="ref2Name" class="form-label">Name</label>
-                            <input type="text" id="ref2Name" name="references[1].name" class="form-control" />
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="ref2Relationship" class="form-label">Relationship</label>
-                            <input type="text" id="ref2Relationship" name="references[1].relationship" class="form-control" />
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="ref2Email" class="form-label">Email</label>
-                            <input type="email" id="ref2Email" name="references[1].email" class="form-control" />
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="ref2Phone" class="form-label">Phone</label>
-                            <input type="tel" id="ref2Phone" name="references[1].phone" class="form-control" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Additional Fields Section -->
-            <div class="form-section">
-                <h3>Additional Fields</h3>
-                
-                <div class="mb-3">
-                    <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
-                    <input type="text" id="alphanumericOnly" name="alphanumericOnly" class="form-control" />
-                    <div class="error-text" id="alphanumericOnly-error" style="display: none;">
-                        Only letters and numbers are allowed
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="disabledInput" class="form-label">Disabled Input</label>
-                    <input type="text" id="disabledInput" name="disabledInput" class="form-control" value="This field is disabled" disabled />
-                </div>
-                
-                <div class="mb-3">
-                    <label for="preferredWorkTime" class="form-label">Preferred Work Time</label>
-                    <input type="time" id="preferredWorkTime" name="preferredWorkTime" class="form-control" />
-                </div>
-                
-                <div class="mb-3">
-                    <label for="comments" class="form-label">Additional Comments</label>
-                    <textarea id="comments" name="comments" class="form-control" rows="3"></textarea>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="resumeUpload" class="form-label">Upload Resume</label>
-                    <input type="file" id="resumeUpload" name="resumeUpload" class="form-control" />
-                </div>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="termsAgreement" name="termsAgreement" required />
-                    <label class="form-check-label" for="termsAgreement">
-                        I agree to the <a href="#" id="termsLink">Terms and Conditions</a> <span class="text-danger">*</span>
-                    </label>
-                    <div class="error-text" id="termsAgreement-error" style="display: none;">
-                        You must agree to the terms and conditions
-                    </div>
-                </div>
-            </div>
-            
-            <div class="d-flex gap-2 mb-3">
-                <button type="submit" class="btn btn-primary">Submit Form</button>
-                <button type="button" class="btn btn-danger" id="modalButton">Open Modal</button>
-                <button type="reset" class="btn btn-secondary">Reset Form</button>
-            </div>
-        </form>
+        <div id="tanstack-form-root"></div>
     </div>
     
-    <!-- Red Herring Modal -->
-    <div id="redHerringModal" class="modal-overlay" style="display: none;">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h4>Red Herring Modal</h4>
-                <button type="button" class="modal-close" id="closeModalButton">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>This is a red herring modal instead of submitting the form.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeModalBtn">Close</button>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Alphanumeric validation
-            const alphanumericInput = document.getElementById('alphanumericOnly');
-            if (alphanumericInput) {
-                alphanumericInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-            }
+    <script type="text/babel">
+        // Create the TanStack Form component
+        function TanStackFormApp() {
+            const [showModal, setShowModal] = React.useState(false);
+            const [showSuccess, setShowSuccess] = React.useState(false);
             
-            // Years of experience range display
-            const yearsExperienceRange = document.getElementById('yearsExperience');
-            const yearsExperienceValue = document.getElementById('yearsExperienceValue');
-            if (yearsExperienceRange && yearsExperienceValue) {
-                yearsExperienceRange.addEventListener('input', function() {
-                    yearsExperienceValue.textContent = this.value + ' years';
-                });
-                // Initialize value
-                yearsExperienceValue.textContent = yearsExperienceRange.value + ' years';
-            }
+            // Define form using TanStack Form
+            const form = TanStack.useForm({
+                defaultValues: {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    employment: {
+                        jobTitle: '',
+                        department: '',
+                        startDate: '',
+                        salary: '',
+                        workSchedule: ''
+                    },
+                    qualifications: {
+                        skills: '',
+                        education: '',
+                        certifications: [],
+                        yearsExperience: 0
+                    },
+                    references: [
+                        { name: '', relationship: '', email: '', phone: '' },
+                        { name: '', relationship: '', email: '', phone: '' }
+                    ],
+                    alphanumericOnly: '',
+                    preferredWorkTime: '',
+                    comments: '',
+                    termsAgreement: false
+                },
+                onSubmit: async ({ value }) => {
+                    console.log('Form submitted successfully!', value);
+                    setShowSuccess(true);
+                    setTimeout(() => setShowSuccess(false), 3000);
+                }
+            });
             
-            // Form submission
-            const form = document.getElementById('tanstack-form');
-            const successMessage = document.getElementById('success-message');
-            
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Reset previous error messages
-                    const errorMessages = document.querySelectorAll('.error-text');
-                    errorMessages.forEach(error => error.style.display = 'none');
-                    
-                    // Reset invalid fields
-                    const allFields = form.querySelectorAll('input, select, textarea');
-                    allFields.forEach(field => field.classList.remove('invalid-field'));
-                    
-                    // Validate required fields
-                    const requiredFields = form.querySelectorAll('[required]');
-                    let isValid = true;
-                    
-                    requiredFields.forEach(field => {
-                        if (!field.value.trim()) {
-                            field.classList.add('invalid-field');
-                            const errorElement = document.getElementById(`${field.id}-error`);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    });
-                    
-                    // Email validation
-                    const emailInput = document.getElementById('email');
-                    if (emailInput && emailInput.value) {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(emailInput.value)) {
-                            emailInput.classList.add('invalid-field');
-                            const errorElement = document.getElementById('email-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
+            // Handle certification checkboxes
+            const handleCertificationChange = (e, setValue) => {
+                const { value, checked } = e.target;
+                setValue(prev => {
+                    const certs = [...(prev || [])];
+                    if (checked) {
+                        certs.push(value);
+                    } else {
+                        const index = certs.indexOf(value);
+                        if (index !== -1) {
+                            certs.splice(index, 1);
                         }
                     }
+                    return certs;
+                });
+            };
+            
+            // Reset form
+            const resetForm = () => {
+                form.reset();
+            };
+            
+            return (
+                <>
+                    {showSuccess && (
+                        <div className="alert alert-success">
+                            <strong>Success!</strong> Form submitted successfully!
+                        </div>
+                    )}
                     
-                    // Phone validation
-                    const phoneInput = document.getElementById('phone');
-                    if (phoneInput && phoneInput.value) {
-                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                        if (!phonePattern.test(phoneInput.value)) {
-                            phoneInput.classList.add('invalid-field');
-                            const errorElement = document.getElementById('phone-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    if (isValid) {
-                        console.log('Form submitted successfully!');
-                        successMessage.style.display = 'block';
+                    <form 
+                        className="form-container" 
+                        id="tanstack-form" 
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            form.handleSubmit();
+                        }}
+                    >
+                        {/* Personal Information Section */}
+                        <div className="form-section">
+                            <h3>Personal Information</h3>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="firstName"
+                                        validators={{
+                                            onChange: ({ value }) => !value ? 'First name is required' : undefined
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="firstName" className="form-label">First Name <span className="text-danger">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    id="firstName"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && (
+                                                    <div className="error-text">{field.state.meta.errors}</div>
+                                                )}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="lastName"
+                                        validators={{
+                                            onChange: ({ value }) => !value ? 'Last name is required' : undefined
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="lastName" className="form-label">Last Name <span className="text-danger">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    id="lastName"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && (
+                                                    <div className="error-text">{field.state.meta.errors}</div>
+                                                )}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                            </div>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="email"
+                                        validators={{
+                                            onChange: ({ value }) => {
+                                                if (!value) return 'Email is required';
+                                                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                                                    return 'Please enter a valid email address';
+                                                }
+                                                return undefined;
+                                            }
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="email" className="form-label">Email Address <span className="text-danger">*</span></label>
+                                                <input
+                                                    type="email"
+                                                    id="email"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && (
+                                                    <div className="error-text">{field.state.meta.errors}</div>
+                                                )}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="phone"
+                                        validators={{
+                                            onChange: ({ value }) => {
+                                                if (value && !/^\d{3}-\d{3}-\d{4}$/.test(value)) {
+                                                    return 'Please enter a valid phone number (e.g. 123-456-7890)';
+                                                }
+                                                return undefined;
+                                            }
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="phone" className="form-label">Phone Number</label>
+                                                <input
+                                                    type="tel"
+                                                    id="phone"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    placeholder="123-456-7890"
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                />
+                                                {field.state.meta.errors && (
+                                                    <div className="error-text">{field.state.meta.errors}</div>
+                                                )}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                            </div>
+                        </div>
                         
-                        // Hide success message after 3 seconds
-                        setTimeout(function() {
-                            successMessage.style.display = 'none';
-                        }, 3000);
-                    }
-                });
-            }
-            
-            // Modal Functionality
-            const modalButton = document.getElementById('modalButton');
-            const modal = document.getElementById('redHerringModal');
-            const closeModalButton = document.getElementById('closeModalButton');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            
-            if (modalButton && modal) {
-                modalButton.addEventListener('click', function() {
-                    modal.style.display = 'flex';
-                });
-            }
-            
-            if (closeModalButton && modal) {
-                closeModalButton.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            if (closeModalBtn && modal) {
-                closeModalBtn.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            // Close modal when clicking outside
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Terms link click handler
-            const termsLink = document.getElementById('termsLink');
-            if (termsLink) {
-                termsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('Terms and Conditions would be displayed here.');
-                });
-            }
-        });
+                        {/* Employment Information */}
+                        <div className="form-section">
+                            <h3>Employment Information</h3>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="employment.jobTitle"
+                                        validators={{
+                                            onChange: ({ value }) => !value ? 'Job title is required' : undefined
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="jobTitle" className="form-label">Job Title <span className="text-danger">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    id="jobTitle"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && (
+                                                    <div className="error-text">{field.state.meta.errors}</div>
+                                                )}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="employment.department"
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="department" className="form-label">Department</label>
+                                                <select
+                                                    id="department"
+                                                    className="form-select"
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                >
+                                                    <option value="">Select Department</option>
+                                                    <option value="engineering">Engineering</option>
+                                                    <option value="marketing">Marketing</option>
+                                                    <option value="sales">Sales</option>
+                                                    <option value="hr">Human Resources</option>
+                                                    <option value="finance">Finance</option>
+                                                    <option value="operations">Operations</option>
+                                                </select>
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                            </div>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <form.Field name="employment.startDate">
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="startDate" className="form-label">Start Date</label>
+                                                <input
+                                                    type="date"
+                                                    id="startDate"
+                                                    className="form-control"
+                                                    value={field.state.value || ''}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                />
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <form.Field name="employment.salary">
+                                        {(field) => (
+                                            <>
+                                                <label htmlFor="salary" className="form-label">Salary</label>
+                                                <div className="input-group">
+                                                    <span className="input-group-text">$</span>
+                                                    <input
+                                                        type="number"
+                                                        id="salary"
+                                                        className="form-control"
+                                                        min="0"
+                                                        step="1000"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <form.Field name="employment.workSchedule">
+                                    {(field) => (
+                                        <>
+                                            <label className="form-label">Work Schedule</label>
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="fullTime"
+                                                    value="fullTime"
+                                                    checked={field.state.value === 'fullTime'}
+                                                    onChange={() => field.handleChange('fullTime')}
+                                                />
+                                                <label className="form-check-label" htmlFor="fullTime">Full-time</label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="partTime"
+                                                    value="partTime"
+                                                    checked={field.state.value === 'partTime'}
+                                                    onChange={() => field.handleChange('partTime')}
+                                                />
+                                                <label className="form-check-label" htmlFor="partTime">Part-time</label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="contract"
+                                                    value="contract"
+                                                    checked={field.state.value === 'contract'}
+                                                    onChange={() => field.handleChange('contract')}
+                                                />
+                                                <label className="form-check-label" htmlFor="contract">Contract</label>
+                                            </div>
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                        </div>
+                        
+                        {/* Skills and Qualifications */}
+                        <div className="form-section">
+                            <h3>Skills and Qualifications</h3>
+                            
+                            <div className="mb-3">
+                                <form.Field
+                                    name="qualifications.skills"
+                                    validators={{
+                                        onChange: ({ value }) => !value ? 'Please enter at least one skill' : undefined
+                                    }}
+                                >
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="skills" className="form-label">Skills (comma separated) <span className="text-danger">*</span></label>
+                                            <input
+                                                type="text"
+                                                id="skills"
+                                                className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                value={field.state.value}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                                required
+                                            />
+                                            {field.state.meta.errors && (
+                                                <div className="error-text">{field.state.meta.errors}</div>
+                                            )}
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <form.Field name="qualifications.education">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="education" className="form-label">Highest Education</label>
+                                            <select
+                                                id="education"
+                                                className="form-select"
+                                                value={field.state.value || ''}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            >
+                                                <option value="">Select Education Level</option>
+                                                <option value="highSchool">High School</option>
+                                                <option value="associates">Associate's Degree</option>
+                                                <option value="bachelors">Bachelor's Degree</option>
+                                                <option value="masters">Master's Degree</option>
+                                                <option value="doctorate">Doctorate</option>
+                                            </select>
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <form.Field name="qualifications.certifications">
+                                    {(field) => (
+                                        <>
+                                            <label className="form-label">Certifications</label>
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="cert1"
+                                                    value="cert1"
+                                                    checked={(field.state.value || []).includes('cert1')}
+                                                    onChange={(e) => handleCertificationChange(e, field.handleChange)}
+                                                />
+                                                <label className="form-check-label" htmlFor="cert1">Certification 1</label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="cert2"
+                                                    value="cert2"
+                                                    checked={(field.state.value || []).includes('cert2')}
+                                                    onChange={(e) => handleCertificationChange(e, field.handleChange)}
+                                                />
+                                                <label className="form-check-label" htmlFor="cert2">Certification 2</label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="cert3"
+                                                    value="cert3"
+                                                    checked={(field.state.value || []).includes('cert3')}
+                                                    onChange={(e) => handleCertificationChange(e, field.handleChange)}
+                                                />
+                                                <label className="form-check-label" htmlFor="cert3">Certification 3</label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="cert4"
+                                                    value="cert4"
+                                                    checked={(field.state.value || []).includes('cert4')}
+                                                    onChange={(e) => handleCertificationChange(e, field.handleChange)}
+                                                />
+                                                <label className="form-check-label" htmlFor="cert4">Certification 4</label>
+                                            </div>
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <form.Field name="qualifications.yearsExperience">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="yearsExperience" className="form-label">Years of Experience</label>
+                                            <input
+                                                type="range"
+                                                id="yearsExperience"
+                                                className="form-range"
+                                                min="0"
+                                                max="20"
+                                                step="1"
+                                                value={field.state.value || 0}
+                                                onChange={(e) => field.handleChange(parseInt(e.target.value))}
+                                            />
+                                            <div className="text-center">{field.state.value || 0} years</div>
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                        </div>
+                        
+                        {/* References Section */}
+                        <div className="form-section">
+                            <h3>References</h3>
+                            
+                            <div className="card mb-3 p-3">
+                                <h5>Reference 1</h5>
+                                <div className="row mb-3">
+                                    <div className="col-md-6">
+                                        <form.Field name="references[0].name">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref1Name" className="form-label">Name</label>
+                                                    <input
+                                                        type="text"
+                                                        id="ref1Name"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                    
+                                    <div className="col-md-6">
+                                        <form.Field name="references[0].relationship">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref1Relationship" className="form-label">Relationship</label>
+                                                    <input
+                                                        type="text"
+                                                        id="ref1Relationship"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                </div>
+                                
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <form.Field name="references[0].email">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref1Email" className="form-label">Email</label>
+                                                    <input
+                                                        type="email"
+                                                        id="ref1Email"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                    
+                                    <div className="col-md-6">
+                                        <form.Field name="references[0].phone">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref1Phone" className="form-label">Phone</label>
+                                                    <input
+                                                        type="tel"
+                                                        id="ref1Phone"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="card mb-3 p-3">
+                                <h5>Reference 2</h5>
+                                <div className="row mb-3">
+                                    <div className="col-md-6">
+                                        <form.Field name="references[1].name">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref2Name" className="form-label">Name</label>
+                                                    <input
+                                                        type="text"
+                                                        id="ref2Name"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                    
+                                    <div className="col-md-6">
+                                        <form.Field name="references[1].relationship">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref2Relationship" className="form-label">Relationship</label>
+                                                    <input
+                                                        type="text"
+                                                        id="ref2Relationship"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                </div>
+                                
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <form.Field name="references[1].email">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref2Email" className="form-label">Email</label>
+                                                    <input
+                                                        type="email"
+                                                        id="ref2Email"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                    
+                                    <div className="col-md-6">
+                                        <form.Field name="references[1].phone">
+                                            {(field) => (
+                                                <>
+                                                    <label htmlFor="ref2Phone" className="form-label">Phone</label>
+                                                    <input
+                                                        type="tel"
+                                                        id="ref2Phone"
+                                                        className="form-control"
+                                                        value={field.state.value || ''}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                </>
+                                            )}
+                                        </form.Field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Additional Fields Section */}
+                        <div className="form-section">
+                            <h3>Additional Fields</h3>
+                            
+                            <div className="mb-3">
+                                <form.Field name="alphanumericOnly">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="alphanumericOnly" className="form-label">Alphanumeric Only</label>
+                                            <input
+                                                type="text"
+                                                id="alphanumericOnly"
+                                                className="form-control"
+                                                value={field.state.value || ''}
+                                                onChange={(e) => {
+                                                    const alphanumericValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                                                    field.handleChange(alphanumericValue);
+                                                }}
+                                            />
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="disabledInput" className="form-label">Disabled Input</label>
+                                <input
+                                    type="text"
+                                    id="disabledInput"
+                                    className="form-control"
+                                    value="This field is disabled"
+                                    disabled
+                                />
+                            </div>
+                            
+                            <div className="mb-3">
+                                <form.Field name="preferredWorkTime">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="preferredWorkTime" className="form-label">Preferred Work Time</label>
+                                            <input
+                                                type="time"
+                                                id="preferredWorkTime"
+                                                className="form-control"
+                                                value={field.state.value || ''}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            />
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <form.Field name="comments">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="comments" className="form-label">Additional Comments</label>
+                                            <textarea
+                                                id="comments"
+                                                className="form-control"
+                                                rows="3"
+                                                value={field.state.value || ''}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            ></textarea>
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="resumeUpload" className="form-label">Upload Resume</label>
+                                <input
+                                    type="file"
+                                    id="resumeUpload"
+                                    name="resumeUpload"
+                                    className="form-control"
+                                />
+                            </div>
+                            
+                            <div className="form-check mb-3">
+                                <form.Field
+                                    name="termsAgreement"
+                                    validators={{
+                                        onChange: ({ value }) => !value ? 'You must agree to the terms and conditions' : undefined
+                                    }}
+                                >
+                                    {(field) => (
+                                        <>
+                                            <input
+                                                className={`form-check-input ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                type="checkbox"
+                                                id="termsAgreement"
+                                                checked={field.state.value || false}
+                                                onChange={(e) => field.handleChange(e.target.checked)}
+                                                required
+                                            />
+                                            <label className="form-check-label" htmlFor="termsAgreement">
+                                                I agree to the <a href="#" onClick={(e) => { e.preventDefault(); alert('Terms and Conditions would be displayed here.'); }}>Terms and Conditions</a> <span className="text-danger">*</span>
+                                            </label>
+                                            {field.state.meta.errors && (
+                                                <div className="error-text">{field.state.meta.errors}</div>
+                                            )}
+                                        </>
+                                    )}
+                                </form.Field>
+                            </div>
+                        </div>
+                        
+                        <div className="d-flex gap-2 mb-3">
+                            <form.Subscribe
+                                selector={(state) => [state.canSubmit, state.isSubmitting]}
+                            >
+                                {([canSubmit, isSubmitting]) => (
+                                    <button 
+                                        type="submit" 
+                                        className="btn btn-primary" 
+                                        disabled={!canSubmit || isSubmitting}
+                                    >
+                                        {isSubmitting ? 'Submitting...' : 'Submit Form'}
+                                    </button>
+                                )}
+                            </form.Subscribe>
+                            
+                            <button 
+                                type="button" 
+                                className="btn btn-danger" 
+                                onClick={() => setShowModal(true)}
+                            >
+                                Open Modal
+                            </button>
+                            
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={resetForm}
+                            >
+                                Reset Form
+                            </button>
+                        </div>
+                    </form>
+                    
+                    {showModal && (
+                        <div className="modal-overlay">
+                            <div className="modal-container">
+                                <div className="modal-header">
+                                    <h4>Red Herring Modal</h4>
+                                    <button type="button" className="modal-close" onClick={() => setShowModal(false)}>&times;</button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>This is a red herring modal instead of submitting the form.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </>
+            );
+        }
+        
+        // Render the app
+        ReactDOM.render(
+            <TanStackFormApp />,
+            document.getElementById('tanstack-form-root')
+        );
     </script>
 </body>
 </html>
