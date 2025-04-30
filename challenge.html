@@ -172,44 +172,6 @@
             outline: none;
         }
 
-        .hover-area {
-            background-color: #e9ecef;
-            padding: 1rem;
-            border-radius: 4px;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .hover-area:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .drag-source {
-            background-color: #e9ecef;
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            cursor: move;
-            user-select: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .drop-target {
-            background-color: #e9ecef;
-            padding: 2rem;
-            border-radius: 4px;
-            border: 2px dashed #adb5bd;
-            margin-top: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .drop-target.highlight {
-            background-color: rgba(74, 107, 255, 0.1);
-            border-color: var(--primary-color);
-        }
-
         .multi-select {
             width: 100%;
             max-width: 300px;
@@ -280,32 +242,6 @@
         .modal-cancel {
             background-color: #6c757d;
         }
-
-        /* Key press area */
-        .key-press-area {
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            text-align: center;
-            background-color: #f8f9fa;
-        }
-
-        .key-press-display {
-            font-family: monospace;
-            font-size: 1.2rem;
-            margin: 1rem 0;
-            min-height: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        /* For the geolocation permission */
-        .permissions-status {
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-            background-color: #f8f9fa;
-        }
     </style>
 </head>
 <body>
@@ -318,15 +254,23 @@
     </header>
 
     <div class="container">
+        
+        <!-- Task 1: Click Button -->
         <div class="task active" id="task1">
             <div class="task-number">1</div>
             <div class="task-title">Click: Just click the button</div>
             <button id="start-button">Start</button>
+            <script>
+                document.getElementById('start-button').addEventListener('click', function() {
+                    completeTask(document.getElementById('task1'));
+                });
+            </script>
         </div>
 
+        <!-- Task 2: Radio Buttons -->
         <div class="task" id="task2">
             <div class="task-number">2</div>
-            <div class="task-title">Select one of these radio buttons</div>
+            <div class="task-title">Select one of the radio buttons that you vibe with</div>
             <div class="radio-group">
                 <label>
                     <input type="radio" name="entity" value="choose-this-one" disabled> Cat
@@ -344,24 +288,70 @@
                     <input type="radio" name="entity" value="disabled" disabled> Egregore
                 </label>
             </div>
+            <script>
+                document.querySelectorAll('input[name="entity"]').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        completeTask(document.getElementById('task2'));
+                    });
+                });
+            </script>
         </div>
 
+        <!-- Task 3: Checkbox -->
         <div class="task" id="task3">
             <div class="task-number">3</div>
-            <div class="task-title">Check this checkbox</div>
+            <div class="task-title">Check these checkboxes</div>
             <div class="checkbox-group">
                 <label>
-                    <input type="checkbox" id="challenge-checkbox"> I accept the challenge
+                    <input type="checkbox" class="challenge3-checkbox"> I accept the challenge
+                </label><br>
+                <label>
+                    <input type="checkbox" class="challenge3-checkbox"> I will complete all tasks
+                </label><br>
+                <label>
+                    <input type="checkbox" disabled> This one can't be checked
+                </label><br>
+                <label disabled>
+                    <input type="checkbox" class="challenge3-checkbox"> This one has sneaky html
                 </label>
             </div>
+            <script>
+                const checkboxes = document.querySelectorAll('.challenge3-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        // Check if all non-disabled checkboxes are checked
+                        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                        if (allChecked) {
+                            completeTask(document.getElementById('task3'));
+                        }
+                    });
+                });
+            </script>
         </div>
 
+        <!-- Task 4: Search -->
         <div class="task" id="task4">
             <div class="task-number">4</div>
             <div class="task-title">Use this search field to search for "squash"</div>
             <input type="search" id="search-input" placeholder="Enter a search term and press Enter" value="some existing text">
+            <script>
+                document.getElementById('search-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && this.value.trim().toLowerCase() === 'squash') {
+                        completeTask(document.getElementById('task4'));
+                    } else if (e.key === 'Enter') {
+                        // Wrong search term feedback
+                        const oldVal = this.value;
+                        this.value = "Try searching for 'squash'";
+                        setTimeout(() => {
+                            this.value = oldVal;
+                            this.select(); // Select the text for easy replacement
+                        }, 1500);
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 5: Date and Time Pickers -->
         <div class="task" id="task5">
             <div class="task-number">5</div>
             <div class="task-title">Input the current date and time</div>
@@ -369,15 +359,50 @@
                 <input type="date" id="date-picker">
                 <input type="time" id="time-picker">
             </div>
+            <script>
+                const datePicker = document.getElementById('date-picker');
+                const timePicker = document.getElementById('time-picker');
+                let dateSelected = false;
+                let timeSelected = false;
+                
+                function checkDateTimeCompletion() {
+                    if (dateSelected && timeSelected) {
+                        completeTask(document.getElementById('task5'));
+                    }
+                }
+                
+                datePicker.addEventListener('change', function() {
+                    if (this.value) {
+                        dateSelected = true;
+                        checkDateTimeCompletion();
+                    }
+                });
+                
+                timePicker.addEventListener('change', function() {
+                    if (this.value) {
+                        timeSelected = true;
+                        checkDateTimeCompletion();
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 6: Copy Text -->
         <div class="task" id="task6">
             <div class="task-number">6</div>
             <div class="task-title">Copy this text [abc] into this field</div>
             <div>Text to copy: <strong>abc</strong></div>
             <input type="text" id="copy-input" placeholder="Paste here">
+            <script>
+                document.getElementById('copy-input').addEventListener('input', function() {
+                    if (this.value === 'abc') {
+                        completeTask(document.getElementById('task6'));
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 7: Slider -->
         <div class="task" id="task7">
             <div class="task-number">7</div>
             <div class="task-title">Drag this slider completely to the right</div>
@@ -385,27 +410,149 @@
                 <input type="range" min="1" max="100" value="1" class="slider" id="range-slider">
                 <div>Value: <span id="slider-value">1</span></div>
             </div>
+            <script>
+                const slider = document.getElementById('range-slider');
+                const sliderValue = document.getElementById('slider-value');
+                slider.addEventListener('input', function() {
+                    sliderValue.textContent = this.value;
+                    if (parseInt(this.value) >= 90) {
+                        completeTask(document.getElementById('task7'));
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 8: Hover -->
         <div class="task" id="task8">
             <div class="task-number">8</div>
             <div class="task-title">Hover over this element</div>
+            <style>
+                .hover-area {
+                    background-color: #e9ecef;
+                    padding: 1rem;
+                    border-radius: 4px;
+                    text-align: center;
+                    transition: background-color 0.3s ease;
+                }
+
+                .hover-area:hover {
+                    background-color: var(--secondary-color);
+                    color: white;
+                }
+            </style>
             <div class="hover-area" id="hover-element">Hover over me</div>
+            <script>
+                let hoverTimeout;
+                document.getElementById('hover-element').addEventListener('mouseenter', function() {
+                    this.textContent = 'Nice hovering!';
+                    hoverTimeout = setTimeout(() => {
+                        completeTask(document.getElementById('task8'));
+                    }, 1000);
+                });
+                
+                document.getElementById('hover-element').addEventListener('mouseleave', function() {
+                    this.textContent = 'Hover over me';
+                    clearTimeout(hoverTimeout);
+                });
+            </script>
         </div>
 
+        <!-- Task 9: Drag and Drop -->
         <div class="task" id="task9">
             <div class="task-number">9</div>
             <div class="task-title">Drag this element onto this other element</div>
+            <style>
+                .drag-source {
+                    background-color: #e9ecef;
+                    padding: 1rem;
+                    border-radius: 4px;
+                    margin-bottom: 1rem;
+                    cursor: move;
+                    user-select: none;
+                    transition: background-color 0.3s ease;
+                }
+
+                .drop-target {
+                    background-color: #e9ecef;
+                    padding: 2rem;
+                    border-radius: 4px;
+                    border: 2px dashed #adb5bd;
+                    margin-top: 1rem;
+                    text-align: center;
+                    transition: all 0.3s ease;
+                }
+
+                .drop-target.highlight {
+                    background-color: rgba(74, 107, 255, 0.1);
+                    border-color: var(--primary-color);
+                }
+            </style>
             <div class="drag-source" id="drag-element" draggable="true" style="width: 150px; border: 4px solid green; border-radius: 4px;">Drag me</div>
             <div class="drop-target" id="drop-target">Drop here</div>
+            <script>
+                const dragElement = document.getElementById('drag-element');
+                const dropTarget = document.getElementById('drop-target');
+
+                dragElement.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', 'dragged');
+                    setTimeout(() => {
+                        this.style.opacity = '0.4';
+                    }, 0);
+                });
+
+                dragElement.addEventListener('dragend', function() {
+                    this.style.opacity = '1';
+                });
+
+                dropTarget.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('highlight');
+                });
+
+                dropTarget.addEventListener('dragleave', function() {
+                    this.classList.remove('highlight');
+                });
+
+                dropTarget.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('highlight');
+                    if (e.dataTransfer.getData('text/plain') === 'dragged') {
+                        this.textContent = 'Successfully dropped!';
+                        completeTask(document.getElementById('task9'));
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 10: File Drop -->
         <div class="task" id="task10">
             <div class="task-number">10</div>
             <div class="task-title">Drag a file into this element</div>
             <div class="drop-target" id="file-drop-area">Drop a file here</div>
+            <script>
+                const fileDropArea = document.getElementById('file-drop-area');
+
+                fileDropArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('highlight');
+                });
+
+                fileDropArea.addEventListener('dragleave', function() {
+                    this.classList.remove('highlight');
+                });
+
+                fileDropArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('highlight');
+                    if (e.dataTransfer.files.length > 0) {
+                        this.textContent = `Dropped file: ${e.dataTransfer.files[0].name}`;
+                        completeTask(document.getElementById('task10'));
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 11: Multi-select -->
         <div class="task" id="task11">
             <div class="task-number">11</div>
             <div class="task-title">Select any 3 options in this multi-select-list</div>
@@ -417,8 +564,18 @@
                 <option value="option5">Option 5</option>
             </select>
             <div><small>Hold Ctrl/Cmd to select multiple options</small></div>
+            <script>
+                const multiSelect = document.getElementById('multi-select');
+                multiSelect.addEventListener('change', function() {
+                    const selectedOptions = Array.from(this.selectedOptions);
+                    if (selectedOptions.length >= 2) {
+                        completeTask(document.getElementById('task11'));
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 12: Canvas Text -->
         <div class="task" id="task12">
             <div class="task-number">12</div>
             <div class="task-title">Read the text off this canvas element and type it into this input field</div>
@@ -426,28 +583,187 @@
                 <canvas id="text-canvas" width="300" height="100"></canvas>
             </div>
             <input type="text" id="canvas-text-input" placeholder="Type the text you see in the canvas">
+            <script>
+                const canvas = document.getElementById('text-canvas');
+                const ctx12 = canvas.getContext('2d');
+                const canvasText = 'CAPTCHA123';
+                
+                // Draw text on canvas
+                ctx12.fillStyle = '#f8f9fa';
+                ctx12.fillRect(0, 0, canvas.width, canvas.height);
+                ctx12.font = '30px Arial';
+                ctx12.fillStyle = '#333';
+                ctx12.textAlign = 'center';
+                ctx12.textBaseline = 'middle';
+                
+                // Add some noise to make it harder to read
+                for (let i = 0; i < 100; i++) {
+                    ctx12.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+                    ctx12.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
+                }
+                
+                // Draw wavy text
+                let x = canvas.width / 2;
+                let y = canvas.height / 2;
+                
+                // Draw rotated, slightly distorted text
+                ctx12.save();
+                ctx12.translate(x, y);
+                ctx12.rotate(Math.random() * 0.1 - 0.05);
+                ctx12.fillText(canvasText, 0, Math.sin(y * 0.01) * 5);
+                ctx12.restore();
+                
+                document.getElementById('canvas-text-input').addEventListener('input', function() {
+                    if (this.value.toUpperCase() === canvasText) {
+                        completeTask(document.getElementById('task12'));
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 13: Iframe slider -->
         <div class="task" id="task13">
             <div class="task-number">13</div>
             <div class="task-title">Drag the slider completely to the right inside this iframe</div>
             <iframe id="slider-iframe" style="width: 350px; height: 150px; border: 1px solid #ddd; border-radius: 4px;" src="#"></iframe>
+            <script>
+                const sliderIframe = document.getElementById('slider-iframe');
+                sliderIframe.onload = function() {
+                    const iframeDoc = sliderIframe.contentDocument || sliderIframe.contentWindow.document;
+                    
+                    // Create the slider in the iframe
+                    iframeDoc.body.innerHTML = `
+                        <style>
+                            body {
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                padding: 10px;
+                                margin: 0;
+                            }
+                            .slider-container {
+                                width: 300px;
+                                margin: 10px auto;
+                            }
+                            .slider {
+                                width: 100%;
+                                height: 15px;
+                                border-radius: 5px;
+                                background: #ddd;
+                                outline: none;
+                            }
+                            .value-display {
+                                text-align: center;
+                                margin-top: 10px;
+                            }
+                        </style>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="100" value="1" class="slider" id="iframe-slider">
+                            <div class="value-display">Value: <span id="iframe-slider-value">1</span></div>
+                        </div>
+                    `;
+                    
+                    // Add event listeners for the iframe slider
+                    const iframeSlider = iframeDoc.getElementById('iframe-slider');
+                    const iframeSliderValue = iframeDoc.getElementById('iframe-slider-value');
+                    
+                    iframeSlider.addEventListener('input', function() {
+                        iframeSliderValue.textContent = this.value;
+                        if (parseInt(this.value) >= 90) {
+                            completeTask(document.getElementById('task13'));
+                        }
+                    });
+                };
+                
+                // Set the iframe source to be about:blank and force load event
+                sliderIframe.src = 'about:blank';
+            </script>
         </div>
 
+        <!-- Task 14: Shadow DOM double-click -->
         <div class="task" id="task14">
             <div class="task-number">14</div>
             <div class="task-title">Double-click the button inside this closed shadow DOM</div>
             <div id="shadow-host"></div>
+            <script>
+                const shadowHost = document.getElementById('shadow-host');
+                const shadowRoot = shadowHost.attachShadow({ mode: 'closed' });
+                
+                shadowRoot.innerHTML = `
+                    <style>
+                        .shadow-container {
+                            padding: 20px;
+                            border: 1px solid #ddd;
+                            border-radius: 4px;
+                            background-color: #f8f9fa;
+                        }
+                        button {
+                            background-color: var(--primary-color, #4a6bff);
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 1rem;
+                        }
+                        button:hover {
+                            background-color: #3755d8;
+                        }
+                    </style>
+                    <div class="shadow-container">
+                        <button id="shadow-button">Double-click me</button>
+                    </div>
+                `;
+                
+                const shadowButton = shadowRoot.getElementById('shadow-button');
+                shadowButton.addEventListener('dblclick', function() {
+                    this.textContent = 'Double-clicked!';
+                    completeTask(document.getElementById('task14'));
+                });
+            </script>
         </div>
 
+        <!-- Task 15: Right-click in Web Component slot -->
         <div class="task" id="task15">
             <div class="task-number">15</div>
             <div class="task-title">Right-click the button inside this Web Component slot element</div>
             <right-click-component>
                 <span slot="right-click-target">Right-click me</span>
             </right-click-component>
+            <script>
+                class RightClickComponent extends HTMLElement {
+                    constructor() {
+                        super();
+                        const shadow = this.attachShadow({ mode: 'open' });
+                        
+                        const wrapper = document.createElement('div');
+                        wrapper.style.padding = '1rem';
+                        wrapper.style.border = '1px solid #ddd';
+                        wrapper.style.borderRadius = '4px';
+                        wrapper.style.backgroundColor = '#f8f9fa';
+                        
+                        const slot = document.createElement('slot');
+                        slot.name = 'right-click-target';
+                        slot.style.cursor = 'context-menu';
+                        slot.style.userSelect = 'none';
+                        slot.style.display = 'inline-block';
+                        slot.style.padding = '0.5rem';
+                        slot.style.backgroundColor = '#e9ecef';
+                        slot.style.borderRadius = '4px';
+                        
+                        wrapper.appendChild(slot);
+                        shadow.appendChild(wrapper);
+                    }
+                }
+                customElements.define('right-click-component', RightClickComponent);
+
+                document.querySelector('[slot="right-click-target"]').addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    this.textContent = 'Right-clicked!';
+                    completeTask(document.getElementById('task15'));
+                });
+            </script>
         </div>
 
+        <!-- Task 16: Scroll to bottom and accept terms -->
         <div class="task" id="task16">
             <div class="task-number">16</div>
             <div class="task-title">Scroll the to the bottom of this legal text and click I accept</div>
@@ -459,8 +775,43 @@
                 <p id="scroll-bottom-marker" style="color: var(--primary-color); font-weight: bold;">You've reached the bottom!</p>
             </div>
             <button id="accept-button">I accept</button>
+            <script>
+                const scrollContainer = document.getElementById('scroll-container');
+                const scrollBottomMarker = document.getElementById('scroll-bottom-marker');
+                const acceptButton = document.getElementById('accept-button');
+                let hasScrolledToBottom = false;
+                
+                // Initially disable the accept button
+                acceptButton.disabled = true;
+                acceptButton.style.opacity = '0.5';
+                acceptButton.style.cursor = 'not-allowed';
+                
+                scrollContainer.addEventListener('scroll', function() {
+                    // Check if scrolled to bottom
+                    if (this.scrollHeight - this.scrollTop <= this.clientHeight + 5) {
+                        // Enable the accept button when scrolled to bottom
+                        hasScrolledToBottom = true;
+                        acceptButton.disabled = false;
+                        acceptButton.style.opacity = '1';
+                        acceptButton.style.cursor = 'pointer';
+                        scrollBottomMarker.textContent = "You've read all the terms. Please click 'I accept' button.";
+                    }
+                });
+                
+                // Add click handler for the accept button
+                acceptButton.addEventListener('click', function() {
+                    if (hasScrolledToBottom) {
+                        this.textContent = "Terms Accepted";
+                        completeTask(document.getElementById('task16'));
+                    } else {
+                        // If they somehow click before scrolling (shouldn't be possible with disabled button)
+                        alert("Please scroll to the bottom and read all terms first!");
+                    }
+                });
+            </script>
         </div>
 
+        <!-- Task 17: Draw circle by hovering -->
         <div class="task" id="task17">
             <div class="task-number">17</div>
             <div class="task-title">Draw a circle with your mouse by hovering</div>
@@ -470,6 +821,59 @@
                     Hover your mouse in a circular pattern
                 </div>
             </div>
+            <script>
+                const drawCanvas = document.getElementById('draw-canvas');
+                const drawCtx = drawCanvas.getContext('2d');
+                const drawInstructions = document.getElementById('draw-instructions');
+                const centerX = drawCanvas.width / 2;
+                const centerY = drawCanvas.height / 2;
+                const radius = 100;
+                const pointsNeeded = 20;
+                
+                // Draw circle guide (faint)
+                drawCtx.beginPath();
+                drawCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                drawCtx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
+                drawCtx.stroke();
+                
+                // For tracking points along the circle
+                const points = [];
+                const angleSegments = 8; // Divide circle into segments
+                const segmentStatus = new Array(angleSegments).fill(false);
+                
+                drawCanvas.addEventListener('mousemove', function(e) {
+                    const rect = drawCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Draw dot where mouse is
+                    drawCtx.beginPath();
+                    drawCtx.arc(x, y, 3, 0, Math.PI * 2);
+                    drawCtx.fillStyle = 'rgba(74, 107, 255, 0.5)';
+                    drawCtx.fill();
+                    
+                    // Calculate angle from center
+                    const dx = x - centerX;
+                    const dy = y - centerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // If within certain range from the circle
+                    if (Math.abs(distance - radius) < 20) {
+                        let angle = Math.atan2(dy, dx);
+                        if (angle < 0) angle += Math.PI * 2;
+                        
+                        // Determine which segment this angle falls into
+                        const segment = Math.floor((angle / (Math.PI * 2)) * angleSegments);
+                        segmentStatus[segment] = true;
+                        
+                        // If all segments have been touched
+                        if (segmentStatus.every(status => status)) {
+                            drawInstructions.textContent = "Great job! Circle completed!";
+                            completeTask(document.getElementById('task17'));
+                        }
+                    }
+                });
+            </script>
         </div>
 
         <!-- Task 18: Native Browser Confirmation Dialog -->
@@ -477,24 +881,132 @@
             <div class="task-number">18</div>
             <div class="task-title">Click to open a native browser confirmation dialog and click Cancel</div>
             <button id="confirm-button">Open dialog</button>
+            <script>
+                const confirmButton = document.getElementById('confirm-button');
+                
+                confirmButton.addEventListener('click', function() {
+                    // Native browser confirmation dialog
+                    const result = window.confirm("Are you sure you want to delete all important data? This action cannot be undone.");
+                    
+                    if (result) {
+                        // User clicked OK/Confirm
+                        confirmButton.textContent = 'Data Deleted!';
+                    } else {
+                        // User clicked Cancel
+                        confirmButton.textContent = 'Operation Cancelled';
+                        completeTask(document.getElementById('task18'));
+                    }
+                });
+            </script>
         </div>
 
-        <!-- New Task 19: Geolocation Permission -->
+        <!-- Task 19: Geolocation Permission -->
         <div class="task" id="task19">
             <div class="task-number">19</div>
             <div class="task-title">Request geolocation permission and approve</div>
+            <style>
+                .permissions-status {
+                    padding: 1rem;
+                    margin: 1rem 0;
+                    border-radius: 4px;
+                    background-color: #f8f9fa;
+                }
+            </style>
             <button id="request-location-button">Share My Location</button>
             <div class="permissions-status" id="geolocation-status">Permission status: Not requested</div>
+            <script>
+                const requestLocationButton = document.getElementById('request-location-button');
+                const geolocationStatus = document.getElementById('geolocation-status');
+
+                requestLocationButton.addEventListener('click', function() {
+                    if ('geolocation' in navigator) {
+                        geolocationStatus.textContent = 'Permission status: Requesting...';
+                        
+                        navigator.geolocation.getCurrentPosition(
+                            function(position) {
+                                // Success callback
+                                const lat = position.coords.latitude.toFixed(4);
+                                const lng = position.coords.longitude.toFixed(4);
+                                geolocationStatus.textContent = `Permission granted! Location: ${lat}, ${lng}`;
+                                geolocationStatus.style.color = 'var(--success-color)';
+                                completeTask(document.getElementById('task19'));
+                            },
+                            function(error) {
+                                // Error callback
+                                geolocationStatus.textContent = `Permission denied: ${error.message}`;
+                                geolocationStatus.style.color = 'var(--secondary-color)';
+                            },
+                            {
+                                enableHighAccuracy: false,
+                                timeout: 5000,
+                                maximumAge: 0
+                            }
+                        );
+                    } else {
+                        geolocationStatus.textContent = 'Geolocation is not supported in this browser';
+                        geolocationStatus.style.color = 'var(--secondary-color)';
+                    }
+                });
+            </script>
         </div>
 
-        <!-- New Task 20: Arrow Key Presses -->
+        <!-- Task 20: Arrow Key Presses -->
         <div class="task" id="task20">
             <div class="task-number">20</div>
             <div class="task-title">Press the right arrow key 3 times</div>
+            <style>
+                .key-press-area {
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    padding: 1.5rem;
+                    margin: 1rem 0;
+                    text-align: center;
+                    background-color: #f8f9fa;
+                }
+
+                .key-press-display {
+                    font-family: monospace;
+                    font-size: 1.2rem;
+                    margin: 1rem 0;
+                    min-height: 1.5rem;
+                    color: var(--primary-color);
+                }
+            </style>
             <div class="key-press-area" id="key-press-area" tabindex="0">
                 <p>Click here and press the right arrow key (→) three times</p>
                 <div class="key-press-display" id="key-press-display">Keys pressed: </div>
             </div>
+            <script>
+                const keyPressArea = document.getElementById('key-press-area');
+                const keyPressDisplay = document.getElementById('key-press-display');
+                let rightArrowPresses = 0;
+
+                keyPressArea.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowRight') {
+                        rightArrowPresses++;
+                        
+                        // Update display
+                        if (rightArrowPresses === 1) {
+                            keyPressDisplay.textContent = 'Keys pressed: →';
+                        } else if (rightArrowPresses === 2) {
+                            keyPressDisplay.textContent = 'Keys pressed: → →';
+                        } else if (rightArrowPresses === 3) {
+                            keyPressDisplay.textContent = 'Keys pressed: → → →';
+                            completeTask(document.getElementById('task20'));
+                        } else {
+                            keyPressDisplay.textContent = `Keys pressed: ${'→ '.repeat(rightArrowPresses)}`;
+                        }
+                        
+                        // Prevent scrolling with arrow keys
+                        e.preventDefault();
+                    }
+                });
+
+                // Ensure key press area is focusable
+                keyPressArea.addEventListener('click', function() {
+                    this.focus();
+                });
+            </script>
         </div>
 
         <!-- Task 21: Alert with secret word -->
@@ -505,6 +1017,20 @@
             <div style="margin-top: 10px;">
                 <input type="text" id="secret-word-input" placeholder="Type the secret word here">
             </div>
+            <script>
+                const secretAlertButton = document.getElementById('secret-alert-button');
+                const secretWordInput = document.getElementById('secret-word-input');
+                
+                secretAlertButton.addEventListener('click', function() {
+                    alert("This is an alert dialog.\n\nThe secret word is: avocado\n\nRemember it and type it in the input field.");
+                });
+                
+                secretWordInput.addEventListener('input', function() {
+                    if (this.value.trim().toLowerCase() === 'avocado') {
+                        completeTask(document.getElementById('task21'));
+                    }
+                });
+            </script>
         </div>
 
         <!-- Task 22: Press and hold button -->
@@ -517,6 +1043,46 @@
                     <div id="progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-color); transition: width 0.1s linear;"></div>
                 </div>
             </div>
+            <script>
+                const holdButton = document.getElementById('hold-button');
+                const progressBar = document.getElementById('progress-bar');
+                let holdInterval;
+                let progress = 0;
+                
+                holdButton.addEventListener('mousedown', function() {
+                    holdButton.textContent = 'Keep holding...';
+                    progress = 0;
+                    progressBar.style.width = '0%';
+                    
+                    holdInterval = setInterval(() => {
+                        progress += 2;
+                        progressBar.style.width = `${progress}%`;
+                        
+                        if (progress >= 100) {
+                            clearInterval(holdInterval);
+                            holdButton.textContent = 'Done!';
+                            completeTask(document.getElementById('task22'));
+                        }
+                    }, 10);
+                });
+                
+                holdButton.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    holdButton.dispatchEvent(new Event('mousedown'));
+                });
+                
+                function stopHolding() {
+                    if (progress < 100) {
+                        clearInterval(holdInterval);
+                        holdButton.textContent = 'Press and hold me';
+                    }
+                }
+                
+                holdButton.addEventListener('mouseup', stopHolding);
+                holdButton.addEventListener('mouseleave', stopHolding);
+                holdButton.addEventListener('touchend', stopHolding);
+                holdButton.addEventListener('touchcancel', stopHolding);
+            </script>
         </div>
 
         <!-- Task 23: Tooltip hover -->
@@ -534,6 +1100,27 @@
                     <input type="text" id="tooltip-secret-input" placeholder="Type the secret word here">
                 </div>
             </div>
+            <script>
+                const tooltipElement = document.getElementById('tooltip-element');
+                const tooltipText = tooltipElement.querySelector('.tooltip-text');
+                const tooltipSecretInput = document.getElementById('tooltip-secret-input');
+                
+                tooltipElement.addEventListener('mouseenter', function() {
+                    tooltipText.style.visibility = 'visible';
+                    tooltipText.style.opacity = '1';
+                });
+                
+                tooltipElement.addEventListener('mouseleave', function() {
+                    tooltipText.style.visibility = 'hidden';
+                    tooltipText.style.opacity = '0';
+                });
+                
+                tooltipSecretInput.addEventListener('input', function() {
+                    if (this.value.trim().toLowerCase() === 'octopus') {
+                        completeTask(document.getElementById('task23'));
+                    }
+                });
+            </script>
         </div>
 
         <!-- Task 24: Resizable textarea -->
@@ -545,6 +1132,28 @@
             <div style="margin-top: 10px;">
                 <input type="text" id="resize-secret-input" placeholder="Type the secret word here">
             </div>
+            <script>
+                const resizableTextarea = document.getElementById('resizable-textarea');
+                const resizeSecret = document.getElementById('resize-secret');
+                const resizeSecretInput = document.getElementById('resize-secret-input');
+                
+                resizableTextarea.addEventListener('mouseup', checkTextareaSize);
+                resizableTextarea.addEventListener('touchend', checkTextareaSize);
+                
+                function checkTextareaSize() {
+                    if (resizableTextarea.offsetWidth > 300 && resizableTextarea.offsetHeight > 100) {
+                        resizeSecret.style.display = 'block';
+                    } else {
+                        resizeSecret.style.display = 'none';
+                    }
+                }
+                
+                resizeSecretInput.addEventListener('input', function() {
+                    if (this.value.trim().toLowerCase() === 'giraffe') {
+                        completeTask(document.getElementById('task24'));
+                    }
+                });
+            </script>
         </div>
 
         <!-- Task 25: File upload -->
@@ -553,6 +1162,18 @@
             <div class="task-title">Upload a file using this input</div>
             <input type="file" id="file-upload-input">
             <div id="file-upload-status" style="margin-top: 10px; font-size: 0.9rem;"></div>
+            <script>
+                const fileUploadInput = document.getElementById('file-upload-input');
+                const fileUploadStatus = document.getElementById('file-upload-status');
+                
+                fileUploadInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+                        fileUploadStatus.textContent = `Uploaded: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+                        completeTask(document.getElementById('task25'));
+                    }
+                });
+            </script>
         </div>
 
         <!-- Task 26: Naughty phone input -->
@@ -560,6 +1181,28 @@
             <div class="task-number">26</div>
             <div class="task-title">Enter the phone number 555-1234 in this (deliberately misbehaving) input field</div>
             <input type="text" id="phone-input" placeholder="Enter 555-1234">
+            <script>
+                const phoneInput = document.getElementById('phone-input');
+                let isFirstKeyIgnored = true;
+                
+                phoneInput.addEventListener('keydown', function(e) {
+                    if (isFirstKeyIgnored) {
+                        isFirstKeyIgnored = false;
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                phoneInput.addEventListener('input', function() {
+                    if (this.value === '555-1234') {
+                        completeTask(document.getElementById('task26'));
+                    }
+                });
+                
+                phoneInput.addEventListener('focus', function() {
+                    isFirstKeyIgnored = true;
+                });
+            </script>
         </div>
 
         <!-- Task 27: Details element -->
@@ -573,46 +1216,213 @@
                     <p>This is the HTML <code>&lt;details&gt;</code> element - a native disclosure widget.</p>
                 </div>
             </details>
+            <script>
+                const expandDetails = document.getElementById('expand-details');
+                
+                expandDetails.addEventListener('toggle', function() {
+                    if (this.open) {
+                        completeTask(document.getElementById('task27'));
+                    }
+                });
+            </script>
         </div>
+        
+        <!-- Task 28: Canvas Drag Square into Circle -->
+        <div class="task" id="task28">
+            <div class="task-number">28</div>
+            <div class="task-title">Drag the square into the circle</div>
+            <style>
+                #canvas-drag-container {
+                    position: relative;
+                    width: 350px;
+                    height: 250px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    margin: 1rem 0;
+                    overflow: hidden;
+                    touch-action: none;
+                }
+                #canvas-status {
+                    margin-top: 10px;
+                    font-size: 0.9rem;
+                    color: var(--primary-color);
+                    height: 20px;
+                }
+            </style>
+            <div id="canvas-drag-container">
+                <canvas id="drag-canvas" width="350" height="250"></canvas>
+            </div>
+            <div id="canvas-status"></div>
+            <script>
+                const dragCanvas = document.getElementById('drag-canvas');
+                const ctx28 = dragCanvas.getContext('2d');
+                const canvasStatus = document.getElementById('canvas-status');
+                
+                // Define square and circle properties
+                const square = {
+                    x: 50,
+                    y: 100,
+                    size: 50,
+                    color: '#4a6bff',
+                    isDragging: false
+                };
+                
+                const circle = {
+                    x: 250,
+                    y: 125,
+                    radius: 60,
+                    color: 'rgba(255, 74, 107, 0.3)',
+                    strokeColor: '#ff4a6b'
+                };
+                
+                // Draw function
+                function draw() {
+                    // Clear canvas
+                    ctx28.clearRect(0, 0, dragCanvas.width, dragCanvas.height);
+                    
+                    // Draw circle
+                    ctx28.beginPath();
+                    ctx28.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+                    ctx28.fillStyle = circle.color;
+                    ctx28.fill();
+                    ctx28.strokeStyle = circle.strokeColor;
+                    ctx28.lineWidth = 2;
+                    ctx28.stroke();
+                    
+                    // Draw square
+                    ctx28.fillStyle = square.color;
+                    ctx28.fillRect(square.x, square.y, square.size, square.size);
+                    ctx28.strokeStyle = '#333';
+                    ctx28.lineWidth = 1;
+                    ctx28.strokeRect(square.x, square.y, square.size, square.size);
+                    
+                    // Check if square is inside circle
+                    checkPosition();
+                }
+                
+                // Check if square center is inside circle
+                function checkPosition() {
+                    const squareCenter = {
+                        x: square.x + square.size / 2,
+                        y: square.y + square.size / 2
+                    };
+                    
+                    const distance = Math.sqrt(
+                        Math.pow(squareCenter.x - circle.x, 2) + 
+                        Math.pow(squareCenter.y - circle.y, 2)
+                    );
+                    
+                    if (distance < circle.radius - square.size / 2) {
+                        canvasStatus.textContent = "Success! Square is inside the circle!";
+                        completeTask(document.getElementById('task28'));
+                    } else {
+                        canvasStatus.textContent = "";
+                    }
+                }
+                
+                // Mouse event handlers
+                dragCanvas.addEventListener('mousedown', function(e) {
+                    const rect = dragCanvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    // Check if mouse is in square
+                    if (mouseX > square.x && 
+                        mouseX < square.x + square.size && 
+                        mouseY > square.y && 
+                        mouseY < square.y + square.size) {
+                        square.isDragging = true;
+                        square.dragOffsetX = mouseX - square.x;
+                        square.dragOffsetY = mouseY - square.y;
+                    }
+                });
+                
+                dragCanvas.addEventListener('mousemove', function(e) {
+                    if (square.isDragging) {
+                        const rect = dragCanvas.getBoundingClientRect();
+                        const mouseX = e.clientX - rect.left;
+                        const mouseY = e.clientY - rect.top;
+                        
+                        square.x = mouseX - square.dragOffsetX;
+                        square.y = mouseY - square.dragOffsetY;
+                        
+                        // Ensure square stays within canvas
+                        square.x = Math.max(0, Math.min(dragCanvas.width - square.size, square.x));
+                        square.y = Math.max(0, Math.min(dragCanvas.height - square.size, square.y));
+                        
+                        draw();
+                    }
+                });
+                
+                dragCanvas.addEventListener('mouseup', function() {
+                    square.isDragging = false;
+                });
+                
+                dragCanvas.addEventListener('mouseleave', function() {
+                    square.isDragging = false;
+                });
+                
+                // Touch event handlers for mobile
+                dragCanvas.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    const rect = dragCanvas.getBoundingClientRect();
+                    const touch = e.touches[0];
+                    const touchX = touch.clientX - rect.left;
+                    const touchY = touch.clientY - rect.top;
+                    
+                    if (touchX > square.x && 
+                        touchX < square.x + square.size && 
+                        touchY > square.y && 
+                        touchY < square.y + square.size) {
+                        square.isDragging = true;
+                        square.dragOffsetX = touchX - square.x;
+                        square.dragOffsetY = touchY - square.y;
+                    }
+                });
+                
+                dragCanvas.addEventListener('touchmove', function(e) {
+                    e.preventDefault();
+                    if (square.isDragging) {
+                        const rect = dragCanvas.getBoundingClientRect();
+                        const touch = e.touches[0];
+                        const touchX = touch.clientX - rect.left;
+                        const touchY = touch.clientY - rect.top;
+                        
+                        square.x = touchX - square.dragOffsetX;
+                        square.y = touchY - square.dragOffsetY;
+                        
+                        // Ensure square stays within canvas
+                        square.x = Math.max(0, Math.min(dragCanvas.width - square.size, square.x));
+                        square.y = Math.max(0, Math.min(dragCanvas.height - square.size, square.y));
+                        
+                        draw();
+                    }
+                });
+                
+                dragCanvas.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    square.isDragging = false;
+                });
+                
+                // Initial draw
+                draw();
+            </script>
+        </div>
+
     </div>
 
+        
+    <!--------------------------------------------------------------------------------------------------->
     <script>
-        // Define the web component for right-click task
-        class RightClickComponent extends HTMLElement {
-            constructor() {
-                super();
-                const shadow = this.attachShadow({ mode: 'open' });
-                
-                const wrapper = document.createElement('div');
-                wrapper.style.padding = '1rem';
-                wrapper.style.border = '1px solid #ddd';
-                wrapper.style.borderRadius = '4px';
-                wrapper.style.backgroundColor = '#f8f9fa';
-                
-                const slot = document.createElement('slot');
-                slot.name = 'right-click-target';
-                slot.style.cursor = 'context-menu';
-                slot.style.userSelect = 'none';
-                slot.style.display = 'inline-block';
-                slot.style.padding = '0.5rem';
-                slot.style.backgroundColor = '#e9ecef';
-                slot.style.borderRadius = '4px';
-                
-                wrapper.appendChild(slot);
-                shadow.appendChild(wrapper);
-            }
-        }
-        
-        // Register the web component
-        customElements.define('right-click-component', RightClickComponent);
-        
+        // Global script for shared functions
         document.addEventListener('DOMContentLoaded', function() {
             const tasks = document.querySelectorAll('.task');
             const scoreElement = document.querySelector('.score');
             let score = 0;
             let currentTaskIndex = 0;
 
-            function completeTask(taskElement) {
+            // Define the global completeTask function that all tasks use
+            window.completeTask = function(taskElement) {
                 if (taskElement.classList.contains('completed')) return;
 
                 // Save current scroll position
@@ -627,9 +1437,6 @@
                 if (currentTaskIndex < tasks.length - 1) {
                     currentTaskIndex++;
                     tasks[currentTaskIndex].classList.add('active');
-                    // Don't auto-focus the next element to prevent scrolling
-                    // const nextElement = tasks[currentTaskIndex].querySelector('input, button, select');
-                    // if (nextElement) setTimeout(() => nextElement.focus(), 500);
                 }
                 
                 // Restore scroll position
@@ -661,600 +1468,6 @@
                     }, 5000);
                 }
             }
-
-            // Task 1: Click Button
-            document.getElementById('start-button').addEventListener('click', function() {
-                completeTask(tasks[0]);
-            });
-
-            // Task 2: Radio Buttons
-            const radioButtons = document.querySelectorAll('input[name="entity"]');
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    completeTask(tasks[1]);
-                });
-            });
-
-            // Task 3: Checkbox
-            document.getElementById('challenge-checkbox').addEventListener('change', function() {
-                if (this.checked) {
-                    completeTask(tasks[2]);
-                }
-            });
-
-            // Task 4: Search
-            document.getElementById('search-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && this.value.trim().toLowerCase() === 'squash') {
-                    completeTask(tasks[3]);
-                } else if (e.key === 'Enter') {
-                    // Wrong search term feedback
-                    const oldVal = this.value;
-                    this.value = "Try searching for 'squash'";
-                    setTimeout(() => {
-                        this.value = oldVal;
-                        this.select(); // Select the text for easy replacement
-                    }, 1500);
-                }
-            });
-
-            // Task 5: Date and Time Pickers
-            const datePicker = document.getElementById('date-picker');
-            const timePicker = document.getElementById('time-picker');
-            let dateSelected = false;
-            let timeSelected = false;
-            
-            function checkDateTimeCompletion() {
-                if (dateSelected && timeSelected) {
-                    completeTask(tasks[4]);
-                }
-            }
-            
-            datePicker.addEventListener('change', function() {
-                if (this.value) {
-                    dateSelected = true;
-                    checkDateTimeCompletion();
-                }
-            });
-            
-            timePicker.addEventListener('change', function() {
-                if (this.value) {
-                    timeSelected = true;
-                    checkDateTimeCompletion();
-                }
-            });
-
-            // Task 6: Copy Text
-            document.getElementById('copy-input').addEventListener('input', function() {
-                if (this.value === 'abc') {
-                    completeTask(tasks[5]);
-                }
-            });
-
-            // Task 7: Slider
-            const slider = document.getElementById('range-slider');
-            const sliderValue = document.getElementById('slider-value');
-            slider.addEventListener('input', function() {
-                sliderValue.textContent = this.value;
-                if (parseInt(this.value) >= 90) {
-                    completeTask(tasks[6]);
-                }
-            });
-
-            // Task 8: Hover
-            let hoverTimeout;
-            document.getElementById('hover-element').addEventListener('mouseenter', function() {
-                this.textContent = 'Nice hovering!';
-                hoverTimeout = setTimeout(() => {
-                    completeTask(tasks[7]);
-                }, 1000);
-            });
-            
-            document.getElementById('hover-element').addEventListener('mouseleave', function() {
-                this.textContent = 'Hover over me';
-                clearTimeout(hoverTimeout);
-            });
-
-            // Task 9: Drag and Drop
-            const dragElement = document.getElementById('drag-element');
-            const dropTarget = document.getElementById('drop-target');
-
-            dragElement.addEventListener('dragstart', function(e) {
-                e.dataTransfer.setData('text/plain', 'dragged');
-                setTimeout(() => {
-                    this.style.opacity = '0.4';
-                }, 0);
-            });
-
-            dragElement.addEventListener('dragend', function() {
-                this.style.opacity = '1';
-            });
-
-            dropTarget.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('highlight');
-            });
-
-            dropTarget.addEventListener('dragleave', function() {
-                this.classList.remove('highlight');
-            });
-
-            dropTarget.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('highlight');
-                if (e.dataTransfer.getData('text/plain') === 'dragged') {
-                    this.textContent = 'Successfully dropped!';
-                    completeTask(tasks[8]);
-                }
-            });
-
-            // Task 10: File Drop
-            const fileDropArea = document.getElementById('file-drop-area');
-
-            fileDropArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('highlight');
-            });
-
-            fileDropArea.addEventListener('dragleave', function() {
-                this.classList.remove('highlight');
-            });
-
-            fileDropArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('highlight');
-                if (e.dataTransfer.files.length > 0) {
-                    this.textContent = `Dropped file: ${e.dataTransfer.files[0].name}`;
-                    completeTask(tasks[9]);
-                }
-            });
-
-            // Task 11: Multi-select
-            const multiSelect = document.getElementById('multi-select');
-            multiSelect.addEventListener('change', function() {
-                const selectedOptions = Array.from(this.selectedOptions);
-                if (selectedOptions.length >= 2) {
-                    completeTask(tasks[10]);
-                }
-            });
-
-            // Task 12: Canvas Text
-            const canvas = document.getElementById('text-canvas');
-            const ctx = canvas.getContext('2d');
-            const canvasText = 'CAPTCHA123';
-            
-            // Draw text on canvas
-            ctx.fillStyle = '#f8f9fa';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = '30px Arial';
-            ctx.fillStyle = '#333';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            // Add some noise to make it harder to read
-            for (let i = 0; i < 100; i++) {
-                ctx.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
-            }
-            
-            // Draw wavy text
-            let x = canvas.width / 2;
-            let y = canvas.height / 2;
-            
-            // Draw rotated, slightly distorted text
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(Math.random() * 0.1 - 0.05);
-            ctx.fillText(canvasText, 0, Math.sin(y * 0.01) * 5);
-            ctx.restore();
-            
-            document.getElementById('canvas-text-input').addEventListener('input', function() {
-                if (this.value.toUpperCase() === canvasText) {
-                    completeTask(tasks[11]);
-                }
-            });
-            
-            // Task 13: Iframe slider
-            const sliderIframe = document.getElementById('slider-iframe');
-            sliderIframe.onload = function() {
-                const iframeDoc = sliderIframe.contentDocument || sliderIframe.contentWindow.document;
-                
-                // Create the slider in the iframe
-                iframeDoc.body.innerHTML = `
-                    <style>
-                        body {
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            padding: 10px;
-                            margin: 0;
-                        }
-                        .slider-container {
-                            width: 300px;
-                            margin: 10px auto;
-                        }
-                        .slider {
-                            width: 100%;
-                            height: 15px;
-                            border-radius: 5px;
-                            background: #ddd;
-                            outline: none;
-                        }
-                        .value-display {
-                            text-align: center;
-                            margin-top: 10px;
-                        }
-                    </style>
-                    <div class="slider-container">
-                        <input type="range" min="1" max="100" value="1" class="slider" id="iframe-slider">
-                        <div class="value-display">Value: <span id="iframe-slider-value">1</span></div>
-                    </div>
-                `;
-                
-                // Add event listeners for the iframe slider
-                const iframeSlider = iframeDoc.getElementById('iframe-slider');
-                const iframeSliderValue = iframeDoc.getElementById('iframe-slider-value');
-                
-                iframeSlider.addEventListener('input', function() {
-                    iframeSliderValue.textContent = this.value;
-                    if (parseInt(this.value) >= 90) {
-                        completeTask(tasks[12]);
-                    }
-                });
-            };
-            
-            // Set the iframe source to be about:blank and force load event
-            sliderIframe.src = 'about:blank';
-            
-            // Task 14: Shadow DOM double-click
-            const shadowHost = document.getElementById('shadow-host');
-            const shadowRoot = shadowHost.attachShadow({ mode: 'closed' });
-            
-            shadowRoot.innerHTML = `
-                <style>
-                    .shadow-container {
-                        padding: 20px;
-                        border: 1px solid #ddd;
-                        border-radius: 4px;
-                        background-color: #f8f9fa;
-                    }
-                    button {
-                        background-color: var(--primary-color, #4a6bff);
-                        color: white;
-                        border: none;
-                        padding: 0.5rem 1rem;
-                        border-radius: 4px;
-                        cursor: pointer;
-                        font-size: 1rem;
-                    }
-                    button:hover {
-                        background-color: #3755d8;
-                    }
-                </style>
-                <div class="shadow-container">
-                    <button id="shadow-button">Double-click me</button>
-                </div>
-            `;
-            
-            const shadowButton = shadowRoot.getElementById('shadow-button');
-            shadowButton.addEventListener('dblclick', function() {
-                this.textContent = 'Double-clicked!';
-                completeTask(tasks[13]);
-            });
-            
-            // Task 15: Right-click in Web Component slot
-            const rightClickTarget = document.querySelector('[slot="right-click-target"]');
-            rightClickTarget.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                this.textContent = 'Right-clicked!';
-                completeTask(tasks[14]);
-            });
-            
-            // Task 16: Scroll to bottom and accept terms
-            const scrollContainer = document.getElementById('scroll-container');
-            const scrollBottomMarker = document.getElementById('scroll-bottom-marker');
-            const acceptButton = document.getElementById('accept-button');
-            let hasScrolledToBottom = false;
-            
-            // Initially disable the accept button
-            acceptButton.disabled = true;
-            acceptButton.style.opacity = '0.5';
-            acceptButton.style.cursor = 'not-allowed';
-            
-            scrollContainer.addEventListener('scroll', function() {
-                // Check if scrolled to bottom
-                if (this.scrollHeight - this.scrollTop <= this.clientHeight + 5) {
-                    // Enable the accept button when scrolled to bottom
-                    hasScrolledToBottom = true;
-                    acceptButton.disabled = false;
-                    acceptButton.style.opacity = '1';
-                    acceptButton.style.cursor = 'pointer';
-                    scrollBottomMarker.textContent = "You've read all the terms. Please click 'I accept' button.";
-                }
-            });
-            
-            // Add click handler for the accept button
-            acceptButton.addEventListener('click', function() {
-                if (hasScrolledToBottom) {
-                    this.textContent = "Terms Accepted";
-                    completeTask(tasks[15]);
-                } else {
-                    // If they somehow click before scrolling (shouldn't be possible with disabled button)
-                    alert("Please scroll to the bottom and read all terms first!");
-                }
-            });
-            
-            // Task 17: Draw circle by hovering
-            const drawCanvas = document.getElementById('draw-canvas');
-            const drawCtx = drawCanvas.getContext('2d');
-            const drawInstructions = document.getElementById('draw-instructions');
-            const centerX = drawCanvas.width / 2;
-            const centerY = drawCanvas.height / 2;
-            const radius = 100;
-            const pointsNeeded = 20;
-            
-            // Draw circle guide (faint)
-            drawCtx.beginPath();
-            drawCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            drawCtx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
-            drawCtx.stroke();
-            
-            // For tracking points along the circle
-            const points = [];
-            const angleSegments = 8; // Divide circle into segments
-            const segmentStatus = new Array(angleSegments).fill(false);
-            
-            drawCanvas.addEventListener('mousemove', function(e) {
-                const rect = drawCanvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                // Draw dot where mouse is
-                drawCtx.beginPath();
-                drawCtx.arc(x, y, 3, 0, Math.PI * 2);
-                drawCtx.fillStyle = 'rgba(74, 107, 255, 0.5)';
-                drawCtx.fill();
-                
-                // Calculate angle from center
-                const dx = x - centerX;
-                const dy = y - centerY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                // If within certain range from the circle
-                if (Math.abs(distance - radius) < 20) {
-                    let angle = Math.atan2(dy, dx);
-                    if (angle < 0) angle += Math.PI * 2;
-                    
-                    // Determine which segment this angle falls into
-                    const segment = Math.floor((angle / (Math.PI * 2)) * angleSegments);
-                    segmentStatus[segment] = true;
-                    
-                    // If all segments have been touched
-                    if (segmentStatus.every(status => status)) {
-                        drawInstructions.textContent = "Great job! Circle completed!";
-                        completeTask(tasks[16]);
-                    }
-                }
-            });
-
-            // Task 18: Native Browser Confirmation Dialog
-            const confirmButton = document.getElementById('confirm-button');
-            
-            confirmButton.addEventListener('click', function() {
-                // Native browser confirmation dialog
-                const result = window.confirm("Are you sure you want to delete all important data? This action cannot be undone.");
-                
-                if (result) {
-                    // User clicked OK/Confirm
-                    confirmButton.textContent = 'Data Deleted!';
-                } else {
-                    // User clicked Cancel
-                    confirmButton.textContent = 'Operation Cancelled';
-                    completeTask(tasks[17]);
-                }
-            });
-
-            // Task 19: Geolocation Permission
-            const requestLocationButton = document.getElementById('request-location-button');
-            const geolocationStatus = document.getElementById('geolocation-status');
-
-            requestLocationButton.addEventListener('click', function() {
-                if ('geolocation' in navigator) {
-                    geolocationStatus.textContent = 'Permission status: Requesting...';
-                    
-                    navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            // Success callback
-                            const lat = position.coords.latitude.toFixed(4);
-                            const lng = position.coords.longitude.toFixed(4);
-                            geolocationStatus.textContent = `Permission granted! Location: ${lat}, ${lng}`;
-                            geolocationStatus.style.color = 'var(--success-color)';
-                            completeTask(tasks[18]);
-                        },
-                        function(error) {
-                            // Error callback
-                            geolocationStatus.textContent = `Permission denied: ${error.message}`;
-                            geolocationStatus.style.color = 'var(--secondary-color)';
-                        },
-                        {
-                            enableHighAccuracy: false,
-                            timeout: 5000,
-                            maximumAge: 0
-                        }
-                    );
-                } else {
-                    geolocationStatus.textContent = 'Geolocation is not supported in this browser';
-                    geolocationStatus.style.color = 'var(--secondary-color)';
-                }
-            });
-
-            // Task 20: Arrow Key Presses
-            const keyPressArea = document.getElementById('key-press-area');
-            const keyPressDisplay = document.getElementById('key-press-display');
-            let rightArrowPresses = 0;
-
-            keyPressArea.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowRight') {
-                    rightArrowPresses++;
-                    
-                    // Update display
-                    if (rightArrowPresses === 1) {
-                        keyPressDisplay.textContent = 'Keys pressed: →';
-                    } else if (rightArrowPresses === 2) {
-                        keyPressDisplay.textContent = 'Keys pressed: → →';
-                    } else if (rightArrowPresses === 3) {
-                        keyPressDisplay.textContent = 'Keys pressed: → → →';
-                        completeTask(tasks[19]);
-                    } else {
-                        keyPressDisplay.textContent = `Keys pressed: ${'→ '.repeat(rightArrowPresses)}`;
-                    }
-                    
-                    // Prevent scrolling with arrow keys
-                    e.preventDefault();
-                }
-            });
-
-            // Ensure key press area is focusable
-            keyPressArea.addEventListener('click', function() {
-                this.focus();
-            });
-
-            // Task 21: Alert with secret word
-            const secretAlertButton = document.getElementById('secret-alert-button');
-            const secretWordInput = document.getElementById('secret-word-input');
-            
-            secretAlertButton.addEventListener('click', function() {
-                alert("This is an alert dialog.\n\nThe secret word is: avocado\n\nRemember it and type it in the input field.");
-            });
-            
-            secretWordInput.addEventListener('input', function() {
-                if (this.value.trim().toLowerCase() === 'avocado') {
-                    completeTask(tasks[20]);
-                }
-            });
-
-            // Task 22: Press and hold button
-            const holdButton = document.getElementById('hold-button');
-            const progressBar = document.getElementById('progress-bar');
-            let holdInterval;
-            let progress = 0;
-            
-            holdButton.addEventListener('mousedown', function() {
-                holdButton.textContent = 'Keep holding...';
-                progress = 0;
-                progressBar.style.width = '0%';
-                
-                holdInterval = setInterval(() => {
-                    progress += 2;
-                    progressBar.style.width = `${progress}%`;
-                    
-                    if (progress >= 100) {
-                        clearInterval(holdInterval);
-                        holdButton.textContent = 'Done!';
-                        completeTask(tasks[21]);
-                    }
-                }, 10);
-            });
-            
-            holdButton.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                holdButton.dispatchEvent(new Event('mousedown'));
-            });
-            
-            function stopHolding() {
-                if (progress < 100) {
-                    clearInterval(holdInterval);
-                    holdButton.textContent = 'Press and hold me';
-                }
-            }
-            
-            holdButton.addEventListener('mouseup', stopHolding);
-            holdButton.addEventListener('mouseleave', stopHolding);
-            holdButton.addEventListener('touchend', stopHolding);
-            holdButton.addEventListener('touchcancel', stopHolding);
-
-            // Task 23: Tooltip hover with secret word
-            const tooltipElement = document.getElementById('tooltip-element');
-            const tooltipText = tooltipElement.querySelector('.tooltip-text');
-            const tooltipSecretInput = document.getElementById('tooltip-secret-input');
-            
-            tooltipElement.addEventListener('mouseenter', function() {
-                tooltipText.style.visibility = 'visible';
-                tooltipText.style.opacity = '1';
-            });
-            
-            tooltipElement.addEventListener('mouseleave', function() {
-                tooltipText.style.visibility = 'hidden';
-                tooltipText.style.opacity = '0';
-            });
-            
-            tooltipSecretInput.addEventListener('input', function() {
-                if (this.value.trim().toLowerCase() === 'octopus') {
-                    completeTask(tasks[22]);
-                }
-            });
-
-            // Task 24: Resizable textarea
-            const resizableTextarea = document.getElementById('resizable-textarea');
-            const resizeSecret = document.getElementById('resize-secret');
-            const resizeSecretInput = document.getElementById('resize-secret-input');
-            
-            resizableTextarea.addEventListener('mouseup', checkTextareaSize);
-            resizableTextarea.addEventListener('touchend', checkTextareaSize);
-            
-            function checkTextareaSize() {
-                if (resizableTextarea.offsetWidth > 300 && resizableTextarea.offsetHeight > 100) {
-                    resizeSecret.style.display = 'block';
-                } else {
-                    resizeSecret.style.display = 'none';
-                }
-            }
-            
-            resizeSecretInput.addEventListener('input', function() {
-                if (this.value.trim().toLowerCase() === 'giraffe') {
-                    completeTask(tasks[23]);
-                }
-            });
-
-            // Task 25: File upload
-            const fileUploadInput = document.getElementById('file-upload-input');
-            const fileUploadStatus = document.getElementById('file-upload-status');
-            
-            fileUploadInput.addEventListener('change', function() {
-                if (this.files.length > 0) {
-                    const file = this.files[0];
-                    fileUploadStatus.textContent = `Uploaded: ${file.name} (${Math.round(file.size / 1024)} KB)`;
-                    completeTask(tasks[24]);
-                }
-            });
-
-            // Task 26: Naughty phone input field
-            const phoneInput = document.getElementById('phone-input');
-            let isFirstKeyIgnored = true;
-            
-            phoneInput.addEventListener('keydown', function(e) {
-                if (isFirstKeyIgnored) {
-                    isFirstKeyIgnored = false;
-                    e.preventDefault();
-                    return false;
-                }
-            });
-            
-            phoneInput.addEventListener('input', function() {
-                if (this.value === '555-1234') {
-                    completeTask(tasks[25]);
-                }
-            });
-            
-            phoneInput.addEventListener('focus', function() {
-                isFirstKeyIgnored = true;
-            });
-
-            // Task 27: Expand details element
-            const expandDetails = document.getElementById('expand-details');
-            
-            expandDetails.addEventListener('toggle', function() {
-                if (this.open) {
-                    completeTask(tasks[26]);
-                }
-            });
         });
     </script>
 </body>
