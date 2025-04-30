@@ -132,568 +132,575 @@
         .fade-enter, .fade-leave-to {
             opacity: 0;
         }
+        
+        .is-invalid {
+            border-color: #dc3545;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="mt-4 mb-3 text-center">Vue.js (Vuelidate)</h1>
-        <p class="text-center mb-4">This Vue.js form example with Vuelidate is pre-rendered as static HTML, which allows the autofill extension to interact with it. In a real app, this would be a fully interactive Vue component with reactive validation.</p>
+        <p class="text-center mb-4">A fully interactive Vue component with form validation.</p>
         
-        <div class="alert alert-success" id="success-message" style="display: none;">
-            <strong>Success!</strong> Form submitted successfully!
+        <div id="app">
+            <div class="alert alert-success" v-if="formSubmitted">
+                <strong>Success!</strong> Form submitted successfully!
+            </div>
+            
+            <form class="form-container" @submit.prevent="submitForm">
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label label-required">First Name</label>
+                            <input type="text" id="firstName" v-model="formData.firstName" class="form-control" :class="{'is-invalid': hasError('firstName')}" />
+                            <div class="error-text" v-if="hasError('firstName')">
+                                First name is required
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label label-required">Last Name</label>
+                            <input type="text" id="lastName" v-model="formData.lastName" class="form-control" :class="{'is-invalid': hasError('lastName')}" />
+                            <div class="error-text" v-if="hasError('lastName')">
+                                Last name is required
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label label-required">Email Address</label>
+                            <input type="email" id="email" v-model="formData.email" class="form-control" :class="{'is-invalid': hasError('email')}" />
+                            <div class="error-text" v-if="hasError('email')">
+                                Please enter a valid email address
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" v-model="formData.phone" class="form-control" placeholder="123-456-7890" :class="{'is-invalid': hasError('phone')}" />
+                            <div class="error-text" v-if="hasError('phone')">
+                                Please enter a valid phone number (e.g. 123-456-7890)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="age" class="form-label label-required">Age</label>
+                            <input type="number" id="age" v-model.number="formData.age" class="form-control" min="18" max="120" :class="{'is-invalid': hasError('age')}" />
+                            <div class="error-text" v-if="hasError('age')">
+                                Age must be between 18 and 120
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select id="gender" v-model="formData.gender" class="form-select" :class="{'vue-selected': formData.gender}">
+                                <option value="">Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="non-binary">Non-binary</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Address Section -->
+                <div class="form-section">
+                    <h3>Address</h3>
+                    
+                    <div class="mb-3">
+                        <label for="streetAddress" class="form-label label-required">Street Address</label>
+                        <input type="text" id="streetAddress" v-model="formData.address.street" class="form-control" :class="{'is-invalid': hasError('address.street')}" />
+                        <div class="error-text" v-if="hasError('address.street')">
+                            Street address is required
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="addressLine2" class="form-label">Address Line 2</label>
+                        <input type="text" id="addressLine2" v-model="formData.address.line2" class="form-control" placeholder="Apartment, suite, unit, etc." :class="{'vue-selected': formData.address.line2}" />
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="city" class="form-label label-required">City</label>
+                            <input type="text" id="city" v-model="formData.address.city" class="form-control" :class="{'is-invalid': hasError('address.city')}" />
+                            <div class="error-text" v-if="hasError('address.city')">
+                                City is required
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="state" class="form-label label-required">State</label>
+                            <select id="state" v-model="formData.address.state" class="form-select" :class="{'is-invalid': hasError('address.state')}">
+                                <option value="">Select state</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <!-- More states would be listed here -->
+                                <option value="WY">Wyoming</option>
+                            </select>
+                            <div class="error-text" v-if="hasError('address.state')">
+                                State is required
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="zipCode" class="form-label label-required">Zip Code</label>
+                            <input type="text" id="zipCode" v-model="formData.address.zipCode" class="form-control" :class="{'is-invalid': hasError('address.zipCode')}" />
+                            <div class="error-text" v-if="hasError('address.zipCode')">
+                                Please enter a valid zip code
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="country" class="form-label label-required">Country</label>
+                        <select id="country" v-model="formData.address.country" class="form-select" :class="{'is-invalid': hasError('address.country')}">
+                            <option value="">Select country</option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="AU">Australia</option>
+                            <!-- More countries would be listed here -->
+                        </select>
+                        <div class="error-text" v-if="hasError('address.country')">
+                            Country is required
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Section -->
+                <div class="form-section">
+                    <h3>Account Information</h3>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="username" class="form-label label-required">Username</label>
+                            <input type="text" id="username" v-model="formData.username" class="form-control" :class="{'is-invalid': hasError('username')}" />
+                            <div class="error-text" v-if="hasError('username')">
+                                Username must be at least 4 characters
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="password" class="form-label label-required">Password</label>
+                            <input type="password" id="password" v-model="formData.password" class="form-control" :class="{'is-invalid': hasError('password')}" />
+                            <div class="error-text" v-if="hasError('password')">
+                                Password must be at least 8 characters
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label label-required">Confirm Password</label>
+                        <input type="password" id="confirmPassword" v-model="formData.confirmPassword" class="form-control" :class="{'is-invalid': hasError('confirmPassword')}" />
+                        <div class="error-text" v-if="hasError('confirmPassword')">
+                            Passwords must match
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preferences Section -->
+                <div class="form-section">
+                    <h3>Preferences</h3>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Interests</label>
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interestMusic" v-model="formData.interests" value="music" />
+                                    <label class="form-check-label" for="interestMusic">Music</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interestSports" v-model="formData.interests" value="sports" />
+                                    <label class="form-check-label" for="interestSports">Sports</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interestReading" v-model="formData.interests" value="reading" />
+                                    <label class="form-check-label" for="interestReading">Reading</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interestTechnology" v-model="formData.interests" value="technology" />
+                                    <label class="form-check-label" for="interestTechnology">Technology</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interestTravel" v-model="formData.interests" value="travel" />
+                                    <label class="form-check-label" for="interestTravel">Travel</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interestCooking" v-model="formData.interests" value="cooking" />
+                                    <label class="form-check-label" for="interestCooking">Cooking</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="meetingDate" class="form-label">Preferred Meeting Date</label>
+                        <input type="date" id="meetingDate" v-model="formData.meetingDate" class="form-control" :class="{'vue-selected': formData.meetingDate}" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="meetingTime" class="form-label">Preferred Meeting Time</label>
+                        <input type="time" id="meetingTime" v-model="formData.meetingTime" class="form-control" :class="{'vue-selected': formData.meetingTime}" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Contact Preference</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="contactEmail" v-model="formData.contactPreference" value="email" />
+                            <label class="form-check-label" for="contactEmail">Email</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="contactPhone" v-model="formData.contactPreference" value="phone" />
+                            <label class="form-check-label" for="contactPhone">Phone</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="contactText" v-model="formData.contactPreference" value="text" />
+                            <label class="form-check-label" for="contactText">Text Message</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Fields Section -->
+                <div class="form-section">
+                    <h3>Additional Fields</h3>
+                    
+                    <div class="mb-3">
+                        <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
+                        <input type="text" id="alphanumericOnly" v-model="formData.alphanumericOnly" class="form-control" @input="validateAlphanumeric" :class="{'is-invalid': hasError('alphanumericOnly')}" />
+                        <div class="error-text" v-if="hasError('alphanumericOnly')">
+                            Only letters and numbers are allowed
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="disabledInput" class="form-label">Disabled Input</label>
+                        <input type="text" id="disabledInput" value="This field is disabled" class="form-control" disabled />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="url" class="form-label">Website</label>
+                        <input type="url" id="url" v-model="formData.url" class="form-control" placeholder="https://example.com" :class="{'is-invalid': hasError('url')}" />
+                        <div class="error-text" v-if="hasError('url')">
+                            Please enter a valid URL
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="satisfactionLevel" class="form-label">Satisfaction Level</label>
+                        <input type="range" id="satisfactionLevel" v-model.number="formData.satisfactionLevel" class="form-range" min="0" max="100" step="1" />
+                        <div class="d-flex justify-content-between">
+                            <small>Not Satisfied</small>
+                            <small>{{ formData.satisfactionLevel }}%</small>
+                            <small>Very Satisfied</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="favoriteColor" class="form-label">Favorite Color</label>
+                        <select id="favoriteColor" v-model="formData.favoriteColor" class="form-select" :class="{'vue-selected': formData.favoriteColor}">
+                            <option value="">Select a color</option>
+                            <option value="red">Red</option>
+                            <option value="green">Green</option>
+                            <option value="blue">Blue</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="purple">Purple</option>
+                            <option value="orange">Orange</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="comments" class="form-label">Comments</label>
+                        <textarea id="comments" v-model="formData.comments" class="form-control" rows="3" :class="{'vue-selected': formData.comments}"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="fileUpload" class="form-label">File Upload</label>
+                        <input type="file" id="fileUpload" class="form-control" />
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="termsAgreement" v-model="formData.termsAgreement" :class="{'is-invalid': hasError('termsAgreement')}" />
+                        <label class="form-check-label" for="termsAgreement">
+                            I agree to the <a href="#" @click.prevent="showTerms">Terms and Conditions</a> <span class="text-danger">*</span>
+                        </label>
+                        <div class="error-text" v-if="hasError('termsAgreement')">
+                            You must agree to the terms and conditions
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2 mb-3">
+                    <button type="submit" class="btn btn-vue">Submit Form</button>
+                    <button type="button" class="btn btn-danger" @click="showModal = true">Open Modal</button>
+                    <button type="reset" class="btn btn-secondary" @click="resetForm">Reset Form</button>
+                </div>
+            </form>
+            
+            <!-- Red Herring Modal -->
+            <transition name="fade">
+                <div v-if="showModal" class="modal-overlay">
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <h4>Red Herring Modal</h4>
+                            <button type="button" class="modal-close" @click="showModal = false">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>This is a red herring modal instead of submitting the form.</p>
+                            <p>In a real application, this might contain additional options or information.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="showModal = false">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </transition>
         </div>
-        
-        <form class="form-container" id="vue-form">
-            <!-- Personal Information Section -->
-            <div class="form-section">
-                <h3>Personal Information</h3>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="firstName" class="form-label label-required">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" required />
-                        <div class="error-text" id="firstName-error" style="display: none;">
-                            First name is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="lastName" class="form-label label-required">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" required />
-                        <div class="error-text" id="lastName-error" style="display: none;">
-                            Last name is required
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="email" class="form-label label-required">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control" required />
-                        <div class="error-text" id="email-error" style="display: none;">
-                            Please enter a valid email address
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="123-456-7890" />
-                        <div class="error-text" id="phone-error" style="display: none;">
-                            Please enter a valid phone number (e.g. 123-456-7890)
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="age" class="form-label label-required">Age</label>
-                        <input type="number" id="age" name="age" class="form-control" min="18" max="120" required />
-                        <div class="error-text" id="age-error" style="display: none;">
-                            Age must be between 18 and 120
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="gender" class="form-label">Gender</label>
-                        <select id="gender" name="gender" class="form-select">
-                            <option value="">Select gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="non-binary">Non-binary</option>
-                            <option value="prefer-not-to-say">Prefer not to say</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Address Section -->
-            <div class="form-section">
-                <h3>Address</h3>
-                
-                <div class="mb-3">
-                    <label for="streetAddress" class="form-label label-required">Street Address</label>
-                    <input type="text" id="streetAddress" name="address.street" class="form-control" required />
-                    <div class="error-text" id="streetAddress-error" style="display: none;">
-                        Street address is required
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="addressLine2" class="form-label">Address Line 2</label>
-                    <input type="text" id="addressLine2" name="address.line2" class="form-control" placeholder="Apartment, suite, unit, etc." />
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="city" class="form-label label-required">City</label>
-                        <input type="text" id="city" name="address.city" class="form-control" required />
-                        <div class="error-text" id="city-error" style="display: none;">
-                            City is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="state" class="form-label label-required">State</label>
-                        <select id="state" name="address.state" class="form-select" required>
-                            <option value="">Select state</option>
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <!-- More states would be listed here -->
-                            <option value="WY">Wyoming</option>
-                        </select>
-                        <div class="error-text" id="state-error" style="display: none;">
-                            State is required
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="zipCode" class="form-label label-required">Zip Code</label>
-                        <input type="text" id="zipCode" name="address.zipCode" class="form-control" required />
-                        <div class="error-text" id="zipCode-error" style="display: none;">
-                            Please enter a valid zip code
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="country" class="form-label label-required">Country</label>
-                    <select id="country" name="address.country" class="form-select" required>
-                        <option value="">Select country</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="AU">Australia</option>
-                        <!-- More countries would be listed here -->
-                    </select>
-                    <div class="error-text" id="country-error" style="display: none;">
-                        Country is required
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Account Section -->
-            <div class="form-section">
-                <h3>Account Information</h3>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="username" class="form-label label-required">Username</label>
-                        <input type="text" id="username" name="username" class="form-control" required minlength="4" />
-                        <div class="error-text" id="username-error" style="display: none;">
-                            Username must be at least 4 characters
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="password" class="form-label label-required">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" required minlength="8" />
-                        <div class="error-text" id="password-error" style="display: none;">
-                            Password must be at least 8 characters
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="confirmPassword" class="form-label label-required">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required />
-                    <div class="error-text" id="confirmPassword-error" style="display: none;">
-                        Passwords must match
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Preferences Section -->
-            <div class="form-section">
-                <h3>Preferences</h3>
-                
-                <div class="mb-3">
-                    <label class="form-label">Interests</label>
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="interestMusic" name="interests" value="music" />
-                                <label class="form-check-label" for="interestMusic">Music</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="interestSports" name="interests" value="sports" />
-                                <label class="form-check-label" for="interestSports">Sports</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="interestReading" name="interests" value="reading" />
-                                <label class="form-check-label" for="interestReading">Reading</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="interestTechnology" name="interests" value="technology" />
-                                <label class="form-check-label" for="interestTechnology">Technology</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="interestTravel" name="interests" value="travel" />
-                                <label class="form-check-label" for="interestTravel">Travel</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="interestCooking" name="interests" value="cooking" />
-                                <label class="form-check-label" for="interestCooking">Cooking</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="meetingDate" class="form-label">Preferred Meeting Date</label>
-                    <input type="date" id="meetingDate" name="meetingDate" class="form-control" />
-                </div>
-                
-                <div class="mb-3">
-                    <label for="meetingTime" class="form-label">Preferred Meeting Time</label>
-                    <input type="time" id="meetingTime" name="meetingTime" class="form-control" />
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Contact Preference</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="contactEmail" name="contactPreference" value="email" />
-                        <label class="form-check-label" for="contactEmail">Email</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="contactPhone" name="contactPreference" value="phone" />
-                        <label class="form-check-label" for="contactPhone">Phone</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="contactText" name="contactPreference" value="text" />
-                        <label class="form-check-label" for="contactText">Text Message</label>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Additional Fields Section -->
-            <div class="form-section">
-                <h3>Additional Fields</h3>
-                
-                <div class="mb-3">
-                    <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
-                    <input type="text" id="alphanumericOnly" name="alphanumericOnly" class="form-control" />
-                    <div class="error-text" id="alphanumericOnly-error" style="display: none;">
-                        Only letters and numbers are allowed
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="disabledInput" class="form-label">Disabled Input</label>
-                    <input type="text" id="disabledInput" name="disabledInput" class="form-control" value="This field is disabled" disabled />
-                </div>
-                
-                <div class="mb-3">
-                    <label for="url" class="form-label">Website</label>
-                    <input type="url" id="url" name="url" class="form-control" placeholder="https://example.com" />
-                    <div class="error-text" id="url-error" style="display: none;">
-                        Please enter a valid URL
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="satisfactionLevel" class="form-label">Satisfaction Level</label>
-                    <input type="range" id="satisfactionLevel" name="satisfactionLevel" class="form-range" min="0" max="100" step="1" />
-                    <div class="d-flex justify-content-between">
-                        <small>Not Satisfied</small>
-                        <small id="satisfactionValue">50%</small>
-                        <small>Very Satisfied</small>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="favoriteColor" class="form-label">Favorite Color</label>
-                    <select id="favoriteColor" name="favoriteColor" class="form-select">
-                        <option value="">Select a color</option>
-                        <option value="red">Red</option>
-                        <option value="green">Green</option>
-                        <option value="blue">Blue</option>
-                        <option value="yellow">Yellow</option>
-                        <option value="purple">Purple</option>
-                        <option value="orange">Orange</option>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="comments" class="form-label">Comments</label>
-                    <textarea id="comments" name="comments" class="form-control" rows="3"></textarea>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="fileUpload" class="form-label">File Upload</label>
-                    <input type="file" id="fileUpload" name="fileUpload" class="form-control" />
-                </div>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="termsAgreement" name="termsAgreement" required />
-                    <label class="form-check-label" for="termsAgreement">
-                        I agree to the <a href="#" id="termsLink">Terms and Conditions</a> <span class="text-danger">*</span>
-                    </label>
-                    <div class="error-text" id="termsAgreement-error" style="display: none;">
-                        You must agree to the terms and conditions
-                    </div>
-                </div>
-            </div>
-            
-            <div class="d-flex gap-2 mb-3">
-                <button type="submit" class="btn btn-vue">Submit Form</button>
-                <button type="button" class="btn btn-danger" id="modalButton">Open Modal</button>
-                <button type="reset" class="btn btn-secondary">Reset Form</button>
-            </div>
-        </form>
     </div>
     
-    <!-- Red Herring Modal -->
-    <div id="redHerringModal" class="modal-overlay" style="display: none;">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h4>Red Herring Modal</h4>
-                <button type="button" class="modal-close" id="closeModalButton">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>This is a red herring modal instead of submitting the form.</p>
-                <p>In a real application, this might contain additional options or information.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeModalBtn">Close</button>
-            </div>
-        </div>
-    </div>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Alphanumeric validation
-            const alphanumericInput = document.getElementById('alphanumericOnly');
-            if (alphanumericInput) {
-                alphanumericInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+        const { createApp, ref, reactive } = Vue;
+        
+        const app = createApp({
+            setup() {
+                const formData = reactive({
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    age: null,
+                    gender: '',
+                    address: {
+                        street: '',
+                        line2: '',
+                        city: '',
+                        state: '',
+                        zipCode: '',
+                        country: ''
+                    },
+                    username: '',
+                    password: '',
+                    confirmPassword: '',
+                    interests: [],
+                    meetingDate: '',
+                    meetingTime: '',
+                    contactPreference: '',
+                    alphanumericOnly: '',
+                    url: '',
+                    satisfactionLevel: 50,
+                    favoriteColor: '',
+                    comments: '',
+                    termsAgreement: false
                 });
-            }
-            
-            // Satisfaction level display
-            const satisfactionLevel = document.getElementById('satisfactionLevel');
-            const satisfactionValue = document.getElementById('satisfactionValue');
-            if (satisfactionLevel && satisfactionValue) {
-                satisfactionLevel.addEventListener('input', function() {
-                    satisfactionValue.textContent = this.value + '%';
-                });
-                // Initialize with default value
-                satisfactionValue.textContent = satisfactionLevel.value + '%';
-            }
-            
-            // Form submission
-            const form = document.getElementById('vue-form');
-            const successMessage = document.getElementById('success-message');
-            
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
+                
+                const errors = reactive({});
+                const showModal = ref(false);
+                const formSubmitted = ref(false);
+                const formTouched = ref(false);
+                
+                const submitForm = () => {
+                    formTouched.value = true;
                     
-                    // Reset previous error messages
-                    const errorMessages = document.querySelectorAll('.error-text');
-                    errorMessages.forEach(error => error.style.display = 'none');
+                    // Validate form
+                    validateForm();
                     
-                    // Reset invalid fields
-                    const allFields = form.querySelectorAll('input, select, textarea');
-                    allFields.forEach(field => {
-                        field.classList.remove('is-invalid');
-                        field.classList.remove('vue-selected');
+                    // Check if there are any errors
+                    if (Object.keys(errors).length === 0) {
+                        // Form submission logic
+                        console.log('Form submitted successfully!', formData);
+                        formSubmitted.value = true;
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            formSubmitted.value = false;
+                        }, 3000);
+                    }
+                };
+                
+                const validateForm = () => {
+                    // Clear previous errors
+                    Object.keys(errors).forEach(key => {
+                        delete errors[key];
                     });
                     
-                    // Validate required fields
-                    const requiredFields = form.querySelectorAll('[required]');
-                    let isValid = true;
+                    // Required fields validation
+                    if (!formData.firstName.trim()) {
+                        errors.firstName = 'First name is required';
+                    }
                     
-                    requiredFields.forEach(field => {
-                        if (!field.value.trim()) {
-                            field.classList.add('is-invalid');
-                            const errorElement = document.getElementById(`${field.id}-error`);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        } else {
-                            field.classList.add('vue-selected');
-                        }
-                    });
+                    if (!formData.lastName.trim()) {
+                        errors.lastName = 'Last name is required';
+                    }
                     
                     // Email validation
-                    const emailInput = document.getElementById('email');
-                    if (emailInput && emailInput.value) {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(emailInput.value)) {
-                            emailInput.classList.add('is-invalid');
-                            emailInput.classList.remove('vue-selected');
-                            const errorElement = document.getElementById('email-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!formData.email.trim()) {
+                        errors.email = 'Email is required';
+                    } else if (!emailPattern.test(formData.email)) {
+                        errors.email = 'Please enter a valid email address';
                     }
                     
                     // Phone validation
-                    const phoneInput = document.getElementById('phone');
-                    if (phoneInput && phoneInput.value) {
+                    if (formData.phone) {
                         const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                        if (!phonePattern.test(phoneInput.value)) {
-                            phoneInput.classList.add('is-invalid');
-                            phoneInput.classList.remove('vue-selected');
-                            const errorElement = document.getElementById('phone-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        } else {
-                            phoneInput.classList.add('vue-selected');
+                        if (!phonePattern.test(formData.phone)) {
+                            errors.phone = 'Please enter a valid phone number (e.g. 123-456-7890)';
                         }
                     }
                     
                     // Age validation
-                    const ageInput = document.getElementById('age');
-                    if (ageInput && ageInput.value) {
-                        const age = parseInt(ageInput.value);
-                        if (isNaN(age) || age < 18 || age > 120) {
-                            ageInput.classList.add('is-invalid');
-                            ageInput.classList.remove('vue-selected');
-                            const errorElement = document.getElementById('age-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        } else {
-                            ageInput.classList.add('vue-selected');
+                    if (!formData.age) {
+                        errors.age = 'Age is required';
+                    } else if (formData.age < 18 || formData.age > 120) {
+                        errors.age = 'Age must be between 18 and 120';
+                    }
+                    
+                    // Address validation
+                    if (!formData.address.street.trim()) {
+                        errors['address.street'] = 'Street address is required';
+                    }
+                    
+                    if (!formData.address.city.trim()) {
+                        errors['address.city'] = 'City is required';
+                    }
+                    
+                    if (!formData.address.state) {
+                        errors['address.state'] = 'State is required';
+                    }
+                    
+                    if (!formData.address.zipCode.trim()) {
+                        errors['address.zipCode'] = 'Zip code is required';
+                    } else {
+                        const zipPattern = /^\d{5}(-\d{4})?$/;
+                        if (!zipPattern.test(formData.address.zipCode)) {
+                            errors['address.zipCode'] = 'Please enter a valid zip code';
                         }
+                    }
+                    
+                    if (!formData.address.country) {
+                        errors['address.country'] = 'Country is required';
+                    }
+                    
+                    // Username validation
+                    if (!formData.username.trim()) {
+                        errors.username = 'Username is required';
+                    } else if (formData.username.length < 4) {
+                        errors.username = 'Username must be at least 4 characters';
+                    }
+                    
+                    // Password validation
+                    if (!formData.password) {
+                        errors.password = 'Password is required';
+                    } else if (formData.password.length < 8) {
+                        errors.password = 'Password must be at least 8 characters';
+                    }
+                    
+                    // Confirm password validation
+                    if (formData.password !== formData.confirmPassword) {
+                        errors.confirmPassword = 'Passwords must match';
+                    }
+                    
+                    // Alphanumeric validation
+                    if (formData.alphanumericOnly && !/^[a-zA-Z0-9]*$/.test(formData.alphanumericOnly)) {
+                        errors.alphanumericOnly = 'Only letters and numbers are allowed';
                     }
                     
                     // URL validation
-                    const urlInput = document.getElementById('url');
-                    if (urlInput && urlInput.value) {
+                    if (formData.url) {
                         try {
-                            new URL(urlInput.value);
-                            urlInput.classList.add('vue-selected');
-                        } catch (err) {
-                            urlInput.classList.add('is-invalid');
-                            urlInput.classList.remove('vue-selected');
-                            const errorElement = document.getElementById('url-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
+                            new URL(formData.url);
+                        } catch (e) {
+                            errors.url = 'Please enter a valid URL';
                         }
                     }
                     
-                    // Password match validation
-                    const passwordInput = document.getElementById('password');
-                    const confirmPasswordInput = document.getElementById('confirmPassword');
-                    if (passwordInput && confirmPasswordInput && 
-                        passwordInput.value && confirmPasswordInput.value) {
-                        if (passwordInput.value !== confirmPasswordInput.value) {
-                            confirmPasswordInput.classList.add('is-invalid');
-                            confirmPasswordInput.classList.remove('vue-selected');
-                            const errorElement = document.getElementById('confirmPassword-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
+                    // Terms agreement validation
+                    if (!formData.termsAgreement) {
+                        errors.termsAgreement = 'You must agree to the terms and conditions';
+                    }
+                };
+                
+                const resetForm = () => {
+                    // Reset all form fields
+                    Object.keys(formData).forEach(key => {
+                        if (key === 'address') {
+                            Object.keys(formData.address).forEach(addrKey => {
+                                formData.address[addrKey] = '';
+                            });
+                        } else if (key === 'interests') {
+                            formData[key] = [];
+                        } else if (key === 'satisfactionLevel') {
+                            formData[key] = 50;
+                        } else if (key === 'termsAgreement') {
+                            formData[key] = false;
                         } else {
-                            confirmPasswordInput.classList.add('vue-selected');
+                            formData[key] = '';
                         }
-                    }
+                    });
                     
-                    // Username length validation
-                    if (document.getElementById('username') && 
-                        document.getElementById('username').value.length < 4) {
-                        document.getElementById('username').classList.add('is-invalid');
-                        document.getElementById('username').classList.remove('vue-selected');
-                        const errorElement = document.getElementById('username-error');
-                        if (errorElement) {
-                            errorElement.style.display = 'block';
-                        }
-                        isValid = false;
-                    }
+                    // Clear errors
+                    Object.keys(errors).forEach(key => {
+                        delete errors[key];
+                    });
                     
-                    // Zip code validation
-                    const zipCodeInput = document.getElementById('zipCode');
-                    if (zipCodeInput && zipCodeInput.value) {
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(zipCodeInput.value)) {
-                            zipCodeInput.classList.add('is-invalid');
-                            zipCodeInput.classList.remove('vue-selected');
-                            const errorElement = document.getElementById('zipCode-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        } else {
-                            zipCodeInput.classList.add('vue-selected');
-                        }
-                    }
-                    
-                    if (isValid) {
-                        console.log('Form submitted successfully!');
-                        successMessage.style.display = 'block';
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(function() {
-                            successMessage.style.display = 'none';
-                        }, 3000);
-                    }
-                });
-            }
-            
-            // Modal Functionality
-            const modalButton = document.getElementById('modalButton');
-            const modal = document.getElementById('redHerringModal');
-            const closeModalButton = document.getElementById('closeModalButton');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            
-            if (modalButton && modal) {
-                modalButton.addEventListener('click', function() {
-                    modal.style.display = 'flex';
-                });
-            }
-            
-            if (closeModalButton && modal) {
-                closeModalButton.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            if (closeModalBtn && modal) {
-                closeModalBtn.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            // Close modal when clicking outside
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Terms link click handler
-            const termsLink = document.getElementById('termsLink');
-            if (termsLink) {
-                termsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
+                    formTouched.value = false;
+                };
+                
+                const validateAlphanumeric = (e) => {
+                    formData.alphanumericOnly = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                };
+                
+                const showTerms = () => {
                     alert('Terms and Conditions would be displayed here.');
-                });
+                };
+                
+                const hasError = (field) => {
+                    return formTouched.value && errors[field];
+                };
+                
+                return {
+                    formData,
+                    errors,
+                    showModal,
+                    formSubmitted,
+                    formTouched,
+                    submitForm,
+                    resetForm,
+                    validateAlphanumeric,
+                    showTerms,
+                    hasError
+                };
             }
         });
+        
+        app.mount('#app');
     </script>
 </body>
 </html>

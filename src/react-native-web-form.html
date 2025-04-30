@@ -4,62 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React Native Web Form</title>
-    <!-- React and React Native Web -->
-    <script crossorigin src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!-- Use React development version for better error messages -->
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     
-    <!-- Load full React Native Web bundle -->
+    <!-- Simple implementation of React Native Web components -->
     <script>
-        // Create a placeholder for React Native Web components
-        window.ReactNative = {
-            View: React.forwardRef(function(props, ref) { 
-                return React.createElement('div', {...props, ref: ref}); 
-            }),
-            Text: React.forwardRef(function(props, ref) { 
-                return React.createElement('span', {...props, ref: ref}); 
-            }),
-            TextInput: React.forwardRef(function(props, ref) { 
-                return React.createElement('input', {...props, ref: ref}); 
-            }),
-            StyleSheet: {
-                create: function(styles) { return styles; },
-                compose: function(...styles) {
-                    return styles.reduce((acc, style) => {
-                        if (!style) return acc;
-                        return {...acc, ...style};
-                    }, {});
-                }
-            },
-            TouchableOpacity: React.forwardRef(function(props, ref) { 
-                return React.createElement('button', {...props, ref: ref}, props.children); 
-            }),
-            ScrollView: React.forwardRef(function(props, ref) { 
-                const mergedStyle = props.style ? {...props.style, overflowY: 'auto'} : {overflowY: 'auto'};
-                return React.createElement('div', {...props, ref: ref, style: mergedStyle}); 
-            }),
-            Switch: React.forwardRef(function(props, ref) { 
-                return React.createElement('input', {...props, ref: ref, type: 'checkbox'}); 
-            }),
-            Picker: {
-                Item: function(props) {
-                    return React.createElement('option', {value: props.value}, props.label);
-                }
-            },
-            ActivityIndicator: React.forwardRef(function(props, ref) { 
-                return React.createElement('div', {...props, ref: ref}, 'Loading...'); 
-            }),
-            Modal: React.forwardRef(function(props, ref) { 
-                if (!props.visible) return null;
-                return React.createElement('div', {...props, ref: ref}); 
-            })
+        // Create a basic implementation of React Native Web components
+        window.ReactNative = {};
+        
+        // Basic View component (div)
+        ReactNative.View = function(props) {
+            // Filter out React Native specific props
+            const { style, children, ...otherProps } = props;
+            const divStyle = style || {};
+            
+            return React.createElement('div', {
+                ...otherProps,
+                style: divStyle,
+                className: 'rn-view'
+            }, children);
         };
         
-        // Expose Picker as a function with Item property
-        ReactNative.Picker = React.forwardRef(function(props, ref) {
-            return React.createElement('select', {...props, ref: ref});
-        });
-        ReactNative.Picker.Item = ReactNative.Picker.Item;
+        // Text component (span)
+        ReactNative.Text = function(props) {
+            const { style, children, ...otherProps } = props;
+            const spanStyle = style || {};
+            
+            return React.createElement('span', {
+                ...otherProps,
+                style: spanStyle,
+                className: 'rn-text'
+            }, children);
+        };
+        
+        // TextInput component (input)
+        ReactNative.TextInput = function(props) {
+            const { style, onChangeText, ...otherProps } = props;
+            const inputStyle = style || {};
+            
+            // Handle React Native specific props
+            const onChange = onChangeText ? (e) => onChangeText(e.target.value) : null;
+            
+            return React.createElement('input', {
+                ...otherProps,
+                onChange: onChange,
+                style: inputStyle,
+                className: 'rn-textinput'
+            });
+        };
+        
+        // StyleSheet utility
+        ReactNative.StyleSheet = {
+            create: function(styles) {
+                return styles;
+            },
+            compose: function(...styles) {
+                return styles.reduce((acc, style) => {
+                    if (!style) return acc;
+                    return {...acc, ...style};
+                }, {});
+            }
+        };
+        
+        // TouchableOpacity (button)
+        ReactNative.TouchableOpacity = function(props) {
+            const { style, onPress, children, ...otherProps } = props;
+            const buttonStyle = {
+                cursor: 'pointer',
+                userSelect: 'none',
+                border: 'none',
+                ...style
+            };
+            
+            return React.createElement('button', {
+                ...otherProps,
+                onClick: onPress,
+                style: buttonStyle,
+                className: 'rn-touchable'
+            }, children);
+        };
+        
+        // ScrollView (scrollable div)
+        ReactNative.ScrollView = function(props) {
+            const { style, children, ...otherProps } = props;
+            const scrollStyle = {
+                overflowY: 'auto',
+                ...style
+            };
+            
+            return React.createElement('div', {
+                ...otherProps,
+                style: scrollStyle,
+                className: 'rn-scrollview'
+            }, children);
+        };
+        
+        // Switch (checkbox with styling)
+        ReactNative.Switch = function(props) {
+            const { style, value, onValueChange, ...otherProps } = props;
+            const switchStyle = style || {};
+            
+            return React.createElement('input', {
+                ...otherProps,
+                type: 'checkbox',
+                checked: value,
+                onChange: (e) => onValueChange && onValueChange(e.target.checked),
+                style: switchStyle,
+                className: 'rn-switch'
+            });
+        };
+        
+        // Picker (select)
+        ReactNative.Picker = function(props) {
+            const { style, selectedValue, onValueChange, children, ...otherProps } = props;
+            const selectStyle = style || {};
+            
+            return React.createElement('select', {
+                ...otherProps,
+                value: selectedValue,
+                onChange: (e) => onValueChange && onValueChange(e.target.value),
+                style: selectStyle,
+                className: 'rn-picker'
+            }, children);
+        };
+        
+        // Picker.Item (option)
+        ReactNative.Picker.Item = function(props) {
+            const { label, value, ...otherProps } = props;
+            return React.createElement('option', {
+                ...otherProps,
+                value: value
+            }, label);
+        };
+        
+        // ActivityIndicator (loading indicator)
+        ReactNative.ActivityIndicator = function(props) {
+            const { size, color, ...otherProps } = props;
+            const indicatorStyle = {
+                color: color || 'black',
+                fontSize: size === 'small' ? '14px' : '18px',
+                ...otherProps.style
+            };
+            
+            return React.createElement('div', {
+                ...otherProps,
+                style: indicatorStyle,
+                className: 'rn-activity-indicator'
+            }, 'Loading...');
+        };
+        
+        // Modal (dialog)
+        ReactNative.Modal = function(props) {
+            const { visible, animationType, transparent, onRequestClose, children, ...otherProps } = props;
+            
+            if (!visible) return null;
+            
+            const modalStyle = {
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 1000,
+                ...otherProps.style
+            };
+            
+            return React.createElement('div', {
+                ...otherProps,
+                style: modalStyle,
+                className: 'rn-modal',
+                onClick: (e) => {
+                    // Close modal when clicking outside content
+                    if (e.target === e.currentTarget && onRequestClose) {
+                        onRequestClose();
+                    }
+                }
+            }, children);
+        };
     </script>
     <style>
         body {
@@ -445,11 +568,11 @@
                                     First Name <Text style={styles.asterisk}>*</Text>
                                 </Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.firstName && styles.focusedInput,
-                                        errors.firstName && styles.invalidInput
-                                    ]}
+                                        focused.firstName ? styles.focusedInput : null,
+                                        errors.firstName ? styles.invalidInput : null
+                                    )}
                                     value={this.state.firstName}
                                     onChangeText={(text) => this.setState({ firstName: text })}
                                     onFocus={() => this.handleFocus('firstName')}
@@ -468,11 +591,11 @@
                                     Last Name <Text style={styles.asterisk}>*</Text>
                                 </Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.lastName && styles.focusedInput,
-                                        errors.lastName && styles.invalidInput
-                                    ]}
+                                        focused.lastName ? styles.focusedInput : null,
+                                        errors.lastName ? styles.invalidInput : null
+                                    )}
                                     value={this.state.lastName}
                                     onChangeText={(text) => this.setState({ lastName: text })}
                                     onFocus={() => this.handleFocus('lastName')}
@@ -491,11 +614,11 @@
                                     Email Address <Text style={styles.asterisk}>*</Text>
                                 </Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.email && styles.focusedInput,
-                                        errors.email && styles.invalidInput
-                                    ]}
+                                        focused.email ? styles.focusedInput : null,
+                                        errors.email ? styles.invalidInput : null
+                                    )}
                                     value={this.state.email}
                                     onChangeText={(text) => this.setState({ email: text })}
                                     onFocus={() => this.handleFocus('email')}
@@ -514,10 +637,10 @@
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Phone Number</Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.phone && styles.focusedInput
-                                    ]}
+                                        focused.phone ? styles.focusedInput : null
+                                    )}
                                     value={this.state.phone}
                                     onChangeText={(text) => this.setState({ phone: text })}
                                     onFocus={() => this.handleFocus('phone')}
@@ -533,10 +656,10 @@
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Birth Date</Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.birthDate && styles.focusedInput
-                                    ]}
+                                        focused.birthDate ? styles.focusedInput : null
+                                    )}
                                     value={this.state.birthDate}
                                     onChangeText={(text) => this.setState({ birthDate: text })}
                                     onFocus={() => this.handleFocus('birthDate')}
@@ -557,11 +680,11 @@
                                     Street Address <Text style={styles.asterisk}>*</Text>
                                 </Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.street && styles.focusedInput,
-                                        errors.street && styles.invalidInput
-                                    ]}
+                                        focused.street ? styles.focusedInput : null,
+                                        errors.street ? styles.invalidInput : null
+                                    )}
                                     value={this.state.street}
                                     onChangeText={(text) => this.setState({ street: text })}
                                     onFocus={() => this.handleFocus('street')}
@@ -580,11 +703,11 @@
                                     City <Text style={styles.asterisk}>*</Text>
                                 </Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.city && styles.focusedInput,
-                                        errors.city && styles.invalidInput
-                                    ]}
+                                        focused.city ? styles.focusedInput : null,
+                                        errors.city ? styles.invalidInput : null
+                                    )}
                                     value={this.state.city}
                                     onChangeText={(text) => this.setState({ city: text })}
                                     onFocus={() => this.handleFocus('city')}
@@ -631,11 +754,11 @@
                                         Zip Code <Text style={styles.asterisk}>*</Text>
                                     </Text>
                                     <TextInput
-                                        style={[
+                                        style={StyleSheet.compose(
                                             styles.input,
-                                            focused.zipCode && styles.focusedInput,
-                                            errors.zipCode && styles.invalidInput
-                                        ]}
+                                            focused.zipCode ? styles.focusedInput : null,
+                                            errors.zipCode ? styles.invalidInput : null
+                                        )}
                                         value={this.state.zipCode}
                                         onChangeText={(text) => this.setState({ zipCode: text })}
                                         onFocus={() => this.handleFocus('zipCode')}
@@ -659,10 +782,10 @@
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Preferred Time</Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.preferredTime && styles.focusedInput
-                                    ]}
+                                        focused.preferredTime ? styles.focusedInput : null
+                                    )}
                                     value={this.state.preferredTime}
                                     onChangeText={(text) => this.setState({ preferredTime: text })}
                                     onFocus={() => this.handleFocus('preferredTime')}
@@ -676,10 +799,10 @@
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Occupation</Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.occupation && styles.focusedInput
-                                    ]}
+                                        focused.occupation ? styles.focusedInput : null
+                                    )}
                                     value={this.state.occupation}
                                     onChangeText={(text) => this.setState({ occupation: text })}
                                     onFocus={() => this.handleFocus('occupation')}
@@ -693,10 +816,10 @@
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Alphanumeric Only</Text>
                                 <TextInput
-                                    style={[
+                                    style={StyleSheet.compose(
                                         styles.input,
-                                        focused.alphanumericOnly && styles.focusedInput
-                                    ]}
+                                        focused.alphanumericOnly ? styles.focusedInput : null
+                                    )}
                                     value={this.state.alphanumericOnly}
                                     onChangeText={this.handleAlphanumericInput}
                                     onFocus={() => this.handleFocus('alphanumericOnly')}
@@ -711,7 +834,7 @@
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label}>Disabled Field</Text>
                                 <TextInput
-                                    style={[styles.input, styles.disabledInput]}
+                                    style={StyleSheet.compose(styles.input, styles.disabledInput)}
                                     value="This field is disabled"
                                     editable={false}
                                     nativeID="disabledInput"
@@ -760,13 +883,13 @@
                                 </View>
                             </View>
                             {errors.termsAgreed && (
-                                <Text style={[styles.errorText, { marginLeft: 30 }]}>{errors.termsAgreed}</Text>
+                                <Text style={StyleSheet.compose(styles.errorText, { marginLeft: 30 })}>{errors.termsAgreed}</Text>
                             )}
                         </View>
                         
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity
-                                style={[styles.button, isSubmitting && styles.disabledButton]}
+                                style={StyleSheet.compose(styles.button, isSubmitting ? styles.disabledButton : null)}
                                 onPress={this.handleSubmit}
                                 disabled={isSubmitting}
                             >
@@ -778,7 +901,7 @@
                             </TouchableOpacity>
                             
                             <TouchableOpacity
-                                style={[styles.button, styles.dangerButton]}
+                                style={StyleSheet.compose(styles.button, styles.dangerButton)}
                                 onPress={this.openModal}
                             >
                                 <Text style={styles.buttonText}>Open Modal</Text>
@@ -804,7 +927,7 @@
                                     </View>
                                     <View style={styles.modalFooter}>
                                         <TouchableOpacity
-                                            style={[styles.button, { paddingVertical: 8, paddingHorizontal: 15 }]}
+                                            style={StyleSheet.compose(styles.button, { paddingVertical: 8, paddingHorizontal: 15 })}
                                             onPress={this.closeModal}
                                         >
                                             <Text style={styles.buttonText}>Close</Text>
