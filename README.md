@@ -67,6 +67,13 @@ The Wufoo-style form is specifically designed to challenge autofill systems with
 
 This is a purely frontend project with no build steps required. All forms are self-contained in their respective HTML files.
 
+## More
+
+- https://www.tohodo.com/autofill/form.html :star:
+- https://www.smashingmagazine.com/2023/02/comparing-react-form-libraries/
+- https://fill.dev/form/identity-simple
+- https://www.roboform.com/filling-test-all-fields
+
 ## License
 
 MIT
