@@ -5,10 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React Native Web Form</title>
     <!-- React and React Native Web -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/react-native-web@0.19.9/dist/index.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    
+    <!-- Load full React Native Web bundle -->
+    <script>
+        // Create a placeholder for React Native Web components
+        window.ReactNative = {
+            View: React.forwardRef(function(props, ref) { 
+                return React.createElement('div', {...props, ref: ref}); 
+            }),
+            Text: React.forwardRef(function(props, ref) { 
+                return React.createElement('span', {...props, ref: ref}); 
+            }),
+            TextInput: React.forwardRef(function(props, ref) { 
+                return React.createElement('input', {...props, ref: ref}); 
+            }),
+            StyleSheet: {
+                create: function(styles) { return styles; },
+                compose: function(...styles) {
+                    return styles.reduce((acc, style) => {
+                        if (!style) return acc;
+                        return {...acc, ...style};
+                    }, {});
+                }
+            },
+            TouchableOpacity: React.forwardRef(function(props, ref) { 
+                return React.createElement('button', {...props, ref: ref}, props.children); 
+            }),
+            ScrollView: React.forwardRef(function(props, ref) { 
+                const mergedStyle = props.style ? {...props.style, overflowY: 'auto'} : {overflowY: 'auto'};
+                return React.createElement('div', {...props, ref: ref, style: mergedStyle}); 
+            }),
+            Switch: React.forwardRef(function(props, ref) { 
+                return React.createElement('input', {...props, ref: ref, type: 'checkbox'}); 
+            }),
+            Picker: {
+                Item: function(props) {
+                    return React.createElement('option', {value: props.value}, props.label);
+                }
+            },
+            ActivityIndicator: React.forwardRef(function(props, ref) { 
+                return React.createElement('div', {...props, ref: ref}, 'Loading...'); 
+            }),
+            Modal: React.forwardRef(function(props, ref) { 
+                if (!props.visible) return null;
+                return React.createElement('div', {...props, ref: ref}); 
+            })
+        };
+        
+        // Expose Picker as a function with Item property
+        ReactNative.Picker = React.forwardRef(function(props, ref) {
+            return React.createElement('select', {...props, ref: ref});
+        });
+        ReactNative.Picker.Item = ReactNative.Picker.Item;
+    </script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -65,10 +117,11 @@
     </div>
     
     <script type="text/babel">
+        // Access React Native Web components from the global object
         const {
             View, Text, TextInput, StyleSheet, TouchableOpacity, 
             ScrollView, Switch, Picker, ActivityIndicator, Modal
-        } = ReactNativeWeb;
+        } = ReactNative;
         
         const styles = StyleSheet.create({
             container: {
