@@ -108,6 +108,17 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .task-number a {
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .task-title {
@@ -257,7 +268,7 @@
         
         <!-- Task 1: Click Button -->
         <div class="task active" id="task1">
-            <div class="task-number">1</div>
+            <div class="task-number"><a href="#task1" id="task1">1</a></div>
             <div class="task-title">Click: Just click the button</div>
             <button id="start-button">Start</button>
             <script>
@@ -269,7 +280,7 @@
 
         <!-- Task 2: Radio Buttons -->
         <div class="task" id="task2">
-            <div class="task-number">2</div>
+            <div class="task-number"><a href="#task2" id="task2">2</a></div>
             <div class="task-title">Select one of the radio buttons that you vibe with</div>
             <div class="radio-group">
                 <label>
@@ -299,7 +310,7 @@
 
         <!-- Task 3: Checkbox -->
         <div class="task" id="task3">
-            <div class="task-number">3</div>
+            <div class="task-number"><a href="#task3" id="task3">3</a></div>
             <div class="task-title">Check these checkboxes</div>
             <div class="checkbox-group">
                 <label>
@@ -331,7 +342,7 @@
 
         <!-- Task 4: Search -->
         <div class="task" id="task4">
-            <div class="task-number">4</div>
+            <div class="task-number"><a href="#task4" id="task4">4</a></div>
             <div class="task-title">Use this search field to search for "squash"</div>
             <input type="search" id="search-input" placeholder="Enter a search term and press Enter" value="some existing text">
             <script>
@@ -353,7 +364,7 @@
 
         <!-- Task 5: Date and Time Pickers -->
         <div class="task" id="task5">
-            <div class="task-number">5</div>
+            <div class="task-number"><a href="#task5" id="task5">5</a></div>
             <div class="task-title">Input the current date and time</div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <input type="date" id="date-picker">
@@ -389,7 +400,7 @@
 
         <!-- Task 6: Copy Text -->
         <div class="task" id="task6">
-            <div class="task-number">6</div>
+            <div class="task-number"><a href="#task6" id="task6">6</a></div>
             <div class="task-title">Copy this text [abc] into this field</div>
             <div>Text to copy: <strong>abc</strong></div>
             <input type="text" id="copy-input" placeholder="Paste here">
@@ -404,7 +415,7 @@
 
         <!-- Task 7: Slider -->
         <div class="task" id="task7">
-            <div class="task-number">7</div>
+            <div class="task-number"><a href="#task7" id="task7">7</a></div>
             <div class="task-title">Drag this slider completely to the right</div>
             <div class="slider-container">
                 <input type="range" min="1" max="100" value="1" class="slider" id="range-slider">
@@ -424,7 +435,7 @@
 
         <!-- Task 8: Hover -->
         <div class="task" id="task8">
-            <div class="task-number">8</div>
+            <div class="task-number"><a href="#task8" id="task8">8</a></div>
             <div class="task-title">Hover over this element</div>
             <style>
                 .hover-area {
@@ -459,7 +470,7 @@
 
         <!-- Task 9: Drag and Drop -->
         <div class="task" id="task9">
-            <div class="task-number">9</div>
+            <div class="task-number"><a href="#task9" id="task9">9</a></div>
             <div class="task-title">Drag this element onto this other element</div>
             <style>
                 .drag-source {
@@ -526,7 +537,7 @@
 
         <!-- Task 10: File Drop -->
         <div class="task" id="task10">
-            <div class="task-number">10</div>
+            <div class="task-number"><a href="#task10" id="task10">10</a></div>
             <div class="task-title">Drag a file into this element</div>
             <div class="drop-target" id="file-drop-area">Drop a file here</div>
             <script>
@@ -554,7 +565,7 @@
 
         <!-- Task 11: Multi-select -->
         <div class="task" id="task11">
-            <div class="task-number">11</div>
+            <div class="task-number"><a href="#task11" id="task11">11</a></div>
             <div class="task-title">Select any 3 options in this multi-select-list</div>
             <select class="multi-select" id="multi-select" multiple>
                 <option value="option1">Option 1</option>
@@ -577,7 +588,7 @@
 
         <!-- Task 12: Canvas Text -->
         <div class="task" id="task12">
-            <div class="task-number">12</div>
+            <div class="task-number"><a href="#task12" id="task12">12</a></div>
             <div class="task-title">Read the text off this canvas element and type it into this input field</div>
             <div class="canvas-container">
                 <canvas id="text-canvas" width="300" height="100"></canvas>
@@ -623,7 +634,7 @@
 
         <!-- Task 13: Iframe slider -->
         <div class="task" id="task13">
-            <div class="task-number">13</div>
+            <div class="task-number"><a href="#task13" id="task13">13</a></div>
             <div class="task-title">Drag the slider completely to the right inside this iframe</div>
             <iframe id="slider-iframe" style="width: 350px; height: 150px; border: 1px solid #ddd; border-radius: 4px;" src="#"></iframe>
             <script>
@@ -680,7 +691,7 @@
 
         <!-- Task 14: Shadow DOM double-click -->
         <div class="task" id="task14">
-            <div class="task-number">14</div>
+            <div class="task-number"><a href="#task14" id="task14">14</a></div>
             <div class="task-title">Double-click the button inside this closed shadow DOM</div>
             <div id="shadow-host"></div>
             <script>
@@ -723,7 +734,7 @@
 
         <!-- Task 15: Right-click in Web Component slot -->
         <div class="task" id="task15">
-            <div class="task-number">15</div>
+            <div class="task-number"><a href="#task15" id="task15">15</a></div>
             <div class="task-title">Right-click the button inside this Web Component slot element</div>
             <right-click-component>
                 <span slot="right-click-target">Right-click me</span>
@@ -765,7 +776,7 @@
 
         <!-- Task 16: Scroll to bottom and accept terms -->
         <div class="task" id="task16">
-            <div class="task-number">16</div>
+            <div class="task-number"><a href="#task16" id="task16">16</a></div>
             <div class="task-title">Scroll the to the bottom of this legal text and click I accept</div>
             <div id="scroll-container" style="height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
@@ -813,7 +824,7 @@
 
         <!-- Task 17: Draw circle by hovering -->
         <div class="task" id="task17">
-            <div class="task-number">17</div>
+            <div class="task-number"><a href="#task17" id="task17">17</a></div>
             <div class="task-title">Draw a circle with your mouse by hovering</div>
             <div id="draw-container" style="width: 300px; height: 300px; position: relative; border: 1px solid #ddd; border-radius: 4px;">
                 <canvas id="draw-canvas" width="300" height="300" style="position: absolute; top: 0; left: 0;"></canvas>
@@ -878,7 +889,7 @@
 
         <!-- Task 18: Native Browser Confirmation Dialog -->
         <div class="task" id="task18">
-            <div class="task-number">18</div>
+            <div class="task-number"><a href="#task18" id="task18">18</a></div>
             <div class="task-title">Click to open a native browser confirmation dialog and click Cancel</div>
             <button id="confirm-button">Open dialog</button>
             <script>
@@ -902,7 +913,7 @@
 
         <!-- Task 19: Geolocation Permission -->
         <div class="task" id="task19">
-            <div class="task-number">19</div>
+            <div class="task-number"><a href="#task19" id="task19">19</a></div>
             <div class="task-title">Request geolocation permission and approve</div>
             <style>
                 .permissions-status {
@@ -952,7 +963,7 @@
 
         <!-- Task 20: Arrow Key Presses -->
         <div class="task" id="task20">
-            <div class="task-number">20</div>
+            <div class="task-number"><a href="#task20" id="task20">20</a></div>
             <div class="task-title">Press the right arrow key 3 times</div>
             <style>
                 .key-press-area {
@@ -1011,7 +1022,7 @@
 
         <!-- Task 21: Alert with secret word -->
         <div class="task" id="task21">
-            <div class="task-number">21</div>
+            <div class="task-number"><a href="#task21" id="task21">21</a></div>
             <div class="task-title">Find the secret word in the alert and paste it below</div>
             <button id="secret-alert-button">Show Alert with Secret Word</button>
             <div style="margin-top: 10px;">
@@ -1035,7 +1046,7 @@
 
         <!-- Task 22: Press and hold button -->
         <div class="task" id="task22">
-            <div class="task-number">22</div>
+            <div class="task-number"><a href="#task22" id="task22">22</a></div>
             <div class="task-title">Press and hold this button until the progress bar fills</div>
             <div>
                 <button id="hold-button" style="user-select: none;">Press and hold me</button>
@@ -1087,7 +1098,7 @@
 
         <!-- Task 23: Tooltip hover -->
         <div class="task" id="task23">
-            <div class="task-number">23</div>
+            <div class="task-number"><a href="#task23" id="task23">23</a></div>
             <div class="task-title">Hover over this element to find a secret word in the tooltip</div>
             <div class="tooltip-container">
                 <div id="tooltip-element" style="padding: 1rem; background-color: #e9ecef; display: inline-block; border-radius: 4px; position: relative;">
@@ -1125,7 +1136,7 @@
 
         <!-- Task 24: Resizable textarea -->
         <div class="task" id="task24">
-            <div class="task-number">24</div>
+            <div class="task-number"><a href="#task24" id="task24">24</a></div>
             <div class="task-title">Resize this textarea to reveal a secret word</div>
             <textarea id="resizable-textarea" style="resize: both; min-height: 50px; min-width: 200px; max-width: 100%; width: 200px; height: 50px; overflow: auto; margin-bottom: 10px;" placeholder="Resize me to reveal a secret word..."></textarea>
             <div style="position: absolute; bottom: 5px; right: 5px; font-size: 10px; color: #ccc; pointer-events: none; display: none;" id="resize-secret">Secret: giraffe</div>
@@ -1158,7 +1169,7 @@
 
         <!-- Task 25: File upload -->
         <div class="task" id="task25">
-            <div class="task-number">25</div>
+            <div class="task-number"><a href="#task25" id="task25">25</a></div>
             <div class="task-title">Upload a file using this input</div>
             <input type="file" id="file-upload-input">
             <div id="file-upload-status" style="margin-top: 10px; font-size: 0.9rem;"></div>
@@ -1178,7 +1189,7 @@
 
         <!-- Task 26: Naughty phone input -->
         <div class="task" id="task26">
-            <div class="task-number">26</div>
+            <div class="task-number"><a href="#task26" id="task26">26</a></div>
             <div class="task-title">Enter the phone number 555-1234 in this (deliberately misbehaving) input field</div>
             <input type="text" id="phone-input" placeholder="Enter 555-1234">
             <script>
@@ -1207,7 +1218,7 @@
 
         <!-- Task 27: Details element -->
         <div class="task" id="task27">
-            <div class="task-number">27</div>
+            <div class="task-number"><a href="#task27" id="task27">27</a></div>
             <div class="task-title">Expand this details section to complete the task</div>
             <details id="expand-details">
                 <summary>Click to expand me</summary>
@@ -1229,7 +1240,7 @@
         
         <!-- Task 28: Canvas Drag Square into Circle -->
         <div class="task" id="task28">
-            <div class="task-number">28</div>
+            <div class="task-number"><a href="#task28" id="task28">28</a></div>
             <div class="task-title">Drag the square into the circle</div>
             <style>
                 #canvas-drag-container {
