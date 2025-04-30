@@ -17,11 +17,61 @@
         // Basic View component (div)
         ReactNative.View = function(props) {
             // Filter out React Native specific props
-            const { style, children, ...otherProps } = props;
-            const divStyle = style || {};
+            const { 
+                style, 
+                children,
+                nativeID,
+                // Filter out common RN specific props
+                flexDirection,
+                alignItems,
+                justifyContent,
+                flex,
+                padding,
+                paddingHorizontal,
+                paddingVertical,
+                margin,
+                marginHorizontal,
+                marginVertical,
+                borderWidth,
+                borderColor,
+                borderBottomWidth,
+                borderBottomColor,
+                borderRadius,
+                backgroundColor,
+                ...otherProps 
+            } = props;
+            
+            // Convert RN specific style props to regular CSS
+            const divStyle = {
+                // Process any manually specified styles
+                ...style,
+                // Handle common conversions explicitly to avoid warnings
+                display: flexDirection ? 'flex' : undefined,
+                flexDirection: flexDirection,
+                alignItems: alignItems,
+                justifyContent: justifyContent,
+                flex: flex,
+                padding: padding,
+                paddingLeft: paddingHorizontal,
+                paddingRight: paddingHorizontal,
+                paddingTop: paddingVertical,
+                paddingBottom: paddingVertical,
+                margin: margin,
+                marginLeft: marginHorizontal,
+                marginRight: marginHorizontal,
+                marginTop: marginVertical,
+                marginBottom: marginVertical,
+                borderWidth: borderWidth,
+                borderColor: borderColor,
+                borderBottomWidth: borderBottomWidth,
+                borderBottomColor: borderBottomColor,
+                borderRadius: borderRadius,
+                backgroundColor: backgroundColor
+            };
             
             return React.createElement('div', {
                 ...otherProps,
+                id: nativeID,
                 style: divStyle,
                 className: 'rn-view'
             }, children);
@@ -29,11 +79,32 @@
         
         // Text component (span)
         ReactNative.Text = function(props) {
-            const { style, children, ...otherProps } = props;
-            const spanStyle = style || {};
+            const { 
+                style, 
+                children, 
+                nativeID,
+                // Filter out text-specific props
+                fontSize,
+                fontWeight,
+                color,
+                textAlign,
+                lineHeight,
+                ...otherProps 
+            } = props;
+            
+            // Convert RN specific style props to CSS
+            const spanStyle = {
+                ...style,
+                fontSize: fontSize,
+                fontWeight: fontWeight,
+                color: color,
+                textAlign: textAlign,
+                lineHeight: lineHeight
+            };
             
             return React.createElement('span', {
                 ...otherProps,
+                id: nativeID,
                 style: spanStyle,
                 className: 'rn-text'
             }, children);
@@ -96,25 +167,42 @@
         
         // TouchableOpacity (button)
         ReactNative.TouchableOpacity = function(props) {
-            const { style, onPress, children, ...otherProps } = props;
+            const { 
+                style, 
+                onPress,
+                nativeID,
+                disabled,
+                children, 
+                ...otherProps 
+            } = props;
+            
             const buttonStyle = {
-                cursor: 'pointer',
+                cursor: disabled ? 'not-allowed' : 'pointer',
                 userSelect: 'none',
                 border: 'none',
+                opacity: disabled ? 0.6 : 1,
                 ...style
             };
             
             return React.createElement('button', {
                 ...otherProps,
-                onClick: onPress,
+                id: nativeID,
+                onClick: disabled ? null : onPress,
                 style: buttonStyle,
+                disabled: disabled,
                 className: 'rn-touchable'
             }, children);
         };
         
         // ScrollView (scrollable div)
         ReactNative.ScrollView = function(props) {
-            const { style, children, ...otherProps } = props;
+            const { 
+                style, 
+                children, 
+                nativeID,
+                ...otherProps 
+            } = props;
+            
             const scrollStyle = {
                 overflowY: 'auto',
                 ...style
@@ -122,6 +210,7 @@
             
             return React.createElement('div', {
                 ...otherProps,
+                id: nativeID,
                 style: scrollStyle,
                 className: 'rn-scrollview'
             }, children);
@@ -210,11 +299,20 @@
         
         // Picker (select)
         ReactNative.Picker = function(props) {
-            const { style, selectedValue, onValueChange, children, ...otherProps } = props;
+            const { 
+                style, 
+                selectedValue, 
+                onValueChange, 
+                children,
+                nativeID,
+                ...otherProps 
+            } = props;
+            
             const selectStyle = style || {};
             
             return React.createElement('select', {
                 ...otherProps,
+                id: nativeID,
                 value: selectedValue,
                 onChange: (e) => onValueChange && onValueChange(e.target.value),
                 style: selectStyle,
