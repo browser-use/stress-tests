@@ -1,4 +1,6 @@
-# Browser-Use Stress Test
+# [Browser-Use Stress Test](https://browser-use.github.io/stress-tests)
+
+**DEMO: https://browser-use.github.io/stress-tests**
 
 <img width="1972" alt="image" src="https://github.com/user-attachments/assets/da0f3d41-af7b-41dd-a134-3c1b0f019dfd" />
 
