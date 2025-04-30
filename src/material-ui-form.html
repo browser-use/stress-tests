@@ -96,1055 +96,880 @@
                 min-width: 100%;
             }
         }
-        
-        .material-field {
-            position: relative;
-            margin-bottom: 16px;
-        }
-        
-        .material-label {
-            position: absolute;
-            left: 12px;
-            top: 16px;
-            color: var(--text-secondary);
-            transition: all 0.2s ease;
-            pointer-events: none;
-            font-size: 16px;
-        }
-        
-        .material-input {
-            width: 100%;
-            padding: 16px 12px 8px;
-            border: none;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.42);
-            background-color: transparent;
-            outline: none;
-            font-size: 16px;
-            border-radius: 4px 4px 0 0;
-            transition: all 0.2s ease;
-        }
-        
-        .material-input:focus {
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 7px;
-        }
-        
-        .material-input:focus + .material-label,
-        .material-input:not(:placeholder-shown) + .material-label {
-            top: 4px;
-            font-size: 12px;
-            color: var(--primary-color);
-        }
-        
-        .material-select {
-            width: 100%;
-            padding: 16px 12px 8px;
-            border: none;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.42);
-            background-color: transparent;
-            outline: none;
-            font-size: 16px;
-            appearance: none;
-            border-radius: 4px 4px 0 0;
-            transition: all 0.2s ease;
-        }
-        
-        .material-select:focus {
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 7px;
-        }
-        
-        .select-wrapper {
-            position: relative;
-        }
-        
-        .select-wrapper::after {
-            content: 'keyboard_arrow_down';
-            font-family: 'Material Icons';
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            pointer-events: none;
-        }
-        
-        .helper-text {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            margin-left: 12px;
-        }
-        
-        .error-text {
-            font-size: 12px;
-            color: var(--error-color);
-            margin-top: 4px;
-            margin-left: 12px;
-            display: none;
-        }
-        
-        .radio-group, .checkbox-group {
-            margin-bottom: 16px;
-        }
-        
-        .group-label {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            display: block;
-        }
-        
-        .material-radio, .material-checkbox {
-            display: inline-flex;
-            align-items: center;
-            margin-right: 16px;
-            margin-bottom: 8px;
-            cursor: pointer;
-        }
-        
-        .radio-input, .checkbox-input {
-            position: absolute;
-            opacity: 0;
-        }
-        
-        .radio-control {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid var(--text-secondary);
-            margin-right: 8px;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-        
-        .radio-input:checked + .radio-control {
-            border-color: var(--primary-color);
-        }
-        
-        .radio-input:checked + .radio-control::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-        }
-        
-        .checkbox-control {
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--text-secondary);
-            border-radius: 2px;
-            margin-right: 8px;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-        
-        .checkbox-input:checked + .checkbox-control {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .checkbox-input:checked + .checkbox-control::after {
-            content: 'check';
-            font-family: 'Material Icons';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 14px;
-        }
-        
-        .material-switch {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            margin-bottom: 16px;
-            cursor: pointer;
-        }
-        
-        .switch-input {
-            position: absolute;
-            opacity: 0;
-        }
-        
-        .switch-control {
-            width: 34px;
-            height: 14px;
-            border-radius: 7px;
-            background-color: rgba(0, 0, 0, 0.38);
-            margin-right: 8px;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-        
-        .switch-control::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translate(-50%, -50%);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: white;
-            box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 
-                        0px 1px 1px 0px rgba(0,0,0,0.14), 
-                        0px 1px 3px 0px rgba(0,0,0,0.12);
-            transition: all 0.2s ease;
-        }
-        
-        .switch-input:checked + .switch-control {
-            background-color: rgba(25, 118, 210, 0.5);
-        }
-        
-        .switch-input:checked + .switch-control::after {
-            left: 100%;
-            background-color: var(--primary-color);
-        }
-        
-        .material-slider {
-            width: 100%;
-            height: 2px;
-            background-color: rgba(0, 0, 0, 0.26);
-            position: relative;
-            margin: 32px 0;
-        }
-        
-        .slider-input {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 2px;
-            background: transparent;
-            outline: none;
-            position: absolute;
-            top: 0;
-            margin: 0;
-        }
-        
-        .slider-input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            cursor: pointer;
-            box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 
-                        0px 1px 1px 0px rgba(0,0,0,0.14), 
-                        0px 1px 3px 0px rgba(0,0,0,0.12);
-        }
-        
-        .slider-input::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            cursor: pointer;
-            box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 
-                        0px 1px 1px 0px rgba(0,0,0,0.14), 
-                        0px 1px 3px 0px rgba(0,0,0,0.12);
-            border: none;
-        }
-        
-        .slider-value {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            text-align: center;
-        }
-        
-        .material-textarea {
-            width: 100%;
-            padding: 16px 12px 8px;
-            border: none;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.42);
-            background-color: transparent;
-            outline: none;
-            font-size: 16px;
-            border-radius: 4px 4px 0 0;
-            transition: all 0.2s ease;
-            font-family: 'Roboto', sans-serif;
-            resize: vertical;
-            min-height: 100px;
-        }
-        
-        .material-textarea:focus {
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 7px;
-        }
-        
-        .material-textarea:focus + .material-label,
-        .material-textarea:not(:placeholder-shown) + .material-label {
-            top: 4px;
-            font-size: 12px;
-            color: var(--primary-color);
-        }
-        
-        .file-input-wrapper {
-            position: relative;
-            margin-bottom: 16px;
-        }
-        
-        .file-input-label {
-            display: inline-flex;
-            align-items: center;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-        
-        .file-input-label:hover {
-            background-color: var(--primary-dark);
-        }
-        
-        .file-input-label i {
-            margin-right: 8px;
-        }
-        
-        .file-input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            width: 0.1px;
-            height: 0.1px;
-        }
-        
-        .file-name {
-            margin-left: 8px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-        
-        .buttons-row {
-            display: flex;
-            gap: 16px;
-            margin-top: 32px;
-        }
-        
-        .material-button {
-            padding: 8px 16px;
-            border-radius: 4px;
-            border: none;
-            font-size: 14px;
-            font-weight: 500;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .material-button i {
-            margin-right: 8px;
-            font-size: 18px;
-        }
-        
-        .button-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .button-primary:hover {
-            background-color: var(--primary-dark);
-        }
-        
-        .button-secondary {
-            background-color: transparent;
-            color: var(--primary-color);
-        }
-        
-        .button-secondary:hover {
-            background-color: rgba(25, 118, 210, 0.08);
-        }
-        
-        .button-danger {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        .button-danger:hover {
-            background-color: #b0003a;
-        }
-        
-        .dialog-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .dialog-backdrop.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .dialog {
-            background-color: white;
-            border-radius: 4px;
-            min-width: 300px;
-            max-width: 600px;
-            box-shadow: 0px 11px 15px -7px rgba(0,0,0,0.2), 
-                        0px 24px 38px 3px rgba(0,0,0,0.14), 
-                        0px 9px 46px 8px rgba(0,0,0,0.12);
-            transform: scale(0.9);
-            transition: all 0.3s ease;
-        }
-        
-        .dialog-backdrop.visible .dialog {
-            transform: scale(1);
-        }
-        
-        .dialog-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .dialog-title {
-            font-size: 1.25rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        
-        .dialog-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .dialog-content {
-            padding: 16px 24px;
-            color: var(--text-secondary);
-        }
-        
-        .dialog-actions {
-            padding: 8px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .alert {
-            padding: 16px;
-            border-radius: 4px;
-            margin-bottom: 16px;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .alert-success {
-            background-color: rgba(76, 175, 80, 0.1);
-            color: var(--success-color);
-            border: 1px solid rgba(76, 175, 80, 0.25);
-        }
-        
-        .required::after {
-            content: " *";
-            color: var(--error-color);
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Material UI Form</h1>
-        <p class="description">This Material UI Form example is pre-rendered as static HTML, which allows the autofill extension to interact with it. In a real app, this would be a fully interactive React Material UI component.</p>
+        <p class="description">This Material UI Form example is using the MUI components library with React, allowing full interactivity with form elements.</p>
         
-        <div class="alert alert-success" id="success-message">
-            <strong>Success!</strong> Form submitted successfully!
-        </div>
-        
-        <form class="material-form" id="material-ui-form">
-            <!-- Personal Information Section -->
-            <div class="form-section">
-                <h2 class="form-section-title">Personal Information</h2>
-                
-                <div class="form-row">
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="text" id="firstName" name="firstName" class="material-input" placeholder=" " required />
-                            <label for="firstName" class="material-label required">First Name</label>
-                            <div class="error-text" id="firstName-error">First name is required</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="text" id="lastName" name="lastName" class="material-input" placeholder=" " required />
-                            <label for="lastName" class="material-label required">Last Name</label>
-                            <div class="error-text" id="lastName-error">Last name is required</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="email" id="email" name="email" class="material-input" placeholder=" " required />
-                            <label for="email" class="material-label required">Email Address</label>
-                            <div class="error-text" id="email-error">Please enter a valid email address</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="tel" id="phone" name="phone" class="material-input" placeholder=" " />
-                            <label for="phone" class="material-label">Phone Number</label>
-                            <div class="helper-text">Format: 123-456-7890</div>
-                            <div class="error-text" id="phone-error">Please enter a valid phone number</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="date" id="birthDate" name="birthDate" class="material-input" placeholder=" " />
-                            <label for="birthDate" class="material-label">Date of Birth</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-field">
-                        <div class="material-field">
-                            <div class="select-wrapper">
-                                <select id="gender" name="gender" class="material-select">
-                                    <option value=""></option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                    <option value="prefer-not-to-say">Prefer not to say</option>
-                                </select>
-                                <label for="gender" class="material-label">Gender</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Contact Information Section -->
-            <div class="form-section">
-                <h2 class="form-section-title">Contact Information</h2>
-                
-                <div class="material-field">
-                    <input type="text" id="address" name="address" class="material-input" placeholder=" " required />
-                    <label for="address" class="material-label required">Street Address</label>
-                    <div class="error-text" id="address-error">Street address is required</div>
-                </div>
-                
-                <div class="material-field">
-                    <input type="text" id="addressLine2" name="addressLine2" class="material-input" placeholder=" " />
-                    <label for="addressLine2" class="material-label">Address Line 2</label>
-                    <div class="helper-text">Apartment, suite, unit, etc.</div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="text" id="city" name="city" class="material-input" placeholder=" " required />
-                            <label for="city" class="material-label required">City</label>
-                            <div class="error-text" id="city-error">City is required</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-field">
-                        <div class="material-field">
-                            <div class="select-wrapper">
-                                <select id="state" name="state" class="material-select" required>
-                                    <option value=""></option>
-                                    <option value="AL">Alabama</option>
-                                    <option value="AK">Alaska</option>
-                                    <option value="AZ">Arizona</option>
-                                    <!-- More states would be listed here -->
-                                    <option value="WY">Wyoming</option>
-                                </select>
-                                <label for="state" class="material-label required">State</label>
-                            </div>
-                            <div class="error-text" id="state-error">State is required</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="text" id="zipCode" name="zipCode" class="material-input" placeholder=" " required />
-                            <label for="zipCode" class="material-label required">Zip Code</label>
-                            <div class="error-text" id="zipCode-error">Please enter a valid zip code</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-field">
-                        <div class="material-field">
-                            <div class="select-wrapper">
-                                <select id="country" name="country" class="material-select" required>
-                                    <option value=""></option>
-                                    <option value="US">United States</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="UK">United Kingdom</option>
-                                    <option value="AU">Australia</option>
-                                    <!-- More countries would be listed here -->
-                                </select>
-                                <label for="country" class="material-label required">Country</label>
-                            </div>
-                            <div class="error-text" id="country-error">Country is required</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Account Information Section -->
-            <div class="form-section">
-                <h2 class="form-section-title">Account Information</h2>
-                
-                <div class="material-field">
-                    <input type="text" id="username" name="username" class="material-input" placeholder=" " required />
-                    <label for="username" class="material-label required">Username</label>
-                    <div class="helper-text">Must be at least 4 characters</div>
-                    <div class="error-text" id="username-error">Username must be at least 4 characters</div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="password" id="password" name="password" class="material-input" placeholder=" " required />
-                            <label for="password" class="material-label required">Password</label>
-                            <div class="helper-text">Must be at least 8 characters</div>
-                            <div class="error-text" id="password-error">Password must be at least 8 characters</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="password" id="confirmPassword" name="confirmPassword" class="material-input" placeholder=" " required />
-                            <label for="confirmPassword" class="material-label required">Confirm Password</label>
-                            <div class="error-text" id="confirmPassword-error">Passwords must match</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Preferences Section -->
-            <div class="form-section">
-                <h2 class="form-section-title">Preferences</h2>
-                
-                <div class="radio-group">
-                    <span class="group-label">Contact Preference</span>
-                    
-                    <label class="material-radio">
-                        <input type="radio" name="contactPreference" value="email" class="radio-input" />
-                        <span class="radio-control"></span>
-                        Email
-                    </label>
-                    
-                    <label class="material-radio">
-                        <input type="radio" name="contactPreference" value="phone" class="radio-input" />
-                        <span class="radio-control"></span>
-                        Phone
-                    </label>
-                    
-                    <label class="material-radio">
-                        <input type="radio" name="contactPreference" value="mail" class="radio-input" />
-                        <span class="radio-control"></span>
-                        Mail
-                    </label>
-                </div>
-                
-                <div class="checkbox-group">
-                    <span class="group-label">Interests</span>
-                    
-                    <div class="form-row">
-                        <div class="form-field" style="min-width: calc(33% - 8px);">
-                            <label class="material-checkbox">
-                                <input type="checkbox" name="interests" value="technology" class="checkbox-input" />
-                                <span class="checkbox-control"></span>
-                                Technology
-                            </label>
-                        </div>
-                        
-                        <div class="form-field" style="min-width: calc(33% - 8px);">
-                            <label class="material-checkbox">
-                                <input type="checkbox" name="interests" value="sports" class="checkbox-input" />
-                                <span class="checkbox-control"></span>
-                                Sports
-                            </label>
-                        </div>
-                        
-                        <div class="form-field" style="min-width: calc(33% - 8px);">
-                            <label class="material-checkbox">
-                                <input type="checkbox" name="interests" value="music" class="checkbox-input" />
-                                <span class="checkbox-control"></span>
-                                Music
-                            </label>
-                        </div>
-                        
-                        <div class="form-field" style="min-width: calc(33% - 8px);">
-                            <label class="material-checkbox">
-                                <input type="checkbox" name="interests" value="reading" class="checkbox-input" />
-                                <span class="checkbox-control"></span>
-                                Reading
-                            </label>
-                        </div>
-                        
-                        <div class="form-field" style="min-width: calc(33% - 8px);">
-                            <label class="material-checkbox">
-                                <input type="checkbox" name="interests" value="travel" class="checkbox-input" />
-                                <span class="checkbox-control"></span>
-                                Travel
-                            </label>
-                        </div>
-                        
-                        <div class="form-field" style="min-width: calc(33% - 8px);">
-                            <label class="material-checkbox">
-                                <input type="checkbox" name="interests" value="cooking" class="checkbox-input" />
-                                <span class="checkbox-control"></span>
-                                Cooking
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="time" id="preferredTime" name="preferredTime" class="material-input" placeholder=" " />
-                            <label for="preferredTime" class="material-label">Preferred Contact Time</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-field">
-                        <div class="material-field">
-                            <input type="date" id="preferredDate" name="preferredDate" class="material-input" placeholder=" " />
-                            <label for="preferredDate" class="material-label">Preferred Contact Date</label>
-                        </div>
-                    </div>
-                </div>
-                
-                <label class="material-switch">
-                    <input type="checkbox" name="newsletter" value="yes" class="switch-input" />
-                    <span class="switch-control"></span>
-                    Subscribe to newsletter
-                </label>
-                
-                <label class="material-switch">
-                    <input type="checkbox" name="darkMode" value="yes" class="switch-input" />
-                    <span class="switch-control"></span>
-                    Dark Mode
-                </label>
-            </div>
-            
-            <!-- Additional Fields Section -->
-            <div class="form-section">
-                <h2 class="form-section-title">Additional Fields</h2>
-                
-                <div class="material-field">
-                    <input type="text" id="alphanumericOnly" name="alphanumericOnly" class="material-input" placeholder=" " />
-                    <label for="alphanumericOnly" class="material-label">Alphanumeric Only</label>
-                    <div class="helper-text">Only letters and numbers are allowed</div>
-                    <div class="error-text" id="alphanumericOnly-error">Only letters and numbers are allowed</div>
-                </div>
-                
-                <div class="material-field">
-                    <input type="text" id="disabledInput" name="disabledInput" class="material-input" placeholder=" " value="This field is disabled" disabled />
-                    <label for="disabledInput" class="material-label">Disabled Input</label>
-                </div>
-                
-                <div>
-                    <span class="group-label">Satisfaction Level</span>
-                    <div class="material-slider">
-                        <input type="range" id="satisfactionLevel" name="satisfactionLevel" class="slider-input" min="0" max="100" value="50" />
-                    </div>
-                    <div class="slider-value" id="sliderValue">50%</div>
-                </div>
-                
-                <div class="material-field">
-                    <textarea id="comments" name="comments" class="material-textarea" placeholder=" "></textarea>
-                    <label for="comments" class="material-label">Comments</label>
-                </div>
-                
-                <div class="file-input-wrapper">
-                    <label for="fileUpload" class="file-input-label">
-                        <i class="material-icons">attach_file</i>
-                        Upload File
-                    </label>
-                    <input type="file" id="fileUpload" name="fileUpload" class="file-input" />
-                    <span class="file-name" id="fileName">No file selected</span>
-                </div>
-                
-                <div class="material-checkbox">
-                    <input type="checkbox" id="termsAgreement" name="termsAgreement" class="checkbox-input" required />
-                    <span class="checkbox-control"></span>
-                    I agree to the <a href="#" id="termsLink">Terms and Conditions</a> <span style="color: var(--error-color);">*</span>
-                </div>
-                <div class="error-text" id="termsAgreement-error">You must agree to the terms and conditions</div>
-            </div>
-            
-            <div class="buttons-row">
-                <button type="submit" class="material-button button-primary">
-                    <i class="material-icons">send</i>
-                    Submit
-                </button>
-                
-                <button type="button" class="material-button button-danger" id="modalButton">
-                    <i class="material-icons">open_in_new</i>
-                    Open Modal
-                </button>
-                
-                <button type="reset" class="material-button button-secondary">
-                    <i class="material-icons">refresh</i>
-                    Reset
-                </button>
-            </div>
-        </form>
+        <div id="root"></div>
     </div>
     
-    <!-- Dialog (Modal) -->
-    <div class="dialog-backdrop" id="dialog">
-        <div class="dialog">
-            <div class="dialog-header">
-                <h3 class="dialog-title">Red Herring Modal</h3>
-                <button class="dialog-close" id="dialogClose">
-                    <i class="material-icons">close</i>
-                </button>
-            </div>
-            <div class="dialog-content">
-                <p>This is a red herring modal instead of submitting the form.</p>
-                <p>In a real application, this might contain additional options or information.</p>
-            </div>
-            <div class="dialog-actions">
-                <button class="material-button button-secondary" id="dialogCancel">Cancel</button>
-                <button class="material-button button-primary" id="dialogAction">OK</button>
-            </div>
-        </div>
-    </div>
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Alphanumeric validation
-            const alphanumericInput = document.getElementById('alphanumericOnly');
-            if (alphanumericInput) {
-                alphanumericInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-            }
-            
-            // Slider value display
-            const slider = document.getElementById('satisfactionLevel');
-            const sliderValue = document.getElementById('sliderValue');
-            if (slider && sliderValue) {
-                slider.addEventListener('input', function() {
-                    sliderValue.textContent = this.value + '%';
-                });
-            }
-            
-            // File input display
-            const fileInput = document.getElementById('fileUpload');
-            const fileName = document.getElementById('fileName');
-            if (fileInput && fileName) {
-                fileInput.addEventListener('change', function() {
-                    if (this.files.length > 0) {
-                        fileName.textContent = this.files[0].name;
-                    } else {
-                        fileName.textContent = 'No file selected';
-                    }
-                });
-            }
-            
-            // Form submission
-            const form = document.getElementById('material-ui-form');
-            const successMessage = document.getElementById('success-message');
-            
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Reset previous error messages
-                    const errorMessages = document.querySelectorAll('.error-text');
-                    errorMessages.forEach(error => error.style.display = 'none');
-                    
-                    // Validate required fields
-                    const requiredFields = form.querySelectorAll('[required]');
-                    let isValid = true;
-                    
-                    requiredFields.forEach(field => {
-                        if (field.type === 'checkbox' && !field.checked) {
-                            const errorElement = document.getElementById(`${field.id}-error`);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        } else if (!field.value.trim()) {
-                            const errorElement = document.getElementById(`${field.id}-error`);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    });
-                    
-                    // Email validation
-                    const emailInput = document.getElementById('email');
-                    if (emailInput && emailInput.value) {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(emailInput.value)) {
-                            const errorElement = document.getElementById('email-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Phone validation
-                    const phoneInput = document.getElementById('phone');
-                    if (phoneInput && phoneInput.value) {
-                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                        if (!phonePattern.test(phoneInput.value)) {
-                            const errorElement = document.getElementById('phone-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Password match validation
-                    const passwordInput = document.getElementById('password');
-                    const confirmPasswordInput = document.getElementById('confirmPassword');
-                    if (passwordInput && confirmPasswordInput && 
-                        passwordInput.value && confirmPasswordInput.value) {
-                        if (passwordInput.value !== confirmPasswordInput.value) {
-                            const errorElement = document.getElementById('confirmPassword-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Username length validation
-                    const usernameInput = document.getElementById('username');
-                    if (usernameInput && usernameInput.value && usernameInput.value.length < 4) {
-                        const errorElement = document.getElementById('username-error');
-                        if (errorElement) {
-                            errorElement.style.display = 'block';
-                        }
-                        isValid = false;
-                    }
-                    
-                    // Password length validation
-                    if (passwordInput && passwordInput.value && passwordInput.value.length < 8) {
-                        const errorElement = document.getElementById('password-error');
-                        if (errorElement) {
-                            errorElement.style.display = 'block';
-                        }
-                        isValid = false;
-                    }
-                    
-                    // Zip code validation
-                    const zipCodeInput = document.getElementById('zipCode');
-                    if (zipCodeInput && zipCodeInput.value) {
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(zipCodeInput.value)) {
-                            const errorElement = document.getElementById('zipCode-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    if (isValid) {
-                        console.log('Form submitted successfully!');
-                        successMessage.style.display = 'block';
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(function() {
-                            successMessage.style.display = 'none';
-                        }, 3000);
-                    }
-                });
-            }
-            
-            // Dialog functionality
-            const modalButton = document.getElementById('modalButton');
-            const dialog = document.getElementById('dialog');
-            const dialogClose = document.getElementById('dialogClose');
-            const dialogCancel = document.getElementById('dialogCancel');
-            const dialogAction = document.getElementById('dialogAction');
-            
-            if (modalButton && dialog) {
-                modalButton.addEventListener('click', function() {
-                    dialog.classList.add('visible');
-                });
-            }
-            
-            if (dialogClose && dialog) {
-                dialogClose.addEventListener('click', function() {
-                    dialog.classList.remove('visible');
-                });
-            }
-            
-            if (dialogCancel && dialog) {
-                dialogCancel.addEventListener('click', function() {
-                    dialog.classList.remove('visible');
-                });
-            }
-            
-            if (dialogAction && dialog) {
-                dialogAction.addEventListener('click', function() {
-                    dialog.classList.remove('visible');
-                });
-            }
-            
-            // Close dialog when clicking outside
-            if (dialog) {
-                dialog.addEventListener('click', function(e) {
-                    if (e.target === dialog) {
-                        dialog.classList.remove('visible');
-                    }
-                });
-            }
-            
-            // Terms link click handler
-            const termsLink = document.getElementById('termsLink');
-            if (termsLink) {
-                termsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('Terms and Conditions would be displayed here.');
-                });
-            }
+    <!-- Material UI -->
+    <script src="https://unpkg.com/@mui/material@5.14.5/umd/material-ui.development.js" crossorigin></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        const {
+            Button, 
+            TextField, 
+            FormControl, 
+            FormControlLabel, 
+            FormGroup,
+            InputLabel, 
+            Select, 
+            MenuItem, 
+            FormHelperText,
+            Radio, 
+            RadioGroup, 
+            Checkbox, 
+            Switch, 
+            Slider,
+            Dialog, 
+            DialogActions, 
+            DialogContent, 
+            DialogContentText, 
+            DialogTitle,
+            Alert, 
+            Box, 
+            Typography,
+            createTheme,
+            ThemeProvider,
+            CssBaseline
+        } = MaterialUI;
+
+        // Create a theme instance
+        const theme = createTheme({
+            palette: {
+                primary: {
+                    main: '#1976d2',
+                },
+                secondary: {
+                    main: '#dc004e',
+                },
+                error: {
+                    main: '#f44336',
+                },
+                background: {
+                    default: '#f5f5f5',
+                },
+            },
         });
+        
+        function MaterialForm() {
+            const [formData, setFormData] = React.useState({
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+                birthDate: '',
+                gender: '',
+                address: '',
+                addressLine2: '',
+                city: '',
+                state: '',
+                zipCode: '',
+                country: '',
+                username: '',
+                password: '',
+                confirmPassword: '',
+                contactPreference: 'email',
+                interests: [],
+                preferredTime: '',
+                preferredDate: '',
+                newsletter: false,
+                darkMode: false,
+                alphanumericOnly: '',
+                satisfactionLevel: 50,
+                comments: '',
+                termsAgreement: false
+            });
+            
+            const [errors, setErrors] = React.useState({});
+            const [showDialog, setShowDialog] = React.useState(false);
+            const [showSuccess, setShowSuccess] = React.useState(false);
+            const [fileName, setFileName] = React.useState('No file selected');
+            
+            const handleChange = (e) => {
+                const { name, value, type, checked } = e.target;
+                
+                if (type === 'checkbox' && name === 'interests') {
+                    const updatedInterests = [...formData.interests];
+                    if (checked) {
+                        updatedInterests.push(value);
+                    } else {
+                        const index = updatedInterests.indexOf(value);
+                        if (index > -1) {
+                            updatedInterests.splice(index, 1);
+                        }
+                    }
+                    setFormData({ ...formData, interests: updatedInterests });
+                } else if (type === 'checkbox') {
+                    setFormData({ ...formData, [name]: checked });
+                } else {
+                    setFormData({ ...formData, [name]: value });
+                }
+                
+                // Clear error when field is changed
+                if (errors[name]) {
+                    setErrors({ ...errors, [name]: null });
+                }
+                
+                // Special handling for alphanumeric field
+                if (name === 'alphanumericOnly') {
+                    const alphanumericValue = value.replace(/[^a-zA-Z0-9]/g, '');
+                    setFormData({ ...formData, [name]: alphanumericValue });
+                }
+            };
+            
+            const handleFileChange = (e) => {
+                if (e.target.files.length > 0) {
+                    setFileName(e.target.files[0].name);
+                } else {
+                    setFileName('No file selected');
+                }
+            };
+            
+            const validateForm = () => {
+                const newErrors = {};
+                
+                // Required fields
+                if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+                if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+                if (!formData.address.trim()) newErrors.address = 'Street address is required';
+                if (!formData.city.trim()) newErrors.city = 'City is required';
+                if (!formData.state) newErrors.state = 'State is required';
+                if (!formData.zipCode.trim()) newErrors.zipCode = 'Zip code is required';
+                if (!formData.country) newErrors.country = 'Country is required';
+                if (!formData.username.trim()) newErrors.username = 'Username is required';
+                if (!formData.password.trim()) newErrors.password = 'Password is required';
+                if (!formData.confirmPassword.trim()) newErrors.confirmPassword = 'Please confirm your password';
+                if (!formData.termsAgreement) newErrors.termsAgreement = 'You must agree to the terms and conditions';
+                
+                // Email validation
+                if (formData.email) {
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(formData.email)) {
+                        newErrors.email = 'Please enter a valid email address';
+                    }
+                } else {
+                    newErrors.email = 'Email is required';
+                }
+                
+                // Phone validation (if provided)
+                if (formData.phone) {
+                    const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
+                    if (!phonePattern.test(formData.phone)) {
+                        newErrors.phone = 'Please enter a valid phone number (format: 123-456-7890)';
+                    }
+                }
+                
+                // Zip code validation
+                if (formData.zipCode) {
+                    const zipPattern = /^\d{5}(-\d{4})?$/;
+                    if (!zipPattern.test(formData.zipCode)) {
+                        newErrors.zipCode = 'Please enter a valid zip code';
+                    }
+                }
+                
+                // Username length validation
+                if (formData.username && formData.username.length < 4) {
+                    newErrors.username = 'Username must be at least 4 characters';
+                }
+                
+                // Password length validation
+                if (formData.password && formData.password.length < 8) {
+                    newErrors.password = 'Password must be at least 8 characters';
+                }
+                
+                // Password match validation
+                if (formData.password !== formData.confirmPassword) {
+                    newErrors.confirmPassword = 'Passwords must match';
+                }
+                
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (validateForm()) {
+                    console.log('Form submitted successfully!', formData);
+                    setShowSuccess(true);
+                    setTimeout(() => {
+                        setShowSuccess(false);
+                    }, 3000);
+                }
+            };
+            
+            const handleOpenDialog = () => {
+                setShowDialog(true);
+            };
+            
+            const handleCloseDialog = () => {
+                setShowDialog(false);
+            };
+            
+            const handleTermsClick = (e) => {
+                e.preventDefault();
+                alert('Terms and Conditions would be displayed here.');
+            };
+            
+            return (
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    {showSuccess && (
+                        <Alert severity="success" sx={{ mb: 2 }}>
+                            <strong>Success!</strong> Form submitted successfully!
+                        </Alert>
+                    )}
+                    
+                    <Box
+                        component="form"
+                        onSubmit={handleSubmit}
+                        sx={{
+                            backgroundColor: 'background.paper',
+                            borderRadius: 1,
+                            boxShadow: 3,
+                            p: 3,
+                            mb: 3,
+                        }}
+                    >
+                        {/* Personal Information Section */}
+                        <Box sx={{ mb: 4 }}>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    mb: 2, 
+                                    pb: 1, 
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                                    color: 'primary.main'
+                                }}
+                            >
+                                Personal Information
+                            </Typography>
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                                <TextField
+                                    id="firstName"
+                                    name="firstName"
+                                    label="First Name"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                    error={!!errors.firstName}
+                                    helperText={errors.firstName}
+                                    required
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                                
+                                <TextField
+                                    id="lastName"
+                                    name="lastName"
+                                    label="Last Name"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    error={!!errors.lastName}
+                                    helperText={errors.lastName}
+                                    required
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                            </Box>
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                                <TextField
+                                    id="email"
+                                    name="email"
+                                    label="Email Address"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    error={!!errors.email}
+                                    helperText={errors.email}
+                                    required
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                                
+                                <TextField
+                                    id="phone"
+                                    name="phone"
+                                    label="Phone Number"
+                                    type="tel"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    error={!!errors.phone}
+                                    helperText={errors.phone || "Format: 123-456-7890"}
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                            </Box>
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                                <TextField
+                                    id="birthDate"
+                                    name="birthDate"
+                                    label="Date of Birth"
+                                    type="date"
+                                    value={formData.birthDate}
+                                    onChange={handleChange}
+                                    InputLabelProps={{ shrink: true }}
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                                
+                                <FormControl sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}>
+                                    <InputLabel id="gender-label">Gender</InputLabel>
+                                    <Select
+                                        labelId="gender-label"
+                                        id="gender"
+                                        name="gender"
+                                        value={formData.gender}
+                                        onChange={handleChange}
+                                        label="Gender"
+                                    >
+                                        <MenuItem value=""><em>None</em></MenuItem>
+                                        <MenuItem value="male">Male</MenuItem>
+                                        <MenuItem value="female">Female</MenuItem>
+                                        <MenuItem value="other">Other</MenuItem>
+                                        <MenuItem value="prefer-not-to-say">Prefer not to say</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </Box>
+                        
+                        {/* Contact Information Section */}
+                        <Box sx={{ mb: 4 }}>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    mb: 2, 
+                                    pb: 1, 
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                                    color: 'primary.main'
+                                }}
+                            >
+                                Contact Information
+                            </Typography>
+                            
+                            <TextField
+                                id="address"
+                                name="address"
+                                label="Street Address"
+                                value={formData.address}
+                                onChange={handleChange}
+                                error={!!errors.address}
+                                helperText={errors.address}
+                                required
+                                fullWidth
+                                sx={{ mb: 2 }}
+                            />
+                            
+                            <TextField
+                                id="addressLine2"
+                                name="addressLine2"
+                                label="Address Line 2"
+                                value={formData.addressLine2}
+                                onChange={handleChange}
+                                fullWidth
+                                sx={{ mb: 2 }}
+                                helperText="Apartment, suite, unit, etc."
+                            />
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                                <TextField
+                                    id="city"
+                                    name="city"
+                                    label="City"
+                                    value={formData.city}
+                                    onChange={handleChange}
+                                    error={!!errors.city}
+                                    helperText={errors.city}
+                                    required
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                                
+                                <FormControl 
+                                    error={!!errors.state} 
+                                    required 
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                >
+                                    <InputLabel id="state-label">State</InputLabel>
+                                    <Select
+                                        labelId="state-label"
+                                        id="state"
+                                        name="state"
+                                        value={formData.state}
+                                        onChange={handleChange}
+                                        label="State"
+                                    >
+                                        <MenuItem value=""><em>None</em></MenuItem>
+                                        <MenuItem value="AL">Alabama</MenuItem>
+                                        <MenuItem value="AK">Alaska</MenuItem>
+                                        <MenuItem value="AZ">Arizona</MenuItem>
+                                        {/* More states would be listed here */}
+                                        <MenuItem value="WY">Wyoming</MenuItem>
+                                    </Select>
+                                    {errors.state && <FormHelperText>{errors.state}</FormHelperText>}
+                                </FormControl>
+                            </Box>
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                                <TextField
+                                    id="zipCode"
+                                    name="zipCode"
+                                    label="Zip Code"
+                                    value={formData.zipCode}
+                                    onChange={handleChange}
+                                    error={!!errors.zipCode}
+                                    helperText={errors.zipCode}
+                                    required
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                                
+                                <FormControl 
+                                    error={!!errors.country} 
+                                    required 
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                >
+                                    <InputLabel id="country-label">Country</InputLabel>
+                                    <Select
+                                        labelId="country-label"
+                                        id="country"
+                                        name="country"
+                                        value={formData.country}
+                                        onChange={handleChange}
+                                        label="Country"
+                                    >
+                                        <MenuItem value=""><em>None</em></MenuItem>
+                                        <MenuItem value="US">United States</MenuItem>
+                                        <MenuItem value="CA">Canada</MenuItem>
+                                        <MenuItem value="UK">United Kingdom</MenuItem>
+                                        <MenuItem value="AU">Australia</MenuItem>
+                                        {/* More countries would be listed here */}
+                                    </Select>
+                                    {errors.country && <FormHelperText>{errors.country}</FormHelperText>}
+                                </FormControl>
+                            </Box>
+                        </Box>
+                        
+                        {/* Account Information Section */}
+                        <Box sx={{ mb: 4 }}>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    mb: 2, 
+                                    pb: 1, 
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                                    color: 'primary.main'
+                                }}
+                            >
+                                Account Information
+                            </Typography>
+                            
+                            <TextField
+                                id="username"
+                                name="username"
+                                label="Username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                error={!!errors.username}
+                                helperText={errors.username || "Must be at least 4 characters"}
+                                required
+                                fullWidth
+                                sx={{ mb: 2 }}
+                            />
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                                <TextField
+                                    id="password"
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    error={!!errors.password}
+                                    helperText={errors.password || "Must be at least 8 characters"}
+                                    required
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                                
+                                <TextField
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    label="Confirm Password"
+                                    type="password"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    error={!!errors.confirmPassword}
+                                    helperText={errors.confirmPassword}
+                                    required
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                            </Box>
+                        </Box>
+                        
+                        {/* Preferences Section */}
+                        <Box sx={{ mb: 4 }}>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    mb: 2, 
+                                    pb: 1, 
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                                    color: 'primary.main'
+                                }}
+                            >
+                                Preferences
+                            </Typography>
+                            
+                            <FormControl component="fieldset" sx={{ mb: 2 }}>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Contact Preference
+                                </Typography>
+                                <RadioGroup
+                                    name="contactPreference"
+                                    value={formData.contactPreference}
+                                    onChange={handleChange}
+                                >
+                                    <FormControlLabel value="email" control={<Radio />} label="Email" />
+                                    <FormControlLabel value="phone" control={<Radio />} label="Phone" />
+                                    <FormControlLabel value="mail" control={<Radio />} label="Mail" />
+                                </RadioGroup>
+                            </FormControl>
+                            
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Interests
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formData.interests.includes('technology')}
+                                                onChange={handleChange}
+                                                name="interests"
+                                                value="technology"
+                                            />
+                                        }
+                                        label="Technology"
+                                        sx={{ width: { xs: '100%', sm: '33%' } }}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formData.interests.includes('sports')}
+                                                onChange={handleChange}
+                                                name="interests"
+                                                value="sports"
+                                            />
+                                        }
+                                        label="Sports"
+                                        sx={{ width: { xs: '100%', sm: '33%' } }}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formData.interests.includes('music')}
+                                                onChange={handleChange}
+                                                name="interests"
+                                                value="music"
+                                            />
+                                        }
+                                        label="Music"
+                                        sx={{ width: { xs: '100%', sm: '33%' } }}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formData.interests.includes('reading')}
+                                                onChange={handleChange}
+                                                name="interests"
+                                                value="reading"
+                                            />
+                                        }
+                                        label="Reading"
+                                        sx={{ width: { xs: '100%', sm: '33%' } }}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formData.interests.includes('travel')}
+                                                onChange={handleChange}
+                                                name="interests"
+                                                value="travel"
+                                            />
+                                        }
+                                        label="Travel"
+                                        sx={{ width: { xs: '100%', sm: '33%' } }}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formData.interests.includes('cooking')}
+                                                onChange={handleChange}
+                                                name="interests"
+                                                value="cooking"
+                                            />
+                                        }
+                                        label="Cooking"
+                                        sx={{ width: { xs: '100%', sm: '33%' } }}
+                                    />
+                                </Box>
+                            </Box>
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                                <TextField
+                                    id="preferredTime"
+                                    name="preferredTime"
+                                    label="Preferred Contact Time"
+                                    type="time"
+                                    value={formData.preferredTime}
+                                    onChange={handleChange}
+                                    InputLabelProps={{ shrink: true }}
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                                
+                                <TextField
+                                    id="preferredDate"
+                                    name="preferredDate"
+                                    label="Preferred Contact Date"
+                                    type="date"
+                                    value={formData.preferredDate}
+                                    onChange={handleChange}
+                                    InputLabelProps={{ shrink: true }}
+                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
+                                />
+                            </Box>
+                            
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={formData.newsletter}
+                                        onChange={handleChange}
+                                        name="newsletter"
+                                        color="primary"
+                                    />
+                                }
+                                label="Subscribe to newsletter"
+                                sx={{ display: 'block', mb: 1 }}
+                            />
+                            
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={formData.darkMode}
+                                        onChange={handleChange}
+                                        name="darkMode"
+                                        color="primary"
+                                    />
+                                }
+                                label="Dark Mode"
+                                sx={{ display: 'block', mb: 2 }}
+                            />
+                        </Box>
+                        
+                        {/* Additional Fields Section */}
+                        <Box sx={{ mb: 4 }}>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    mb: 2, 
+                                    pb: 1, 
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                                    color: 'primary.main'
+                                }}
+                            >
+                                Additional Fields
+                            </Typography>
+                            
+                            <TextField
+                                id="alphanumericOnly"
+                                name="alphanumericOnly"
+                                label="Alphanumeric Only"
+                                value={formData.alphanumericOnly}
+                                onChange={handleChange}
+                                error={!!errors.alphanumericOnly}
+                                helperText={errors.alphanumericOnly || "Only letters and numbers are allowed"}
+                                fullWidth
+                                sx={{ mb: 2 }}
+                            />
+                            
+                            <TextField
+                                id="disabledInput"
+                                label="Disabled Input"
+                                value="This field is disabled"
+                                disabled
+                                fullWidth
+                                sx={{ mb: 2 }}
+                            />
+                            
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Satisfaction Level
+                                </Typography>
+                                <Slider
+                                    name="satisfactionLevel"
+                                    value={formData.satisfactionLevel}
+                                    onChange={(e, newValue) => setFormData({ ...formData, satisfactionLevel: newValue })}
+                                    aria-labelledby="satisfaction-level-slider"
+                                    valueLabelDisplay="auto"
+                                    step={1}
+                                    marks
+                                    min={0}
+                                    max={100}
+                                />
+                                <Box sx={{ textAlign: 'center', mt: 1 }}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {formData.satisfactionLevel}%
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            
+                            <TextField
+                                id="comments"
+                                name="comments"
+                                label="Comments"
+                                multiline
+                                rows={4}
+                                value={formData.comments}
+                                onChange={handleChange}
+                                fullWidth
+                                sx={{ mb: 2 }}
+                            />
+                            
+                            <Box sx={{ mb: 2 }}>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    startIcon={<span className="material-icons">attach_file</span>}
+                                >
+                                    Upload File
+                                    <input
+                                        type="file"
+                                        hidden
+                                        onChange={handleFileChange}
+                                    />
+                                </Button>
+                                <Typography variant="body2" sx={{ mt: 1, ml: 1 }}>
+                                    {fileName}
+                                </Typography>
+                            </Box>
+                            
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={formData.termsAgreement}
+                                        onChange={handleChange}
+                                        name="termsAgreement"
+                                        required
+                                    />
+                                }
+                                label={
+                                    <span>
+                                        I agree to the <a href="#" onClick={handleTermsClick}>Terms and Conditions</a> <span style={{ color: '#f44336' }}>*</span>
+                                    </span>
+                                }
+                                sx={{ mb: 2 }}
+                            />
+                            {errors.termsAgreement && (
+                                <FormHelperText error>{errors.termsAgreement}</FormHelperText>
+                            )}
+                        </Box>
+                        
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <Button 
+                                type="submit" 
+                                variant="contained" 
+                                color="primary"
+                                startIcon={<span className="material-icons">send</span>}
+                            >
+                                Submit
+                            </Button>
+                            
+                            <Button 
+                                type="button" 
+                                variant="contained" 
+                                color="error"
+                                startIcon={<span className="material-icons">open_in_new</span>}
+                                onClick={handleOpenDialog}
+                            >
+                                Open Modal
+                            </Button>
+                            
+                            <Button 
+                                type="reset" 
+                                variant="outlined" 
+                                color="primary"
+                                startIcon={<span className="material-icons">refresh</span>}
+                                onClick={() => {
+                                    setFormData({
+                                        firstName: '',
+                                        lastName: '',
+                                        email: '',
+                                        phone: '',
+                                        birthDate: '',
+                                        gender: '',
+                                        address: '',
+                                        addressLine2: '',
+                                        city: '',
+                                        state: '',
+                                        zipCode: '',
+                                        country: '',
+                                        username: '',
+                                        password: '',
+                                        confirmPassword: '',
+                                        contactPreference: 'email',
+                                        interests: [],
+                                        preferredTime: '',
+                                        preferredDate: '',
+                                        newsletter: false,
+                                        darkMode: false,
+                                        alphanumericOnly: '',
+                                        satisfactionLevel: 50,
+                                        comments: '',
+                                        termsAgreement: false
+                                    });
+                                    setErrors({});
+                                }}
+                            >
+                                Reset
+                            </Button>
+                        </Box>
+                    </Box>
+                    
+                    {/* Dialog (Modal) */}
+                    <Dialog
+                        open={showDialog}
+                        onClose={handleCloseDialog}
+                        aria-labelledby="dialog-title"
+                    >
+                        <DialogTitle id="dialog-title">
+                            Red Herring Modal
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                This is a red herring modal instead of submitting the form.
+                            </DialogContentText>
+                            <DialogContentText>
+                                In a real application, this might contain additional options or information.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog} color="primary">Cancel</Button>
+                            <Button onClick={handleCloseDialog} color="primary" variant="contained">OK</Button>
+                        </DialogActions>
+                    </Dialog>
+                </ThemeProvider>
+            );
+        }
+        
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<MaterialForm />);
     </script>
 </body>
 </html>

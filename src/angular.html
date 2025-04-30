@@ -102,363 +102,345 @@
     </div>
     
     <!-- Angular dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/zone.js@0.11.8/dist/zone.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/reflect-metadata@0.1.13/Reflect.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@angular/core@15.2.9/bundles/core.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@angular/common@15.2.9/bundles/common.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@angular/compiler@15.2.9/bundles/compiler.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser@15.2.9/bundles/platform-browser.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser-dynamic@15.2.9/bundles/platform-browser-dynamic.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@angular/forms@15.2.9/bundles/forms.umd.min.js"></script>
-    
+    <script src="https://unpkg.com/angular@1.8.3/angular.min.js"></script>
     <script>
-        (function(global) {
-            // Declare Angular modules
-            var core = ng.core;
-            var platformBrowserDynamic = ng.platformBrowserDynamic;
-            var forms = ng.forms;
-            var common = ng.common;
+        // Create AngularJS application
+        angular.module('formApp', [])
+        .controller('FormController', function($scope) {
+            // Initialize form data
+            $scope.formData = {
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+                address: {
+                    street: '',
+                    city: '',
+                    state: '',
+                    zip: ''
+                },
+                username: '',
+                password: '',
+                birthDate: '',
+                appointmentTime: '',
+                favoriteColor: '',
+                contactPreference: '',
+                interests: {
+                    technology: false,
+                    sports: false, 
+                    music: false,
+                    art: false
+                },
+                alphanumericOnly: '',
+                satisfactionLevel: 50,
+                comments: ''
+            };
             
-            // Create the form component
-            var AppComponent = core.Component({
-                selector: 'app-root',
-                template: `
-                <div *ngIf="formSubmitted" class="alert alert-success">
-                    <strong>Success!</strong> Form submitted successfully!
-                </div>
-                
-                <form class="form-container" [formGroup]="userForm" (ngSubmit)="onSubmit()">
-                    <!-- Basic Information Section -->
-                    <div class="form-section">
-                        <h3>Basic Information</h3>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
-                                <input type="text" id="firstName" formControlName="firstName" class="form-control">
-                                <div class="error-message" *ngIf="userForm.get('firstName').invalid && userForm.get('firstName').touched">
-                                    First name is required
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" id="lastName" formControlName="lastName" class="form-control">
-                                <div class="error-message" *ngIf="userForm.get('lastName').invalid && userForm.get('lastName').touched">
-                                    Last name is required
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
-                                <input type="email" id="email" formControlName="email" class="form-control">
-                                <div class="error-message" *ngIf="userForm.get('email').invalid && userForm.get('email').touched">
-                                    <span *ngIf="userForm.get('email').errors?.required">Email is required</span>
-                                    <span *ngIf="userForm.get('email').errors?.email">Enter a valid email address</span>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" id="phone" formControlName="phone" class="form-control" placeholder="123-456-7890">
-                                <div class="error-message" *ngIf="userForm.get('phone').invalid && userForm.get('phone').touched">
-                                    Enter a valid phone number (e.g., 123-456-7890)
-                                </div>
-                            </div>
-                        </div>
+            $scope.showModal = false;
+            $scope.formSubmitted = false;
+            
+            $scope.submitForm = function() {
+                if ($scope.userForm.$valid) {
+                    console.log('Form submitted successfully!', $scope.formData);
+                    $scope.formSubmitted = true;
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        $scope.formSubmitted = false;
+                        $scope.$apply();
+                    }, 3000);
+                }
+            };
+            
+            $scope.resetForm = function() {
+                $scope.formData = {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    address: {
+                        street: '',
+                        city: '',
+                        state: '',
+                        zip: ''
+                    },
+                    username: '',
+                    password: '',
+                    birthDate: '',
+                    appointmentTime: '',
+                    favoriteColor: '',
+                    contactPreference: '',
+                    interests: {
+                        technology: false,
+                        sports: false, 
+                        music: false,
+                        art: false
+                    },
+                    alphanumericOnly: '',
+                    satisfactionLevel: 50,
+                    comments: ''
+                };
+                $scope.userForm.$setPristine();
+                $scope.userForm.$setUntouched();
+            };
+            
+            $scope.openModal = function() {
+                $scope.showModal = true;
+            };
+            
+            $scope.closeModal = function() {
+                $scope.showModal = false;
+            };
+        });
+        
+        // Update the HTML of angular-app div
+        document.getElementById('angular-app').innerHTML = `
+                <div ng-app="formApp" ng-controller="FormController">
+                    <div ng-if="formSubmitted" class="alert alert-success">
+                        <strong>Success!</strong> Form submitted successfully!
                     </div>
                     
-                    <!-- Address Section -->
-                    <div class="form-section">
-                        <h3>Address Information</h3>
-                        <div formGroupName="address">
-                            <div class="mb-3">
-                                <label for="street" class="form-label">Street Address</label>
-                                <input type="text" id="street" formControlName="street" class="form-control">
+                    <form name="userForm" class="form-container" ng-submit="submitForm()" novalidate>
+                        <!-- Basic Information Section -->
+                        <div class="form-section">
+                            <h3>Basic Information</h3>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                    <input type="text" id="firstName" name="firstName" ng-model="formData.firstName" class="form-control" required>
+                                    <div class="error-message" ng-if="userForm.firstName.$invalid && userForm.firstName.$touched">
+                                        First name is required
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                    <input type="text" id="lastName" name="lastName" ng-model="formData.lastName" class="form-control" required>
+                                    <div class="error-message" ng-if="userForm.lastName.$invalid && userForm.lastName.$touched">
+                                        Last name is required
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="row mb-3">
-                                <div class="col-md-5">
-                                    <label for="city" class="form-label">City</label>
-                                    <input type="text" id="city" formControlName="city" class="form-control">
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                    <input type="email" id="email" name="email" ng-model="formData.email" class="form-control" required>
+                                    <div class="error-message" ng-if="userForm.email.$invalid && userForm.email.$touched">
+                                        <span ng-if="userForm.email.$error.required">Email is required</span>
+                                        <span ng-if="userForm.email.$error.email">Enter a valid email address</span>
+                                    </div>
                                 </div>
                                 
-                                <div class="col-md-4">
-                                    <label for="state" class="form-label">State</label>
-                                    <select id="state" formControlName="state" class="form-select">
-                                        <option value="">Select a state</option>
-                                        <option value="AL">Alabama</option>
-                                        <option value="AK">Alaska</option>
-                                        <option value="AZ">Arizona</option>
-                                        <!-- More states would be listed here -->
-                                        <option value="WY">Wyoming</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="col-md-3">
-                                    <label for="zip" class="form-label">Zip Code</label>
-                                    <input type="text" id="zip" formControlName="zip" class="form-control">
-                                    <div class="error-message" *ngIf="userForm.get('address.zip').invalid && userForm.get('address.zip').touched">
-                                        Enter a valid zip code
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" ng-model="formData.phone" class="form-control" placeholder="123-456-7890" ng-pattern="/^\\d{3}-\\d{3}-\\d{4}$/">
+                                    <div class="error-message" ng-if="userForm.phone.$invalid && userForm.phone.$touched">
+                                        Enter a valid phone number (e.g., 123-456-7890)
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Account Information Section -->
-                    <div class="form-section">
-                        <h3>Account Information</h3>
                         
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
-                                <input type="text" id="username" formControlName="username" class="form-control">
-                                <div class="error-message" *ngIf="userForm.get('username').invalid && userForm.get('username').touched">
-                                    <span *ngIf="userForm.get('username').errors?.required">Username is required</span>
-                                    <span *ngIf="userForm.get('username').errors?.minlength">Username must be at least 4 characters</span>
+                        <!-- Address Section -->
+                        <div class="form-section">
+                            <h3>Address Information</h3>
+                            <div>
+                                <div class="mb-3">
+                                    <label for="street" class="form-label">Street Address</label>
+                                    <input type="text" id="street" name="street" ng-model="formData.address.street" class="form-control">
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-5">
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" id="city" name="city" ng-model="formData.address.city" class="form-control">
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="state" class="form-label">State</label>
+                                        <select id="state" name="state" ng-model="formData.address.state" class="form-select">
+                                            <option value="">Select a state</option>
+                                            <option value="AL">Alabama</option>
+                                            <option value="AK">Alaska</option>
+                                            <option value="AZ">Arizona</option>
+                                            <!-- More states would be listed here -->
+                                            <option value="WY">Wyoming</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="zip" class="form-label">Zip Code</label>
+                                        <input type="text" id="zip" name="zip" ng-model="formData.address.zip" class="form-control" ng-pattern="/^\\d{5}(-\\d{4})?$/">
+                                        <div class="error-message" ng-if="userForm.zip.$invalid && userForm.zip.$touched">
+                                            Enter a valid zip code
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Account Information Section -->
+                        <div class="form-section">
+                            <h3>Account Information</h3>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                                    <input type="text" id="username" name="username" ng-model="formData.username" class="form-control" required ng-minlength="4">
+                                    <div class="error-message" ng-if="userForm.username.$invalid && userForm.username.$touched">
+                                        <span ng-if="userForm.username.$error.required">Username is required</span>
+                                        <span ng-if="userForm.username.$error.minlength">Username must be at least 4 characters</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                    <input type="password" id="password" name="password" ng-model="formData.password" class="form-control" required ng-minlength="8">
+                                    <div class="error-message" ng-if="userForm.password.$invalid && userForm.password.$touched">
+                                        <span ng-if="userForm.password.$error.required">Password is required</span>
+                                        <span ng-if="userForm.password.$error.minlength">Password must be at least 8 characters</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Date & Time Pickers -->
+                        <div class="form-section">
+                            <h3>Date & Time Selection</h3>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="birthDate" class="form-label">Date of Birth</label>
+                                    <input type="date" id="birthDate" name="birthDate" ng-model="formData.birthDate" class="form-control">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="appointmentTime" class="form-label">Preferred Appointment Time</label>
+                                    <input type="time" id="appointmentTime" name="appointmentTime" ng-model="formData.appointmentTime" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Preferences Section -->
+                        <div class="form-section">
+                            <h3>Preferences</h3>
+                            
+                            <div class="mb-3">
+                                <label for="favoriteColor" class="form-label">Favorite Color</label>
+                                <select id="favoriteColor" name="favoriteColor" ng-model="formData.favoriteColor" class="form-select">
+                                    <option value="">Select a color</option>
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="orange">Orange</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Contact Preference</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="contactEmail" name="contactPreference" value="email" ng-model="formData.contactPreference">
+                                    <label class="form-check-label" for="contactEmail">Email</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="contactPhone" name="contactPreference" value="phone" ng-model="formData.contactPreference">
+                                    <label class="form-check-label" for="contactPhone">Phone</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="contactMail" name="contactPreference" value="mail" ng-model="formData.contactPreference">
+                                    <label class="form-check-label" for="contactMail">Mail</label>
                                 </div>
                             </div>
                             
-                            <div class="col-md-6">
-                                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                                <input type="password" id="password" formControlName="password" class="form-control">
-                                <div class="error-message" *ngIf="userForm.get('password').invalid && userForm.get('password').touched">
-                                    <span *ngIf="userForm.get('password').errors?.required">Password is required</span>
-                                    <span *ngIf="userForm.get('password').errors?.minlength">Password must be at least 8 characters</span>
+                            <div class="mb-3">
+                                <label class="form-label">Interests</label>
+                                <div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="interestTech" name="interestTech" ng-model="formData.interests.technology">
+                                        <label class="form-check-label" for="interestTech">Technology</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="interestSports" name="interestSports" ng-model="formData.interests.sports">
+                                        <label class="form-check-label" for="interestSports">Sports</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="interestMusic" name="interestMusic" ng-model="formData.interests.music">
+                                        <label class="form-check-label" for="interestMusic">Music</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="interestArt" name="interestArt" ng-model="formData.interests.art">
+                                        <label class="form-check-label" for="interestArt">Art</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Date & Time Pickers -->
-                    <div class="form-section">
-                        <h3>Date & Time Selection</h3>
                         
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="birthDate" class="form-label">Date of Birth</label>
-                                <input type="date" id="birthDate" formControlName="birthDate" class="form-control">
+                        <!-- Additional Fields Section -->
+                        <div class="form-section">
+                            <h3>Additional Fields</h3>
+                            
+                            <div class="mb-3">
+                                <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
+                                <input type="text" id="alphanumericOnly" name="alphanumericOnly" ng-model="formData.alphanumericOnly" class="form-control" ng-pattern="/^[a-zA-Z0-9]*$/">
+                                <div class="error-message" ng-if="userForm.alphanumericOnly.$invalid && userForm.alphanumericOnly.$touched">
+                                    Only letters and numbers are allowed
+                                </div>
                             </div>
                             
-                            <div class="col-md-6">
-                                <label for="appointmentTime" class="form-label">Preferred Appointment Time</label>
-                                <input type="time" id="appointmentTime" formControlName="appointmentTime" class="form-control">
+                            <div class="mb-3">
+                                <label for="disabledInput" class="form-label">Disabled Input</label>
+                                <input type="text" id="disabledInput" value="This field is disabled" class="form-control" disabled>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="rangeInput" class="form-label">Satisfaction Level</label>
+                                <input type="range" id="rangeInput" name="satisfactionLevel" ng-model="formData.satisfactionLevel" class="form-range" min="0" max="100" step="1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="comments" class="form-label">Additional Comments</label>
+                                <textarea id="comments" name="comments" ng-model="formData.comments" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="fileUpload" class="form-label">Upload File</label>
+                                <input type="file" id="fileUpload" class="form-control">
                             </div>
                         </div>
-                    </div>
+                        
+                        <div class="d-flex gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit Form</button>
+                            <button type="button" class="btn btn-danger" ng-click="openModal()">Open Modal</button>
+                            <button type="button" class="btn btn-secondary" ng-click="resetForm()">Reset Form</button>
+                        </div>
+                    </form>
                     
-                    <!-- Preferences Section -->
-                    <div class="form-section">
-                        <h3>Preferences</h3>
-                        
-                        <div class="mb-3">
-                            <label for="favoriteColor" class="form-label">Favorite Color</label>
-                            <select id="favoriteColor" formControlName="favoriteColor" class="form-select">
-                                <option value="">Select a color</option>
-                                <option value="red">Red</option>
-                                <option value="blue">Blue</option>
-                                <option value="green">Green</option>
-                                <option value="yellow">Yellow</option>
-                                <option value="purple">Purple</option>
-                                <option value="orange">Orange</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Contact Preference</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="contactEmail" value="email" formControlName="contactPreference">
-                                <label class="form-check-label" for="contactEmail">Email</label>
+                    <!-- Red Herring Modal -->
+                    <div class="modal-backdrop" ng-if="showModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4>Red Herring Modal</h4>
+                                <button type="button" class="modal-close" ng-click="closeModal()">&times;</button>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="contactPhone" value="phone" formControlName="contactPreference">
-                                <label class="form-check-label" for="contactPhone">Phone</label>
+                            <div class="modal-body">
+                                <p>This is a red herring modal instead of submitting the form.</p>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="contactMail" value="mail" formControlName="contactPreference">
-                                <label class="form-check-label" for="contactMail">Mail</label>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" ng-click="closeModal()">Close</button>
                             </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Interests</label>
-                            <div formArrayName="interests">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="interestTech" [formControlName]="0">
-                                    <label class="form-check-label" for="interestTech">Technology</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="interestSports" [formControlName]="1">
-                                    <label class="form-check-label" for="interestSports">Sports</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="interestMusic" [formControlName]="2">
-                                    <label class="form-check-label" for="interestMusic">Music</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="interestArt" [formControlName]="3">
-                                    <label class="form-check-label" for="interestArt">Art</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Additional Fields Section -->
-                    <div class="form-section">
-                        <h3>Additional Fields</h3>
-                        
-                        <div class="mb-3">
-                            <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
-                            <input type="text" id="alphanumericOnly" formControlName="alphanumericOnly" class="form-control">
-                            <div class="error-message" *ngIf="userForm.get('alphanumericOnly').invalid && userForm.get('alphanumericOnly').touched">
-                                Only letters and numbers are allowed
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="disabledInput" class="form-label">Disabled Input</label>
-                            <input type="text" id="disabledInput" value="This field is disabled" class="form-control" disabled>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="rangeInput" class="form-label">Satisfaction Level</label>
-                            <input type="range" id="rangeInput" formControlName="satisfactionLevel" class="form-range" min="0" max="100" step="1">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="comments" class="form-label">Additional Comments</label>
-                            <textarea id="comments" formControlName="comments" class="form-control" rows="3"></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="fileUpload" class="form-label">Upload File</label>
-                            <input type="file" id="fileUpload" class="form-control">
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex gap-2 mb-3">
-                        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Submit Form</button>
-                        <button type="button" class="btn btn-danger" (click)="openModal()">Open Modal</button>
-                        <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset Form</button>
-                    </div>
-                </form>
-                
-                <!-- Red Herring Modal -->
-                <div class="modal-backdrop" *ngIf="showModal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4>Red Herring Modal</h4>
-                            <button type="button" class="modal-close" (click)="closeModal()">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <p>This is a red herring modal instead of submitting the form.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
                         </div>
                     </div>
                 </div>
-                `
-            }).Class({
-                constructor: [forms.FormBuilder, function(fb) {
-                    this.formBuilder = fb;
-                    this.showModal = false;
-                    this.formSubmitted = false;
-                    
-                    // Initialize the form
-                    this.userForm = this.formBuilder.group({
-                        firstName: ['', forms.Validators.required],
-                        lastName: ['', forms.Validators.required],
-                        email: ['', [forms.Validators.required, forms.Validators.email]],
-                        phone: ['', [forms.Validators.pattern(/^\d{3}-\d{3}-\d{4}$/)]],
-                        address: this.formBuilder.group({
-                            street: [''],
-                            city: [''],
-                            state: [''],
-                            zip: ['', forms.Validators.pattern(/^\d{5}(-\d{4})?$/)]
-                        }),
-                        username: ['', [forms.Validators.required, forms.Validators.minLength(4)]],
-                        password: ['', [forms.Validators.required, forms.Validators.minLength(8)]],
-                        birthDate: [''],
-                        appointmentTime: [''],
-                        favoriteColor: [''],
-                        contactPreference: [''],
-                        interests: this.formBuilder.array([
-                            this.formBuilder.control(false), // Technology
-                            this.formBuilder.control(false), // Sports
-                            this.formBuilder.control(false), // Music
-                            this.formBuilder.control(false)  // Art
-                        ]),
-                        alphanumericOnly: ['', forms.Validators.pattern(/^[a-zA-Z0-9]*$/)],
-                        satisfactionLevel: [50],
-                        comments: ['']
-                    });
-                }],
-                
-                ngOnInit: function() {
-                    // Any initialization logic can go here
-                },
-                
-                onSubmit: function() {
-                    if (this.userForm.valid) {
-                        console.log('Form submitted successfully!', this.userForm.value);
-                        this.formSubmitted = true;
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(function() {
-                            this.formSubmitted = false;
-                        }.bind(this), 3000);
-                    } else {
-                        this.validateAllFormFields(this.userForm);
-                    }
-                },
-                
-                validateAllFormFields: function(formGroup) {
-                    Object.keys(formGroup.controls).forEach(field => {
-                        const control = formGroup.get(field);
-                        if (control instanceof forms.FormControl) {
-                            control.markAsTouched({ onlySelf: true });
-                        } else if (control instanceof forms.FormGroup) {
-                            this.validateAllFormFields(control);
-                        }
-                    });
-                },
-                
-                resetForm: function() {
-                    this.userForm.reset({
-                        satisfactionLevel: 50,
-                        interests: [false, false, false, false]
-                    });
-                },
-                
-                openModal: function() {
-                    this.showModal = true;
-                },
-                
-                closeModal: function() {
-                    this.showModal = false;
-                }
-            });
+                `;
             
-            // Create the module
-            var AppModule = core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    forms.ReactiveFormsModule,
-                    forms.FormsModule
-                ],
-                declarations: [AppComponent],
-                bootstrap: [AppComponent]
-            }).Class({
-                constructor: function() {}
+            // Initialize the AngularJS application when DOM is loaded
+            angular.element(document).ready(function() {
+                angular.bootstrap(document.getElementById('angular-app'), ['formApp']);
             });
-            
-            // Bootstrap the application
-            platformBrowserDynamic.platformBrowserDynamic().bootstrapModule(AppModule);
-        })(window);
     </script>
 </body>
 </html>
