@@ -259,7 +259,7 @@
     <header>
         <h1>Browser Agent Evaluation Stress-Test</h1>
         <div class="score-container">
-            Score: <span class="score">0</span> / 27
+            Score: <span class="score">0</span> / 30
         </div>
     </header>
     <center>
@@ -1418,6 +1418,107 @@
                 
                 // Initial draw
                 draw();
+            </script>
+        </div>
+
+        <!-- Task 29: Audio Transcription -->
+        <div class="task" id="task29">
+            <div class="task-number"><a href="#task29" id="task29">29</a></div>
+            <div class="task-title">Play this audio snippet and transcribe the word into this field</div>
+            <div style="margin: 1rem 0;">
+                <audio id="audio-snippet" controls>
+                    <source src="task29-audio.ogg" type="audio/ogg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            <div style="margin-top: 10px;">
+                <input type="text" id="transcription-input" placeholder="Type the word in the audio snippet here">
+            </div>
+            <script>
+                const transcriptionInput = document.getElementById('transcription-input');
+                
+                transcriptionInput.addEventListener('input', function() {
+                    if (this.value.trim().toLowerCase() === 'gossip') {
+                        completeTask(document.getElementById('task29'));
+                    }
+                });
+            </script>
+        </div>
+        
+        <!-- Task 30: Dropdown Selections -->
+        <div class="task" id="task30">
+            <div class="task-number"><a href="#task30" id="task30">30</a></div>
+            <div class="task-title">Select "red" and "ball" from these dropdowns</div>
+            
+            <!-- Include Select2 CSS and JS for the fancy dropdown -->
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+            
+            <div style="margin: 1rem 0;">
+                <div style="margin-bottom: 1rem;">
+                    <label for="color-select">Select a color:</label>
+                    <select id="color-select" style="width: 200px; margin-left: 10px;">
+                        <option value="">Choose a color</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="red">Red</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="purple">Purple</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="object-select">Select an object:</label>
+                    <select id="object-select" class="object-select-dropdown" style="width: 200px; margin-left: 10px;">
+                        <option value="">Choose an object</option>
+                        <option value="cube">Cube</option>
+                        <option value="ball">Ball</option>
+                        <option value="pen">Pen</option>
+                        <option value="book">Book</option>
+                        <option value="phone">Phone</option>
+                    </select>
+                </div>
+            </div>
+            
+            <script>
+                // Initialize Select2 for the object dropdown to make it fancy
+                $(document).ready(function() {
+                    $('.object-select-dropdown').select2({
+                        placeholder: "Select an object"
+                    });
+                    
+                    // Track selections
+                    let colorSelected = false;
+                    let objectSelected = false;
+                    
+                    // Check if task is complete
+                    function checkDropdownSelections() {
+                        if (colorSelected && objectSelected) {
+                            completeTask(document.getElementById('task30'));
+                        }
+                    }
+                    
+                    // Listen for color selection
+                    $('#color-select').on('change', function() {
+                        if ($(this).val() === 'red') {
+                            colorSelected = true;
+                            checkDropdownSelections();
+                        } else {
+                            colorSelected = false;
+                        }
+                    });
+                    
+                    // Listen for object selection
+                    $('#object-select').on('change', function() {
+                        if ($(this).val() === 'ball') {
+                            objectSelected = true;
+                            checkDropdownSelections();
+                        } else {
+                            objectSelected = false;
+                        }
+                    });
+                });
             </script>
         </div>
 
