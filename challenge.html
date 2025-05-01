@@ -9,18 +9,19 @@
     Task Structure Requirements:
     1. Each task must have a URL-friendly unique ID (e.g., "simple-button", "drag-drop", "audio-transcription")
     2. Use this ID format for both the div ID and the anchor tag
-    3. Use the task-badge class instead of task-number
-    4. Always update the total count in the score display when adding new tasks
+    3. Always update the total count in the score display when adding new tasks
     
     Required HTML structure for a new task:
     
-    <!-- Task: Description -->
     <div class="task" id="descriptive-id">
         <div class="task-badge"><a href="#descriptive-id" id="descriptive-id">descriptive-id</a></div>
-        <div class="task-title">Imperative instruction for the user</div>
-        <!-- Task content here -->
+        <div class="task-title">Imperative straightforward instructions for the user</div>
+        ... task content here ...
+        <style>
+            ... task-specific styles here ...
+        </style>
         <script>
-            // Task completion logic
+            // ... task completion logic here ...
             // Use completeTask(document.getElementById('descriptive-id')) to mark as complete
         </script>
     </div>
