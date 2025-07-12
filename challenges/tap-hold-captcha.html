@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tap and Hold Captcha Challenge</title>
+    <title>Tap and Hold CAPTCHA Challenge</title>
     <style>
         :root {
             --primary-color: #4a6bff;
@@ -45,6 +45,23 @@
             padding: 0 1rem;
         }
 
+        .back-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            background-color: #3755d8;
+            transform: translateY(-2px);
+        }
+
         .task {
             background-color: var(--task-bg-color);
             margin-bottom: 2rem;
@@ -57,6 +74,7 @@
 
         .task.completed {
             border-left: 5px solid var(--success-color);
+            background-color: #f8fff8;
         }
 
         .task-badge {
@@ -189,21 +207,35 @@
             color: var(--secondary-color);
         }
 
-        .back-link {
-            display: inline-block;
-            background-color: var(--primary-color);
+        .success-message {
+            display: none;
+            background-color: var(--success-color);
             color: white;
-            text-decoration: none;
-            padding: 0.6rem 1.2rem;
+            padding: 1rem;
             border-radius: 4px;
-            font-weight: 500;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-top: 2rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: bold;
         }
 
-        .back-link:hover {
-            background-color: #3755d8;
-            transform: translateY(-2px);
+        .success-message.show {
+            display: block;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            top: -10px;
+            animation: fall 4s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            0% { top: -10px; transform: translateX(0) rotate(0deg); }
+            100% { top: 100vh; transform: translateX(100px) rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -222,10 +254,12 @@
 </head>
 <body>
     <header>
-        <h1>Tap and Hold Captcha Challenge</h1>
+        <h1>Tap and Hold CAPTCHA Challenge</h1>
     </header>
 
     <div class="container">
+        <a href="../challenges-index.html" class="back-link">← Back to Challenges</a>
+
         <div class="task" id="tap-hold-captcha">
             <div class="task-badge"><a href="#tap-hold-captcha" id="tap-hold-captcha-link">captcha</a></div>
             <div class="task-title">Complete the tap and hold captcha verification</div>
@@ -247,8 +281,8 @@
             
             <div class="status" id="status"></div>
             
-            <div style="text-align: center;">
-                <a href="index.html" class="back-link">← Back to Main</a>
+            <div class="success-message" id="success-message">
+                ✅ Challenge completed successfully! CAPTCHA verified.
             </div>
         </div>
     </div>
@@ -270,6 +304,35 @@
         // Update initial status to show the required duration
         status.textContent = `Hold for ${holdDurationSeconds} seconds to verify`;
         status.className = 'status';
+
+        function completeTask(taskElement) {
+            if (taskElement.classList.contains('completed')) return;
+
+            taskElement.classList.add('completed');
+            document.getElementById('success-message').classList.add('show');
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const colors = ['#ff4a6b', '#4a6bff', '#4aff6b', '#ff4aff', '#ffff4a'];
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(confetti);
+
+                // Remove confetti after animation ends
+                setTimeout(() => {
+                    if (document.body.contains(confetti)) {
+                        document.body.removeChild(confetti);
+                    }
+                }, 5000);
+            }
+        }
 
         function startHold() {
             if (isCompleted) return;
@@ -326,7 +389,7 @@
             status.className = 'status success';
             
             // Mark task as completed
-            document.getElementById('tap-hold-captcha').classList.add('completed');
+            completeTask(document.getElementById('tap-hold-captcha'));
             
             // Disable further interactions
             captchaButton.style.cursor = 'default';

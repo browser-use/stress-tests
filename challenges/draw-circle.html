@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw Circle Challenge</title>
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #ff4a6b;
+            --background-color: #f8f9fa;
+            --task-bg-color: #ffffff;
+            --success-color: #28a745;
+            --text-color: #333;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 0;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 1.8rem 1rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            background-color: #3755d8;
+            transform: translateY(-2px);
+        }
+
+        .task {
+            background-color: var(--task-bg-color);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .task.completed {
+            border-left: 5px solid var(--success-color);
+            background-color: #f8fff8;
+        }
+
+        .task-badge {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            min-width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 0 5px;
+        }
+        
+        .task-badge a {
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        #draw-container {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 1rem auto;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 4px;
+        }
+
+        #draw-instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .instructions {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-color);
+            text-align: center;
+        }
+
+        .success-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            color: #155724;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .confetti {
+            position: fixed;
+            top: -10px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: confetti-fall linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Draw Circle Challenge</h1>
+    </header>
+
+    <div class="container">
+        <a href="../challenges-index.html" class="back-link">← Back to Challenges</a>
+
+        <div class="task" id="draw-circle">
+            <div class="task-badge"><a href="#draw-circle" id="draw-circle-link">draw-circle</a></div>
+            <div class="task-title">Draw a circle with your mouse by hovering</div>
+            <div class="instructions">
+                Hover your mouse in a circular pattern over the canvas area to complete the circle
+            </div>
+            <div id="draw-container">
+                <canvas id="draw-canvas" width="300" height="300"></canvas>
+                <div id="draw-instructions">
+                    Hover your mouse in a circular pattern
+                </div>
+            </div>
+            <div class="success-message" id="success-message">
+                ✅ Challenge completed successfully! You drew a circle with your mouse.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function completeTask(taskElement) {
+            if (taskElement.classList.contains('completed')) return;
+
+            taskElement.classList.add('completed');
+            document.getElementById('success-message').classList.add('show');
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const colors = ['#ff4a6b', '#4a6bff', '#4aff6b', '#ff4aff', '#ffff4a'];
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(confetti);
+
+                // Remove confetti after animation ends
+                setTimeout(() => {
+                    if (document.body.contains(confetti)) {
+                        document.body.removeChild(confetti);
+                    }
+                }, 5000);
+            }
+        }
+
+        // Task-specific logic
+        const drawCanvas = document.getElementById('draw-canvas');
+        const drawCtx = drawCanvas.getContext('2d');
+        const drawInstructions = document.getElementById('draw-instructions');
+        const centerX = drawCanvas.width / 2;
+        const centerY = drawCanvas.height / 2;
+        const radius = 100;
+        const pointsNeeded = 20;
+        
+        // Draw circle guide (faint)
+        drawCtx.beginPath();
+        drawCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        drawCtx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
+        drawCtx.stroke();
+        
+        // For tracking points along the circle
+        const points = [];
+        const angleSegments = 8; // Divide circle into segments
+        const segmentStatus = new Array(angleSegments).fill(false);
+        
+        drawCanvas.addEventListener('mousemove', function(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Draw dot where mouse is
+            drawCtx.beginPath();
+            drawCtx.arc(x, y, 3, 0, Math.PI * 2);
+            drawCtx.fillStyle = 'rgba(74, 107, 255, 0.5)';
+            drawCtx.fill();
+            
+            // Calculate angle from center
+            const dx = x - centerX;
+            const dy = y - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // If within certain range from the circle
+            if (Math.abs(distance - radius) < 20) {
+                let angle = Math.atan2(dy, dx);
+                if (angle < 0) angle += Math.PI * 2;
+                
+                // Determine which segment this angle falls into
+                const segment = Math.floor((angle / (Math.PI * 2)) * angleSegments);
+                segmentStatus[segment] = true;
+                
+                // If all segments have been touched
+                if (segmentStatus.every(status => status)) {
+                    drawInstructions.textContent = "Great job! Circle completed!";
+                    completeTask(document.getElementById('draw-circle'));
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
