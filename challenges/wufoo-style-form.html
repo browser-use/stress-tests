@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wufoo-Style Form (Tricky for Autofill)</title>
+    <style>
+        /* Deliberately unusual styling to create challenges for autofill */
+        body {
+            font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
+            background: #eaeaea;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .wufoo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wufoo-header {
+            background: #dedede;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ccc;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .wufoo-header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #000;
+        }
+        
+        .wufoo-header p {
+            margin: 10px 0 0;
+            font-size: 14px;
+            color: #444;
+        }
+        
+        .wufoo-form {
+            padding: 20px;
+        }
+        
+        .wufoo-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .wufoo-section-title {
+            margin: 0 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+            color: #0073ae;
+        }
+        
+        /* Deliberately unusual field styling */
+        .wufoo-field {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .wufoo-label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        
+        .wufoo-required .wufoo-label:after {
+            content: "*";
+            color: #c92323;
+            margin-left: 4px;
+        }
+        
+        /* Non-standard ID patterns - might confuse autofill */
+        .wufoo-input {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .wufoo-input:focus {
+            border-color: #0073ae;
+            outline: none;
+            box-shadow: 0 0 3px rgba(0, 115, 174, 0.3);
+        }
+        
+        /* Unusual select styling */
+        .wufoo-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+            background: #fff url('data:image/svg+xml;charset=US-ASCII,<svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 9L13 1" stroke="%23555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 10px center;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        /* Radio and checkbox styling */
+        .wufoo-options {
+            margin-top: 6px;
+        }
+        
+        .wufoo-option {
+            display: block;
+            margin-bottom: 6px;
+        }
+        
+        .wufoo-option input[type="radio"],
+        .wufoo-option input[type="checkbox"] {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .wufoo-inline-options .wufoo-option {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        
+        /* Using HTML entities in field IDs to confuse autofill */
+        .wufoo-error {
+            color: #c92323;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        /* Unusual buttons with custom hover effects */
+        .wufoo-buttons {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .wufoo-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #0073ae;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .wufoo-button:hover {
+            background: #005a88;
+        }
+        
+        .wufoo-button.secondary {
+            background: #666;
+            margin-left: 10px;
+        }
+        
+        .wufoo-button.secondary:hover {
+            background: #555;
+        }
+        
+        .wufoo-button.danger {
+            background: #c92323;
+        }
+        
+        .wufoo-button.danger:hover {
+            background: #a01c1c;
+        }
+        
+        /* Honeypot field to confuse bots/autofill */
+        .wufoo-honeypot {
+            position: absolute;
+            left: -9999px;
+            visibility: hidden;
+        }
+        
+        /* Custom inputs with unusual positioning */
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-style: normal;
+        }
+        
+        /* Confusing multi-input date/time fields */
+        .wufoo-date-parts {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .wufoo-date-part {
+            flex: 1;
+        }
+        
+        .wufoo-date-part select {
+            width: 100%;
+        }
+        
+        /* Custom file input */
+        .wufoo-file-input {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wufoo-file-input input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .wufoo-file-label {
+            display: block;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border: 1px dashed #bbb;
+            border-radius: 3px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        /* Modal styles */
+        .wufoo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .wufoo-modal-content {
+            background: #fff;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .wufoo-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .wufoo-modal-title {
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        .wufoo-modal-close {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        .wufoo-modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .wufoo-modal-footer {
+            text-align: right;
+        }
+        
+        /* Confusing prefix/suffix styles */
+        .wufoo-prefix-input, .wufoo-suffix-input {
+            display: flex;
+            align-items: center;
+        }
+        
+        .wufoo-prefix, .wufoo-suffix {
+            padding: 8px 10px;
+            background: #eee;
+            border: 1px solid #bbb;
+            border-radius: 3px 0 0 3px;
+            border-right: none;
+        }
+        
+        .wufoo-suffix {
+            border-radius: 0 3px 3px 0;
+            border-right: 1px solid #bbb;
+            border-left: none;
+        }
+        
+        .wufoo-prefix-input .wufoo-input {
+            border-radius: 0 3px 3px 0;
+        }
+        
+        .wufoo-suffix-input .wufoo-input {
+            border-radius: 3px 0 0 3px;
+        }
+        
+        /* Success message */
+        .wufoo-success {
+            background: #dff0d8;
+            color: #3c763d;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            border: 1px solid #d6e9c6;
+            display: none;
+        }
+        
+        /* Custom tooltip */
+        .wufoo-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            cursor: help;
+        }
+        
+        .wufoo-tooltip-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #0073ae;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+        }
+        
+        .wufoo-tooltip-text {
+            visibility: hidden;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 3px;
+            width: 200px;
+            font-size: 12px;
+            z-index: 1;
+        }
+        
+        .wufoo-tooltip:hover .wufoo-tooltip-text {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="wufoo-container">
+        <div class="wufoo-header">
+            <h1>Wufoo-Style Form (Tricky for Autofill)</h1>
+            <p>This form includes unusual field naming, layout, and structure patterns that might challenge autofill systems.</p>
+        </div>
+        
+        <div class="wufoo-success" id="wufoo-success">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <form class="wufoo-form" id="wufooForm">
+            <!-- Hidden honeypot field to confuse bots and possibly autofill -->
+            <input type="text" name="dont_fill_this" class="wufoo-honeypot">
+            
+            <!-- Basic Information Section -->
+            <div class="wufoo-section">
+                <h2 class="wufoo-section-title">Basic Information</h2>
+                
+                <!-- Using unusual field names and structures -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field1_first">First Name</label>
+                    <input type="text" id="field1_first" name="Field1" class="wufoo-input" required>
+                    <div class="wufoo-error" id="field1_first-error">Please enter your first name</div>
+                </div>
+                
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field2_last">Last Name</label>
+                    <input type="text" id="field2_last" name="Field2" class="wufoo-input" required>
+                    <div class="wufoo-error" id="field2_last-error">Please enter your last name</div>
+                </div>
+                
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field3_email">Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="field3_email" name="Field3" class="wufoo-input" required>
+                        <i class="input-icon">✉</i>
+                    </div>
+                    <div class="wufoo-error" id="field3_email-error">Please enter a valid email address</div>
+                </div>
+                
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field4_phone">Phone Number</label>
+                    <input type="tel" id="field4_phone" name="Field4" class="wufoo-input" placeholder="(xxx) xxx-xxxx">
+                    <div class="wufoo-error" id="field4_phone-error">Please enter a valid phone number</div>
+                </div>
+                
+                <!-- Confusing date of birth field with multiple inputs -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label">Date of Birth</label>
+                    <div class="wufoo-date-parts">
+                        <div class="wufoo-date-part">
+                            <select id="field5_month" name="Field5Month" class="wufoo-select">
+                                <option value="">Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="wufoo-date-part">
+                            <select id="field5_day" name="Field5Day" class="wufoo-select">
+                                <option value="">Day</option>
+                                <!-- JS will populate days -->
+                            </select>
+                        </div>
+                        <div class="wufoo-date-part">
+                            <select id="field5_year" name="Field5Year" class="wufoo-select">
+                                <option value="">Year</option>
+                                <!-- JS will populate years -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gender field -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label">Gender</label>
+                    <div class="wufoo-options wufoo-inline-options">
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field6" value="Male"> Male
+                        </label>
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field6" value="Female"> Female
+                        </label>
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field6" value="Non-binary"> Non-binary
+                        </label>
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field6" value="Prefer not to say"> Prefer not to say
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Address Section - structured in a confusing way -->
+            <div class="wufoo-section">
+                <h2 class="wufoo-section-title">Shipping Address</h2>
+                
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field7_address">Street Address</label>
+                    <input type="text" id="field7_address" name="Field7" class="wufoo-input" required>
+                    <div class="wufoo-error" id="field7_address-error">Please enter your street address</div>
+                </div>
+                
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field8_address2">Address Line 2</label>
+                    <input type="text" id="field8_address2" name="Field8" class="wufoo-input" placeholder="Apartment, suite, unit, etc.">
+                </div>
+                
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field9_city">City</label>
+                    <input type="text" id="field9_city" name="Field9" class="wufoo-input" required>
+                    <div class="wufoo-error" id="field9_city-error">Please enter your city</div>
+                </div>
+                
+                <!-- State/Province with unusual structure -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field10_state">State/Province</label>
+                    <select id="field10_state" name="Field10" class="wufoo-select" required>
+                        <option value="">Select one</option>
+                        <optgroup label="United States">
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <!-- More states would be listed here -->
+                            <option value="WY">Wyoming</option>
+                        </optgroup>
+                        <optgroup label="Canada">
+                            <option value="AB">Alberta</option>
+                            <option value="BC">British Columbia</option>
+                            <!-- More provinces would be listed here -->
+                            <option value="YT">Yukon</option>
+                        </optgroup>
+                    </select>
+                    <div class="wufoo-error" id="field10_state-error">Please select your state/province</div>
+                </div>
+                
+                <!-- Zip/Postal Code with prefix -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field11_zip">Zip/Postal Code</label>
+                    <input type="text" id="field11_zip" name="Field11" class="wufoo-input" required>
+                    <div class="wufoo-error" id="field11_zip-error">Please enter a valid zip/postal code</div>
+                </div>
+                
+                <!-- Country field -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field12_country">Country</label>
+                    <select id="field12_country" name="Field12" class="wufoo-select" required>
+                        <option value="">Select one</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <!-- More countries would be listed here -->
+                    </select>
+                    <div class="wufoo-error" id="field12_country-error">Please select your country</div>
+                </div>
+                
+                <!-- Checkbox that might affect form layout -->
+                <div class="wufoo-field">
+                    <div class="wufoo-options">
+                        <label class="wufoo-option">
+                            <input type="checkbox" id="field13_billing" name="Field13" value="SameAsBilling">
+                            Billing address is same as shipping
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Information - designed to be challenging for autofill -->
+            <div class="wufoo-section" id="billingSection">
+                <h2 class="wufoo-section-title">Payment Information</h2>
+                
+                <!-- Credit Card Type -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label">Card Type</label>
+                    <div class="wufoo-options wufoo-inline-options">
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field14" value="Visa" required> Visa
+                        </label>
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field14" value="MasterCard"> MasterCard
+                        </label>
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field14" value="Amex"> American Express
+                        </label>
+                        <label class="wufoo-option">
+                            <input type="radio" name="Field14" value="Discover"> Discover
+                        </label>
+                    </div>
+                    <div class="wufoo-error" id="field14-error">Please select a card type</div>
+                </div>
+                
+                <!-- Deliberately cryptic field names -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field15_ccname">Name on Card</label>
+                    <input type="text" id="field15_ccname" name="Field15" class="wufoo-input" required>
+                    <div class="wufoo-error" id="field15_ccname-error">Please enter the name on your card</div>
+                </div>
+                
+                <!-- Card Number with unusual formatting -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field16_ccnum">Card Number</label>
+                    <input type="text" id="field16_ccnum" name="Field16" class="wufoo-input" placeholder="XXXX XXXX XXXX XXXX" required>
+                    <div class="wufoo-error" id="field16_ccnum-error">Please enter a valid card number</div>
+                </div>
+                
+                <!-- Security Code with custom tooltip -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field17_cvc">
+                        Security Code
+                        <div class="wufoo-tooltip">
+                            <span class="wufoo-tooltip-icon">?</span>
+                            <span class="wufoo-tooltip-text">The 3 or 4 digit code on the back of your card</span>
+                        </div>
+                    </label>
+                    <input type="text" id="field17_cvc" name="Field17" class="wufoo-input" maxlength="4" required>
+                    <div class="wufoo-error" id="field17_cvc-error">Please enter your security code</div>
+                </div>
+                
+                <!-- Expiration Date with split fields -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label">Expiration Date</label>
+                    <div class="wufoo-date-parts">
+                        <div class="wufoo-date-part">
+                            <select id="field18_month" name="Field18Month" class="wufoo-select" required>
+                                <option value="">Month</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+                        <div class="wufoo-date-part">
+                            <select id="field18_year" name="Field18Year" class="wufoo-select" required>
+                                <option value="">Year</option>
+                                <!-- JS will populate years -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="wufoo-error" id="field18-error">Please select an expiration date</div>
+                </div>
+            </div>
+            
+            <!-- Additional Fields Section -->
+            <div class="wufoo-section">
+                <h2 class="wufoo-section-title">Additional Information</h2>
+                
+                <!-- Alphanumeric only field -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field19_alphanum">Alphanumeric Reference Code</label>
+                    <input type="text" id="field19_alphanum" name="Field19" class="wufoo-input">
+                    <div class="wufoo-error" id="field19_alphanum-error">Only letters and numbers are allowed</div>
+                </div>
+                
+                <!-- Deliberately disabled field -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field20_disabled">Disabled Field</label>
+                    <input type="text" id="field20_disabled" name="Field20" class="wufoo-input" value="This field is disabled" disabled>
+                </div>
+                
+                <!-- Unusual prefixed input -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field21_amount">Amount</label>
+                    <div class="wufoo-prefix-input">
+                        <span class="wufoo-prefix">$</span>
+                        <input type="text" id="field21_amount" name="Field21" class="wufoo-input">
+                    </div>
+                </div>
+                
+                <!-- Unusual suffixed input -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field22_percent">Percentage</label>
+                    <div class="wufoo-suffix-input">
+                        <input type="text" id="field22_percent" name="Field22" class="wufoo-input">
+                        <span class="wufoo-suffix">%</span>
+                    </div>
+                </div>
+                
+                <!-- Custom time picker -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field23_time">Preferred Contact Time</label>
+                    <input type="time" id="field23_time" name="Field23" class="wufoo-input">
+                </div>
+                
+                <!-- Comments textarea -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label" for="field24_comments">Additional Comments</label>
+                    <textarea id="field24_comments" name="Field24" class="wufoo-input" rows="4"></textarea>
+                </div>
+                
+                <!-- Custom file input -->
+                <div class="wufoo-field">
+                    <label class="wufoo-label">Upload File</label>
+                    <div class="wufoo-file-input">
+                        <input type="file" id="field25_file" name="Field25">
+                        <div class="wufoo-file-label" id="file-label">Click to select a file</div>
+                    </div>
+                </div>
+                
+                <!-- Terms and conditions checkbox -->
+                <div class="wufoo-field wufoo-required">
+                    <div class="wufoo-options">
+                        <label class="wufoo-option">
+                            <input type="checkbox" id="field26_terms" name="Field26" required>
+                            I agree to the <a href="#" id="termsLink">Terms and Conditions</a>
+                        </label>
+                    </div>
+                    <div class="wufoo-error" id="field26_terms-error">You must agree to the terms and conditions</div>
+                </div>
+            </div>
+            
+            <div class="wufoo-buttons">
+                <button type="submit" class="wufoo-button">Submit Form</button>
+                <button type="button" class="wufoo-button danger" id="modalButton">Open Modal</button>
+                <button type="reset" class="wufoo-button secondary">Reset Form</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Modal with red herring form -->
+    <div class="wufoo-modal" id="wufooModal">
+        <div class="wufoo-modal-content">
+            <div class="wufoo-modal-header">
+                <h3 class="wufoo-modal-title">Red Herring Modal</h3>
+                <button class="wufoo-modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="wufoo-modal-body">
+                <p>This is a red herring modal instead of submitting the form.</p>
+                <p>In a real application, this might contain additional options or information.</p>
+            </div>
+            <div class="wufoo-modal-footer">
+                <button class="wufoo-button secondary" id="modalCancel">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate days for the date selector
+            const daySelect = document.getElementById('field5_day');
+            if (daySelect) {
+                for (let i = 1; i <= 31; i++) {
+                    const day = i < 10 ? '0' + i : i;
+                    const option = document.createElement('option');
+                    option.value = day;
+                    option.textContent = day;
+                    daySelect.appendChild(option);
+                }
+            }
+            
+            // Generate years for the date selector
+            const yearSelect = document.getElementById('field5_year');
+            if (yearSelect) {
+                const currentYear = new Date().getFullYear();
+                for (let i = currentYear; i >= currentYear - 100; i--) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    yearSelect.appendChild(option);
+                }
+            }
+            
+            // Generate years for credit card expiration
+            const expiryYearSelect = document.getElementById('field18_year');
+            if (expiryYearSelect) {
+                const currentYear = new Date().getFullYear();
+                for (let i = currentYear; i <= currentYear + 10; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    expiryYearSelect.appendChild(option);
+                }
+            }
+            
+            // Same as billing checkbox
+            const sameAsBillingCheckbox = document.getElementById('field13_billing');
+            const billingSection = document.getElementById('billingSection');
+            
+            if (sameAsBillingCheckbox && billingSection) {
+                sameAsBillingCheckbox.addEventListener('change', function() {
+                    billingSection.style.display = this.checked ? 'none' : 'block';
+                });
+            }
+            
+            // File input styling
+            const fileInput = document.getElementById('field25_file');
+            const fileLabel = document.getElementById('file-label');
+            
+            if (fileInput && fileLabel) {
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        fileLabel.textContent = this.files[0].name;
+                    } else {
+                        fileLabel.textContent = 'Click to select a file';
+                    }
+                });
+            }
+            
+            // Alphanumeric validation
+            const alphanumericInput = document.getElementById('field19_alphanum');
+            if (alphanumericInput) {
+                alphanumericInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                });
+            }
+            
+            // Form submission
+            const form = document.getElementById('wufooForm');
+            const successMessage = document.getElementById('wufoo-success');
+            
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Reset previous error messages
+                    const errorMessages = document.querySelectorAll('.wufoo-error');
+                    errorMessages.forEach(error => error.style.display = 'none');
+                    
+                    // Validate required fields
+                    const requiredFields = form.querySelectorAll('[required]');
+                    let isValid = true;
+                    
+                    requiredFields.forEach(field => {
+                        if (field.type === 'checkbox' && !field.checked) {
+                            const errorId = `${field.id}-error`;
+                            const errorElement = document.getElementById(errorId);
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        } else if (field.type === 'radio') {
+                            const name = field.name;
+                            const radioGroup = form.querySelectorAll(`input[name="${name}"]`);
+                            let checked = false;
+                            
+                            radioGroup.forEach(radio => {
+                                if (radio.checked) checked = true;
+                            });
+                            
+                            if (!checked) {
+                                const errorId = `${name.toLowerCase()}-error`;
+                                const errorElement = document.getElementById(errorId);
+                                if (errorElement) {
+                                    errorElement.style.display = 'block';
+                                }
+                                isValid = false;
+                            }
+                        } else if (!field.value.trim()) {
+                            const errorId = `${field.id}-error`;
+                            const errorElement = document.getElementById(errorId);
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    });
+                    
+                    // Email validation
+                    const emailInput = document.getElementById('field3_email');
+                    if (emailInput && emailInput.value) {
+                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailPattern.test(emailInput.value)) {
+                            const errorElement = document.getElementById('field3_email-error');
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    // Phone validation
+                    const phoneInput = document.getElementById('field4_phone');
+                    if (phoneInput && phoneInput.value) {
+                        const phonePattern = /^\(\d{3}\) \d{3}-\d{4}$/;
+                        if (!phonePattern.test(phoneInput.value)) {
+                            const errorElement = document.getElementById('field4_phone-error');
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    // Credit card validation
+                    const cardNumberInput = document.getElementById('field16_ccnum');
+                    if (cardNumberInput && cardNumberInput.value) {
+                        // Very basic validation for demonstration
+                        const cardValue = cardNumberInput.value.replace(/\s+/g, '');
+                        if (!/^\d{13,19}$/.test(cardValue)) {
+                            const errorElement = document.getElementById('field16_ccnum-error');
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    // CVC validation
+                    const cvcInput = document.getElementById('field17_cvc');
+                    if (cvcInput && cvcInput.value) {
+                        if (!/^\d{3,4}$/.test(cvcInput.value)) {
+                            const errorElement = document.getElementById('field17_cvc-error');
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    // Zip code validation
+                    const zipInput = document.getElementById('field11_zip');
+                    if (zipInput && zipInput.value) {
+                        // US zip code pattern, could be expanded based on country
+                        const zipPattern = /^\d{5}(-\d{4})?$/;
+                        if (!zipPattern.test(zipInput.value)) {
+                            const errorElement = document.getElementById('field11_zip-error');
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    if (isValid) {
+                        console.log('Form submitted successfully! The secret is: dumbledore');
+                        successMessage.style.display = 'block';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(function() {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+            }
+            
+            // Modal functionality
+            const modalButton = document.getElementById('modalButton');
+            const modal = document.getElementById('wufooModal');
+            const modalClose = document.getElementById('modalClose');
+            const modalCancel = document.getElementById('modalCancel');
+            
+            if (modalButton && modal) {
+                modalButton.addEventListener('click', function() {
+                    modal.style.display = 'flex';
+                });
+            }
+            
+            if (modalClose && modal) {
+                modalClose.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            }
+            
+            if (modalCancel && modal) {
+                modalCancel.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            }
+            
+            // Close modal when clicking outside
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Terms link handler
+            const termsLink = document.getElementById('termsLink');
+            if (termsLink) {
+                termsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Terms and Conditions would be displayed here.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

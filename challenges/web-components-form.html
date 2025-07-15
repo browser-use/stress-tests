@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Components Form</title>
+    <script src="https://unpkg.com/lit@2.8.0/polyfill-support.js"></script>
+    <script src="https://unpkg.com/lit@2.8.0/lit-element.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #4f46e5;
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        p {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #ecfdf5;
+            border: 1px solid #10b981;
+            color: #047857;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Components Form</h1>
+        <p>This form uses LitElement Web Components, which creates a non-standard DOM structure that might challenge autofill.</p>
+        
+        <div class="alert alert-success" id="success-message">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <wc-form id="web-components-form"></wc-form>
+    </div>
+    
+    <script type="module">
+        import { LitElement, html, css } from 'https://unpkg.com/lit@2.8.0/index.js?module';
+
+        // Define form components using LitElement
+        class WCForm extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 20px;
+                }
+                
+                .form-section {
+                    margin-bottom: 30px;
+                    padding: 20px;
+                    background-color: #f9fafb;
+                    border-radius: 8px;
+                    border: 1px solid #e5e7eb;
+                }
+                
+                h2 {
+                    margin-top: 0;
+                    font-size: 1.25rem;
+                    color: #4f46e5;
+                    border-bottom: 1px solid #e5e7eb;
+                    padding-bottom: 10px;
+                    margin-bottom: 20px;
+                }
+                
+                .form-buttons {
+                    display: flex;
+                    gap: 10px;
+                    justify-content: center;
+                    margin-top: 20px;
+                }
+                
+                button {
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    border: none;
+                    font-size: 16px;
+                    transition: all 0.2s;
+                }
+                
+                .btn-primary {
+                    background-color: #4f46e5;
+                    color: white;
+                }
+                
+                .btn-primary:hover {
+                    background-color: #4338ca;
+                }
+                
+                .btn-danger {
+                    background-color: #ef4444;
+                    color: white;
+                }
+                
+                .btn-danger:hover {
+                    background-color: #dc2626;
+                }
+                
+                .btn-secondary {
+                    background-color: #9ca3af;
+                    color: white;
+                }
+                
+                .btn-secondary:hover {
+                    background-color: #6b7280;
+                }
+            `;
+
+            static properties = {
+                formData: { type: Object },
+            };
+
+            constructor() {
+                super();
+                this.formData = {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    street: '',
+                    city: '',
+                    state: '',
+                    zipCode: '',
+                    dob: '',
+                    preferredTime: '',
+                    alphanumeric: '',
+                    disabled: 'This field is disabled',
+                    terms: false
+                };
+            }
+            
+            firstUpdated() {
+                this.shadowRoot.querySelector('#alphanumeric').addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                    this.formData.alphanumeric = e.target.value;
+                });
+                
+                this.shadowRoot.querySelector('#terms-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Terms and Conditions would be displayed here.');
+                });
+                
+                // Initialize the modal button
+                this.shadowRoot.querySelector('#modal-button').addEventListener('click', this._openModal.bind(this));
+            }
+            
+            _openModal() {
+                // Create the modal in the document body to ensure it's displayed properly
+                const modal = document.createElement('div');
+                modal.id = 'wc-modal';
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                `;
+                
+                const modalContent = document.createElement('div');
+                modalContent.style.cssText = `
+                    background-color: white;
+                    border-radius: 8px;
+                    max-width: 500px;
+                    width: 90%;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                `;
+                
+                const modalHeader = document.createElement('div');
+                modalHeader.style.cssText = `
+                    padding: 16px 20px;
+                    border-bottom: 1px solid #e5e7eb;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                `;
+                
+                const modalTitle = document.createElement('h3');
+                modalTitle.textContent = 'Red Herring Modal';
+                modalTitle.style.margin = '0';
+                
+                const closeButton = document.createElement('button');
+                closeButton.textContent = '×';
+                closeButton.style.cssText = `
+                    background: none;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    color: #6b7280;
+                `;
+                
+                modalHeader.appendChild(modalTitle);
+                modalHeader.appendChild(closeButton);
+                
+                const modalBody = document.createElement('div');
+                modalBody.style.padding = '20px';
+                
+                const modalText = document.createElement('p');
+                modalText.textContent = 'This is a red herring modal instead of submitting the form.';
+                
+                modalBody.appendChild(modalText);
+                
+                const modalFooter = document.createElement('div');
+                modalFooter.style.cssText = `
+                    padding: 16px 20px;
+                    border-top: 1px solid #e5e7eb;
+                    display: flex;
+                    justify-content: flex-end;
+                `;
+                
+                const closeModalButton = document.createElement('button');
+                closeModalButton.textContent = 'Close';
+                closeModalButton.style.cssText = `
+                    padding: 8px 16px;
+                    background-color: #9ca3af;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                `;
+                
+                modalFooter.appendChild(closeModalButton);
+                
+                modalContent.appendChild(modalHeader);
+                modalContent.appendChild(modalBody);
+                modalContent.appendChild(modalFooter);
+                
+                modal.appendChild(modalContent);
+                document.body.appendChild(modal);
+                
+                // Add event listeners for closing
+                const closeModal = () => {
+                    document.body.removeChild(modal);
+                };
+                
+                closeButton.addEventListener('click', closeModal);
+                closeModalButton.addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+            
+            _handleInput(e) {
+                const name = e.target.name;
+                let value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+                
+                // Update the formData object
+                this.formData = {
+                    ...this.formData,
+                    [name]: value
+                };
+            }
+            
+            _handleSubmit(e) {
+                e.preventDefault();
+                
+                // Basic validation
+                let isValid = true;
+                let errors = {};
+                
+                // Required fields
+                ['firstName', 'lastName', 'email', 'street', 'city', 'state', 'zipCode'].forEach(field => {
+                    if (!this.formData[field]) {
+                        isValid = false;
+                        errors[field] = true;
+                    }
+                });
+                
+                // Email validation
+                if (this.formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)) {
+                    isValid = false;
+                    errors.email = true;
+                }
+                
+                // Terms validation
+                if (!this.formData.terms) {
+                    isValid = false;
+                    errors.terms = true;
+                }
+                
+                // Display errors
+                for (const field in errors) {
+                    const errorElement = this.shadowRoot.querySelector(`#${field}-error`);
+                    if (errorElement) {
+                        errorElement.style.display = 'block';
+                    }
+                }
+                
+                // Check if valid
+                if (isValid) {
+                    console.log('Form submitted successfully! The secret is: dumbledore', this.formData);
+                    document.getElementById('success-message').style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        document.getElementById('success-message').style.display = 'none';
+                    }, 3000);
+                }
+            }
+            
+            render() {
+                return html`
+                    <form @submit="${this._handleSubmit}">
+                        <div class="form-section">
+                            <h2>Personal Information</h2>
+                            
+                            <wc-input 
+                                label="First Name" 
+                                name="firstName" 
+                                .value="${this.formData.firstName}" 
+                                @input="${this._handleInput}" 
+                                required="true">
+                            </wc-input>
+                            
+                            <wc-input 
+                                label="Last Name" 
+                                name="lastName" 
+                                .value="${this.formData.lastName}" 
+                                @input="${this._handleInput}" 
+                                required="true">
+                            </wc-input>
+                            
+                            <wc-input 
+                                label="Email Address" 
+                                name="email" 
+                                type="email" 
+                                .value="${this.formData.email}" 
+                                @input="${this._handleInput}" 
+                                required="true">
+                            </wc-input>
+                            
+                            <wc-input 
+                                label="Phone Number" 
+                                name="phone" 
+                                type="tel" 
+                                .value="${this.formData.phone}" 
+                                @input="${this._handleInput}"
+                                placeholder="123-456-7890"
+                                helpText="Format: 123-456-7890">
+                            </wc-input>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h2>Address Information</h2>
+                            
+                            <wc-input 
+                                label="Street Address" 
+                                name="street" 
+                                .value="${this.formData.street}" 
+                                @input="${this._handleInput}" 
+                                required="true">
+                            </wc-input>
+                            
+                            <wc-input 
+                                label="City" 
+                                name="city" 
+                                .value="${this.formData.city}" 
+                                @input="${this._handleInput}" 
+                                required="true">
+                            </wc-input>
+                            
+                            <wc-select 
+                                label="State" 
+                                name="state" 
+                                .value="${this.formData.state}" 
+                                @change="${this._handleInput}" 
+                                required="true">
+                                <option value="">Select State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="TX">Texas</option>
+                                <option value="WA">Washington</option>
+                            </wc-select>
+                            
+                            <wc-input 
+                                label="Zip Code" 
+                                name="zipCode" 
+                                .value="${this.formData.zipCode}" 
+                                @input="${this._handleInput}" 
+                                required="true">
+                            </wc-input>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h2>Additional Fields</h2>
+                            
+                            <wc-input 
+                                label="Date of Birth" 
+                                name="dob" 
+                                type="date" 
+                                .value="${this.formData.dob}" 
+                                @input="${this._handleInput}">
+                            </wc-input>
+                            
+                            <wc-input 
+                                label="Preferred Time" 
+                                name="preferredTime" 
+                                type="time" 
+                                .value="${this.formData.preferredTime}" 
+                                @input="${this._handleInput}">
+                            </wc-input>
+                            
+                            <wc-input 
+                                label="Alphanumeric Only" 
+                                name="alphanumeric" 
+                                id="alphanumeric"
+                                .value="${this.formData.alphanumeric}" 
+                                @input="${this._handleInput}"
+                                helpText="Only letters and numbers are allowed">
+                            </wc-input>
+                            
+                            <wc-input 
+                                label="Disabled Field" 
+                                name="disabled" 
+                                .value="${this.formData.disabled}" 
+                                disabled="true">
+                            </wc-input>
+                            
+                            <wc-checkbox 
+                                name="terms" 
+                                ?checked="${this.formData.terms}" 
+                                @change="${this._handleInput}"
+                                required="true">
+                                I agree to the <a href="#" id="terms-link">terms and conditions</a>
+                            </wc-checkbox>
+                            <div id="terms-error" style="display: none; color: red; font-size: 14px; margin-top: 5px;">
+                                You must agree to the terms and conditions
+                            </div>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-primary">Submit Form</button>
+                            <button type="button" id="modal-button" class="btn-danger">Open Modal</button>
+                            <button type="reset" class="btn-secondary" @click="${() => this.formData = {
+                                firstName: '',
+                                lastName: '',
+                                email: '',
+                                phone: '',
+                                street: '',
+                                city: '',
+                                state: '',
+                                zipCode: '',
+                                dob: '',
+                                preferredTime: '',
+                                alphanumeric: '',
+                                disabled: 'This field is disabled',
+                                terms: false
+                            }}">Reset Form</button>
+                        </div>
+                    </form>
+                `;
+            }
+        }
+
+        class WCInput extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 20px;
+                }
+                
+                label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-weight: 500;
+                }
+                
+                .required::after {
+                    content: " *";
+                    color: #ef4444;
+                }
+                
+                input {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    transition: border-color 0.2s;
+                    box-sizing: border-box;
+                }
+                
+                input:focus {
+                    outline: none;
+                    border-color: #4f46e5;
+                    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+                }
+                
+                .help-text {
+                    font-size: 14px;
+                    color: #6b7280;
+                    margin-top: 4px;
+                }
+                
+                .error-text {
+                    color: #ef4444;
+                    font-size: 14px;
+                    margin-top: 4px;
+                    display: none;
+                }
+            `;
+
+            static properties = {
+                label: { type: String },
+                name: { type: String },
+                type: { type: String },
+                value: { type: String },
+                placeholder: { type: String },
+                required: { type: Boolean },
+                disabled: { type: Boolean },
+                helpText: { type: String }
+            };
+
+            constructor() {
+                super();
+                this.label = '';
+                this.name = '';
+                this.type = 'text';
+                this.value = '';
+                this.placeholder = '';
+                this.required = false;
+                this.disabled = false;
+                this.helpText = '';
+            }
+
+            render() {
+                return html`
+                    <label for="${this.name}" class="${this.required ? 'required' : ''}">${this.label}</label>
+                    <input
+                        type="${this.type}"
+                        id="${this.name}"
+                        name="${this.name}"
+                        .value="${this.value}"
+                        placeholder="${this.placeholder}"
+                        ?required="${this.required}"
+                        ?disabled="${this.disabled}"
+                    />
+                    ${this.helpText ? html`<div class="help-text">${this.helpText}</div>` : ''}
+                    <div class="error-text" id="${this.name}-error">
+                        ${this.required ? 'This field is required' : ''}
+                    </div>
+                `;
+            }
+        }
+
+        class WCSelect extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 20px;
+                }
+                
+                label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-weight: 500;
+                }
+                
+                .required::after {
+                    content: " *";
+                    color: #ef4444;
+                }
+                
+                select {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    transition: border-color 0.2s;
+                    background-color: white;
+                    box-sizing: border-box;
+                }
+                
+                select:focus {
+                    outline: none;
+                    border-color: #4f46e5;
+                    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+                }
+                
+                .error-text {
+                    color: #ef4444;
+                    font-size: 14px;
+                    margin-top: 4px;
+                    display: none;
+                }
+            `;
+
+            static properties = {
+                label: { type: String },
+                name: { type: String },
+                value: { type: String },
+                required: { type: Boolean }
+            };
+
+            constructor() {
+                super();
+                this.label = '';
+                this.name = '';
+                this.value = '';
+                this.required = false;
+            }
+
+            render() {
+                return html`
+                    <label for="${this.name}" class="${this.required ? 'required' : ''}">${this.label}</label>
+                    <select
+                        id="${this.name}"
+                        name="${this.name}"
+                        .value="${this.value}"
+                        ?required="${this.required}"
+                    >
+                        <slot></slot>
+                    </select>
+                    <div class="error-text" id="${this.name}-error">
+                        ${this.required ? 'Please select an option' : ''}
+                    </div>
+                `;
+            }
+        }
+
+        class WCCheckbox extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 16px;
+                }
+                
+                .checkbox-container {
+                    display: flex;
+                    align-items: flex-start;
+                }
+                
+                input[type="checkbox"] {
+                    margin-right: 10px;
+                    margin-top: 3px;
+                }
+                
+                label {
+                    margin-bottom: 0;
+                    font-weight: normal;
+                }
+            `;
+
+            static properties = {
+                name: { type: String },
+                checked: { type: Boolean },
+                required: { type: Boolean }
+            };
+
+            constructor() {
+                super();
+                this.name = '';
+                this.checked = false;
+                this.required = false;
+            }
+
+            render() {
+                return html`
+                    <div class="checkbox-container">
+                        <input
+                            type="checkbox"
+                            id="${this.name}"
+                            name="${this.name}"
+                            ?checked="${this.checked}"
+                            ?required="${this.required}"
+                        />
+                        <label for="${this.name}">
+                            <slot></slot>
+                        </label>
+                    </div>
+                `;
+            }
+        }
+
+        // Register the components
+        customElements.define('wc-form', WCForm);
+        customElements.define('wc-input', WCInput);
+        customElements.define('wc-select', WCSelect);
+        customElements.define('wc-checkbox', WCCheckbox);
+    </script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="angularJsFormApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AngularJS (v1) Form</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    
+    <!-- Angular Material CSS -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.2.5/angular-material.min.css">
+    
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    
+    <!-- Angular Animate & ARIA (required for Angular Material) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-messages.min.js"></script>
+    
+    <!-- Angular Material -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.2.5/angular-material.min.js"></script>
+    
+    <!-- UI Bootstrap (for Datepicker) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap-tpls.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding: 20px;
+        }
+        
+        .form-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+        }
+        
+        .form-section h3 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-error {
+            color: #a94442;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .has-error .form-control {
+            border-color: #a94442;
+        }
+        
+        .datepicker-container input {
+            width: 100%;
+        }
+        
+        .ui-timepicker-wrapper {
+            overflow-y: auto;
+            max-height: 150px;
+            width: 6.5em;
+            background: #fff;
+            border: 1px solid #ddd;
+            -webkit-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            -moz-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            outline: none;
+            z-index: 10001;
+            margin: 0;
+        }
+        
+        md-checkbox, md-radio-button {
+            margin: 8px 0;
+        }
+        
+        md-select {
+            margin: 0;
+        }
+        
+        .checkbox-group,
+        .radio-group {
+            margin-bottom: 15px;
+        }
+        
+        .alert-well {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body ng-controller="FormController as formCtrl">
+    <div class="container">
+        <h1>AngularJS (v1) Form</h1>
+        
+        <div class="alert alert-info" ng-if="formCtrl.messageSent">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <form name="userForm" ng-submit="formCtrl.submitForm(userForm.$valid)" novalidate>
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" ng-class="{'has-error': userForm.firstName.$invalid && userForm.firstName.$touched}">
+                            <label for="firstName">First Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" 
+                                   ng-model="formCtrl.user.firstName" required>
+                            <div class="form-error" ng-show="userForm.firstName.$invalid && userForm.firstName.$touched">
+                                First name is required
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group" ng-class="{'has-error': userForm.lastName.$invalid && userForm.lastName.$touched}">
+                            <label for="lastName">Last Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" 
+                                   ng-model="formCtrl.user.lastName" required>
+                            <div class="form-error" ng-show="userForm.lastName.$invalid && userForm.lastName.$touched">
+                                Last name is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" ng-class="{'has-error': userForm.email.$invalid && userForm.email.$touched}">
+                            <label for="email">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   ng-model="formCtrl.user.email" required>
+                            <div class="form-error" ng-show="userForm.email.$invalid && userForm.email.$touched">
+                                <span ng-show="userForm.email.$error.required">Email is required</span>
+                                <span ng-show="userForm.email.$error.email">Enter a valid email address</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group" ng-class="{'has-error': userForm.phone.$invalid && userForm.phone.$touched}">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" name="phone" 
+                                   ng-model="formCtrl.user.phone" ng-pattern="/^\d{3}-\d{3}-\d{4}$/">
+                            <div class="form-error" ng-show="userForm.phone.$invalid && userForm.phone.$touched">
+                                Enter a valid phone number (e.g., 123-456-7890)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Address Section -->
+            <div class="form-section">
+                <h3>Address Information</h3>
+                
+                <div class="form-group">
+                    <label for="streetAddress">Street Address</label>
+                    <input type="text" class="form-control" id="streetAddress" name="streetAddress" 
+                           ng-model="formCtrl.user.streetAddress">
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city" 
+                                   ng-model="formCtrl.user.city">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <select class="form-control" id="state" name="state" ng-model="formCtrl.user.state">
+                                <option value="">Select State</option>
+                                <option ng-repeat="state in formCtrl.states" value="{{state.abbreviation}}">
+                                    {{state.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-group" ng-class="{'has-error': userForm.zipCode.$invalid && userForm.zipCode.$touched}">
+                            <label for="zipCode">Zip Code</label>
+                            <input type="text" class="form-control" id="zipCode" name="zipCode" 
+                                   ng-model="formCtrl.user.zipCode" ng-pattern="/^\d{5}(-\d{4})?$/">
+                            <div class="form-error" ng-show="userForm.zipCode.$invalid && userForm.zipCode.$touched">
+                                Enter a valid zip code
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Angular Material Section -->
+            <div class="form-section">
+                <h3>Angular Material Components</h3>
+                
+                <div layout="row" layout-xs="column" layout-margin>
+                    <md-input-container flex>
+                        <label>Username</label>
+                        <input ng-model="formCtrl.user.username" name="username" required md-maxlength="10">
+                        <div ng-messages="userForm.username.$error">
+                            <div ng-message="required">Username is required.</div>
+                            <div ng-message="md-maxlength">Username must be less than 10 characters long.</div>
+                        </div>
+                    </md-input-container>
+                    
+                    <md-input-container flex>
+                        <label>Password</label>
+                        <input type="password" ng-model="formCtrl.user.password" name="password" required minlength="8">
+                        <div ng-messages="userForm.password.$error">
+                            <div ng-message="required">Password is required.</div>
+                            <div ng-message="minlength">Password must be at least 8 characters long.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                
+                <div layout="row" layout-xs="column" layout-margin>
+                    <md-input-container flex>
+                        <label>Biography</label>
+                        <textarea ng-model="formCtrl.user.bio" name="bio" md-maxlength="150" rows="3"></textarea>
+                        <div ng-messages="userForm.bio.$error">
+                            <div ng-message="md-maxlength">Biography must be less than 150 characters long.</div>
+                        </div>
+                    </md-input-container>
+                    
+                    <md-input-container flex>
+                        <label>Favorite Color</label>
+                        <md-select ng-model="formCtrl.user.favoriteColor" name="favoriteColor">
+                            <md-option ng-repeat="color in formCtrl.colors" value="{{color.value}}">
+                                {{color.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                
+                <div layout="row" layout-xs="column" layout-margin>
+                    <div flex>
+                        <label>Rate your experience:</label>
+                        <md-slider-container>
+                            <md-slider ng-model="formCtrl.user.rating" min="0" max="10" aria-label="rating" id="rating-slider">
+                            </md-slider>
+                            <md-input-container>
+                                <input type="number" ng-model="formCtrl.user.rating" aria-label="rating" aria-controls="rating-slider">
+                            </md-input-container>
+                        </md-slider-container>
+                    </div>
+                    
+                    <div flex>
+                        <md-switch ng-model="formCtrl.user.marketingEmails" aria-label="Marketing Emails">
+                            Receive marketing emails
+                        </md-switch>
+                    </div>
+                </div>
+                
+                <div layout="column" layout-margin>
+                    <label>Interests:</label>
+                    <div layout="row" layout-wrap>
+                        <div flex="50" ng-repeat="interest in formCtrl.interests">
+                            <md-checkbox ng-model="formCtrl.user.interests[interest.value]">
+                                {{interest.name}}
+                            </md-checkbox>
+                        </div>
+                    </div>
+                </div>
+                
+                <div layout="column" layout-margin>
+                    <label>Preferred Contact Method:</label>
+                    <md-radio-group ng-model="formCtrl.user.contactMethod">
+                        <md-radio-button value="email" class="md-primary">Email</md-radio-button>
+                        <md-radio-button value="phone">Phone</md-radio-button>
+                        <md-radio-button value="mail">Mail</md-radio-button>
+                    </md-radio-group>
+                </div>
+            </div>
+            
+            <!-- Additional Custom Fields -->
+            <div class="form-section">
+                <h3>Additional Fields</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="birthDate">Date of Birth</label>
+                            <input type="text" class="form-control" id="birthDate" name="birthDate" 
+                                   ng-model="formCtrl.user.birthDate" datepicker-popup="MM/dd/yyyy" is-open="formCtrl.birthDateOpened">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="formCtrl.openDatepicker($event)">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="appointmentTime">Preferred Appointment Time</label>
+                            <input type="text" class="form-control" id="appointmentTime" name="appointmentTime" 
+                                   ng-model="formCtrl.user.appointmentTime" ui-timepicker>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="alphanumericOnly">Alphanumeric Only Input</label>
+                            <input type="text" class="form-control" id="alphanumericOnly" name="alphanumericOnly" 
+                                   ng-model="formCtrl.user.alphanumericOnly" ng-pattern="/^[a-zA-Z0-9]*$/">
+                            <div class="form-error" ng-show="userForm.alphanumericOnly.$invalid && userForm.alphanumericOnly.$touched">
+                                Only letters and numbers are allowed
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="disabledInput">Disabled Input</label>
+                            <input type="text" class="form-control" id="disabledInput" name="disabledInput" 
+                                   ng-model="formCtrl.user.disabledInput" disabled>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <label>Checkboxes:</label>
+                    <div class="checkbox" ng-repeat="option in formCtrl.checkboxOptions">
+                        <label>
+                            <input type="checkbox" ng-model="formCtrl.user.checkboxes[option.value]"> {{option.label}}
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group radio-group">
+                    <label>Radio Buttons:</label>
+                    <div class="radio" ng-repeat="option in formCtrl.radioOptions">
+                        <label>
+                            <input type="radio" name="radioGroup" ng-model="formCtrl.user.radioSelection" value="{{option.value}}"> 
+                            {{option.label}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit Form</button>
+                <button type="button" class="btn btn-danger" ng-click="formCtrl.openModal()">Open Modal</button>
+                <button type="button" class="btn btn-default" ng-click="formCtrl.resetForm()">Reset Form</button>
+            </div>
+        </form>
+        
+        <!-- Alert to show when modal is clicked -->
+        <div class="alert alert-warning alert-well" ng-if="formCtrl.modalOpened">
+            <button type="button" class="close" ng-click="formCtrl.modalOpened = false">&times;</button>
+            <strong>Red Herring!</strong> This is a red herring modal instead of submitting the form.
+        </div>
+    </div>
+    
+    <!-- App Script -->
+    <script>
+        (function() {
+            'use strict';
+            
+            angular
+                .module('angularJsFormApp', ['ngMaterial', 'ngMessages', 'ui.bootstrap'])
+                .controller('FormController', FormController);
+            
+            function FormController($scope) {
+                var vm = this;
+                
+                // Initialize the user object
+                vm.user = {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    streetAddress: '',
+                    city: '',
+                    state: '',
+                    zipCode: '',
+                    username: '',
+                    password: '',
+                    bio: '',
+                    favoriteColor: '',
+                    rating: 5,
+                    marketingEmails: false,
+                    interests: {},
+                    contactMethod: 'email',
+                    birthDate: null,
+                    appointmentTime: '',
+                    alphanumericOnly: '',
+                    disabledInput: 'This input is disabled',
+                    checkboxes: {},
+                    radioSelection: ''
+                };
+                
+                // Form state
+                vm.birthDateOpened = false;
+                vm.messageSent = false;
+                vm.modalOpened = false;
+                
+                // Form options
+                vm.states = [
+                    { name: 'Alabama', abbreviation: 'AL' },
+                    { name: 'Alaska', abbreviation: 'AK' },
+                    { name: 'Arizona', abbreviation: 'AZ' },
+                    // More states would be listed here
+                    { name: 'Wyoming', abbreviation: 'WY' }
+                ];
+                
+                vm.colors = [
+                    { name: 'Red', value: 'red' },
+                    { name: 'Blue', value: 'blue' },
+                    { name: 'Green', value: 'green' },
+                    { name: 'Yellow', value: 'yellow' },
+                    { name: 'Purple', value: 'purple' },
+                    { name: 'Orange', value: 'orange' }
+                ];
+                
+                vm.interests = [
+                    { name: 'Technology', value: 'tech' },
+                    { name: 'Sports', value: 'sports' },
+                    { name: 'Music', value: 'music' },
+                    { name: 'Art', value: 'art' },
+                    { name: 'Science', value: 'science' },
+                    { name: 'Health & Fitness', value: 'health' }
+                ];
+                
+                vm.checkboxOptions = [
+                    { label: 'Option 1', value: 'option1' },
+                    { label: 'Option 2', value: 'option2' },
+                    { label: 'Option 3', value: 'option3' }
+                ];
+                
+                vm.radioOptions = [
+                    { label: 'Option A', value: 'optionA' },
+                    { label: 'Option B', value: 'optionB' },
+                    { label: 'Option C', value: 'optionC' }
+                ];
+                
+                // Methods
+                vm.submitForm = submitForm;
+                vm.resetForm = resetForm;
+                vm.openDatepicker = openDatepicker;
+                vm.openModal = openModal;
+                
+                // Alphanumeric filter for input
+                $scope.$watch('formCtrl.user.alphanumericOnly', function(newVal) {
+                    if (newVal) {
+                        vm.user.alphanumericOnly = newVal.replace(/[^a-zA-Z0-9]/g, '');
+                    }
+                });
+                
+                function submitForm(isValid) {
+                    if (isValid) {
+                        // In a real implementation, this would send data to the server
+                        console.log('Form submitted successfully!', vm.user);
+                        vm.messageSent = true;
+                        
+                        // Hide the success message after 3 seconds
+                        setTimeout(function() {
+                            $scope.$apply(function() {
+                                vm.messageSent = false;
+                            });
+                        }, 3000);
+                    } else {
+                        console.log('Form has validation errors');
+                    }
+                }
+                
+                function resetForm() {
+                    // Reset user object
+                    vm.user = {
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        phone: '',
+                        streetAddress: '',
+                        city: '',
+                        state: '',
+                        zipCode: '',
+                        username: '',
+                        password: '',
+                        bio: '',
+                        favoriteColor: '',
+                        rating: 5,
+                        marketingEmails: false,
+                        interests: {},
+                        contactMethod: 'email',
+                        birthDate: null,
+                        appointmentTime: '',
+                        alphanumericOnly: '',
+                        disabledInput: 'This input is disabled',
+                        checkboxes: {},
+                        radioSelection: ''
+                    };
+                    
+                    // Reset form state
+                    $scope.userForm.$setPristine();
+                    $scope.userForm.$setUntouched();
+                    vm.messageSent = false;
+                    vm.modalOpened = false;
+                }
+                
+                function openDatepicker($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                    vm.birthDateOpened = true;
+                }
+                
+                function openModal() {
+                    vm.modalOpened = true;
+                }
+            }
+        })();
+    </script>
+</body>
+</html>

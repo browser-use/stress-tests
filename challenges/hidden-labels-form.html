@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visually Hidden Labels Form</title>
+    <style>
+        /* Basic styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        p {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        /* Visually hidden but accessible labels */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        /* Placeholder-reliant form styles */
+        .form-container {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 20px;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .form-heading {
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        /* Special input styling to compensate for hidden labels */
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ced4da;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        
+        .form-input::placeholder {
+            color: #6c757d;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ced4da;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23343a40' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+        
+        .form-select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        
+        /* Styling for inputs with icons */
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 15px;
+            color: #6c757d;
+        }
+        
+        .input-with-icon .form-input {
+            padding-left: 45px;
+        }
+        
+        /* Error styling */
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .invalid-input {
+            border-color: #dc3545;
+        }
+        
+        .invalid-input:focus {
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+        }
+        
+        /* Checkbox and radio styling */
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .form-check-input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Button styling */
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 10px 15px;
+            font-size: 16px;
+            line-height: 1.5;
+            border-radius: 6px;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+        
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        
+        .btn-secondary {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Alert styling */
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 15px;
+        }
+        
+        .modal-title {
+            margin: 0;
+            font-size: 18px;
+            color: #007bff;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+        }
+        
+        /* Icon font */
+        .icon {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 20px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Visually Hidden Labels Form</h1>
+        <p>This form uses visually hidden labels (accessible to screen readers but not visible), relying on placeholders and icons. This can confuse autofill systems.</p>
+        
+        <div class="alert alert-success" id="success-message">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <form id="hidden-labels-form">
+            <div class="form-container">
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h2 class="form-heading">Personal Information</h2>
+                    
+                    <div class="form-group input-with-icon">
+                        <!-- Visually hidden but accessible label -->
+                        <label for="firstName" class="sr-only">First Name (required)</label>
+                        <span class="input-icon icon">person</span>
+                        <input type="text" id="firstName" name="firstName" class="form-input" placeholder="First Name *" required>
+                        <div class="error-message" id="firstName-error">First name is required</div>
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="lastName" class="sr-only">Last Name (required)</label>
+                        <span class="input-icon icon">person</span>
+                        <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Last Name *" required>
+                        <div class="error-message" id="lastName-error">Last name is required</div>
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="email" class="sr-only">Email Address (required)</label>
+                        <span class="input-icon icon">email</span>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="Email Address *" required>
+                        <div class="error-message" id="email-error">Please enter a valid email address</div>
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="phone" class="sr-only">Phone Number</label>
+                        <span class="input-icon icon">phone</span>
+                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone Number (123-456-7890)">
+                        <div class="error-message" id="phone-error">Please enter a valid phone number</div>
+                    </div>
+                </div>
+                
+                <!-- Address Section -->
+                <div class="form-section">
+                    <h2 class="form-heading">Address Information</h2>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="street" class="sr-only">Street Address (required)</label>
+                        <span class="input-icon icon">home</span>
+                        <input type="text" id="street" name="street" class="form-input" placeholder="Street Address *" required>
+                        <div class="error-message" id="street-error">Street address is required</div>
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="city" class="sr-only">City (required)</label>
+                        <span class="input-icon icon">location_city</span>
+                        <input type="text" id="city" name="city" class="form-input" placeholder="City *" required>
+                        <div class="error-message" id="city-error">City is required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="state" class="sr-only">State (required)</label>
+                        <select id="state" name="state" class="form-select" required>
+                            <option value="">Select State *</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="NY">New York</option>
+                            <option value="TX">Texas</option>
+                            <option value="WA">Washington</option>
+                        </select>
+                        <div class="error-message" id="state-error">State is required</div>
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="zipCode" class="sr-only">Zip Code (required)</label>
+                        <span class="input-icon icon">pin_drop</span>
+                        <input type="text" id="zipCode" name="zipCode" class="form-input" placeholder="Zip Code *" required>
+                        <div class="error-message" id="zipCode-error">Please enter a valid zip code</div>
+                    </div>
+                </div>
+                
+                <!-- Additional Information Section -->
+                <div class="form-section">
+                    <h2 class="form-heading">Additional Information</h2>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="birthDate" class="sr-only">Date of Birth</label>
+                        <span class="input-icon icon">event</span>
+                        <input type="date" id="birthDate" name="birthDate" class="form-input">
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="preferredTime" class="sr-only">Preferred Contact Time</label>
+                        <span class="input-icon icon">schedule</span>
+                        <input type="time" id="preferredTime" name="preferredTime" class="form-input">
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="alphanumericOnly" class="sr-only">Alphanumeric Reference Code</label>
+                        <span class="input-icon icon">code</span>
+                        <input type="text" id="alphanumericOnly" name="alphanumericOnly" class="form-input" placeholder="Alphanumeric Only">
+                        <div class="error-message" id="alphanumericOnly-error">Only letters and numbers are allowed</div>
+                    </div>
+                    
+                    <div class="form-group input-with-icon">
+                        <label for="disabledInput" class="sr-only">Disabled Field</label>
+                        <span class="input-icon icon">block</span>
+                        <input type="text" id="disabledInput" name="disabledInput" class="form-input" value="This field is disabled" disabled>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="newsletter" name="newsletter" class="form-check-input">
+                        <label for="newsletter">Subscribe to newsletter</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+                        <label for="terms">I agree to the <a href="#" id="terms-link">Terms and Conditions</a> *</label>
+                        <div class="error-message" id="terms-error">You must agree to the terms and conditions</div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Submit Form</button>
+                    <button type="button" class="btn btn-danger" id="modal-button">Open Modal</button>
+                    <button type="reset" class="btn btn-secondary">Reset Form</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="red-herring-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Red Herring Modal</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This is a red herring modal instead of submitting the form.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="modal-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get form elements
+            const form = document.getElementById('hidden-labels-form');
+            const successMessage = document.getElementById('success-message');
+            
+            // Alphanumeric validation
+            const alphanumericInput = document.getElementById('alphanumericOnly');
+            if (alphanumericInput) {
+                alphanumericInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                });
+            }
+            
+            // Form validation
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Reset error messages
+                    const errorMessages = document.querySelectorAll('.error-message');
+                    errorMessages.forEach(error => error.style.display = 'none');
+                    
+                    // Reset invalid inputs
+                    const formInputs = form.querySelectorAll('.form-input, .form-select');
+                    formInputs.forEach(input => input.classList.remove('invalid-input'));
+                    
+                    // Validate required fields
+                    let isValid = true;
+                    const requiredFields = form.querySelectorAll('[required]');
+                    
+                    requiredFields.forEach(field => {
+                        if (field.type === 'checkbox' && !field.checked) {
+                            isValid = false;
+                            document.getElementById('terms-error').style.display = 'block';
+                        } else if (!field.value.trim()) {
+                            isValid = false;
+                            field.classList.add('invalid-input');
+                            const errorElement = document.getElementById(`${field.id}-error`);
+                            if (errorElement) {
+                                errorElement.style.display = 'block';
+                            }
+                        }
+                    });
+                    
+                    // Email validation
+                    const emailField = document.getElementById('email');
+                    if (emailField && emailField.value) {
+                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailPattern.test(emailField.value)) {
+                            isValid = false;
+                            emailField.classList.add('invalid-input');
+                            document.getElementById('email-error').style.display = 'block';
+                        }
+                    }
+                    
+                    // Phone validation
+                    const phoneField = document.getElementById('phone');
+                    if (phoneField && phoneField.value) {
+                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
+                        if (!phonePattern.test(phoneField.value)) {
+                            isValid = false;
+                            phoneField.classList.add('invalid-input');
+                            document.getElementById('phone-error').style.display = 'block';
+                        }
+                    }
+                    
+                    // Zip code validation
+                    const zipField = document.getElementById('zipCode');
+                    if (zipField && zipField.value) {
+                        const zipPattern = /^\d{5}(-\d{4})?$/;
+                        if (!zipPattern.test(zipField.value)) {
+                            isValid = false;
+                            zipField.classList.add('invalid-input');
+                            document.getElementById('zipCode-error').style.display = 'block';
+                        }
+                    }
+                    
+                    if (isValid) {
+                        console.log('Form submitted successfully! The secret is: dumbledore');
+                        successMessage.style.display = 'block';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(function() {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+            }
+            
+            // Modal functionality
+            const modalButton = document.getElementById('modal-button');
+            const modal = document.getElementById('red-herring-modal');
+            const modalClose = document.querySelector('.modal-close');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            
+            if (modalButton && modal) {
+                modalButton.addEventListener('click', function() {
+                    modal.style.display = 'flex';
+                });
+            }
+            
+            if (modalClose && modal) {
+                modalClose.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            }
+            
+            if (modalCloseBtn && modal) {
+                modalCloseBtn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            }
+            
+            // Close modal when clicking outside
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Terms link handler
+            const termsLink = document.getElementById('terms-link');
+            if (termsLink) {
+                termsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Terms and Conditions would be displayed here.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

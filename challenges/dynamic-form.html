@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamically Generated Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #3498db;
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        p {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        #form-container {
+            min-height: 200px;
+        }
+        
+        .generate-btn {
+            display: block;
+            width: 200px;
+            margin: 0 auto 20px;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .generate-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dynamically Generated Form</h1>
+        <p>This form is generated entirely via JavaScript after page load, which can confuse the timing of autofill systems.</p>
+        
+        <div class="alert alert-success" id="success-message">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <button id="generate-form" class="generate-btn">Generate Form</button>
+        
+        <div id="form-container">
+            <!-- Form will be generated here -->
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateButton = document.getElementById('generate-form');
+            const formContainer = document.getElementById('form-container');
+            const successMessage = document.getElementById('success-message');
+            
+            generateButton.addEventListener('click', function() {
+                // Clear any existing content
+                formContainer.innerHTML = '';
+                
+                // Create form structure
+                const form = document.createElement('form');
+                form.id = 'dynamic-form';
+                form.action = 'https://example.com/submit';
+                form.method = 'POST';
+                
+                // Create form styles
+                const formStyles = document.createElement('style');
+                formStyles.textContent = `
+                    .form-section {
+                        margin-bottom: 30px;
+                        padding: 20px;
+                        background-color: #f8f9fa;
+                        border-radius: 8px;
+                        border: 1px solid #e9ecef;
+                    }
+                    
+                    .form-section h2 {
+                        margin-top: 0;
+                        color: #3498db;
+                        border-bottom: 1px solid #e9ecef;
+                        padding-bottom: 10px;
+                        margin-bottom: 20px;
+                    }
+                    
+                    .form-group {
+                        margin-bottom: 15px;
+                    }
+                    
+                    .form-label {
+                        display: block;
+                        margin-bottom: 5px;
+                        font-weight: bold;
+                    }
+                    
+                    .form-label.required::after {
+                        content: " *";
+                        color: #e74c3c;
+                    }
+                    
+                    .form-control {
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #ced4da;
+                        border-radius: 4px;
+                        font-size: 16px;
+                        transition: border-color 0.3s;
+                        box-sizing: border-box;
+                    }
+                    
+                    .form-control:focus {
+                        border-color: #3498db;
+                        outline: none;
+                    }
+                    
+                    .form-text {
+                        font-size: 14px;
+                        color: #6c757d;
+                        margin-top: 5px;
+                    }
+                    
+                    .invalid-feedback {
+                        color: #e74c3c;
+                        font-size: 14px;
+                        margin-top: 5px;
+                        display: none;
+                    }
+                    
+                    .form-check {
+                        padding-left: 0;
+                        margin-bottom: 10px;
+                    }
+                    
+                    .form-check-inline {
+                        display: inline-flex;
+                        align-items: center;
+                        margin-right: 15px;
+                    }
+                    
+                    .form-check-input {
+                        margin-right: 10px;
+                    }
+                    
+                    .form-buttons {
+                        margin-top: 30px;
+                        text-align: center;
+                    }
+                    
+                    .btn {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        border-radius: 4px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        border: none;
+                        margin: 0 5px;
+                    }
+                    
+                    .btn-primary {
+                        background-color: #3498db;
+                        color: white;
+                    }
+                    
+                    .btn-primary:hover {
+                        background-color: #2980b9;
+                    }
+                    
+                    .btn-danger {
+                        background-color: #e74c3c;
+                        color: white;
+                    }
+                    
+                    .btn-danger:hover {
+                        background-color: #c0392b;
+                    }
+                    
+                    .btn-secondary {
+                        background-color: #95a5a6;
+                        color: white;
+                    }
+                    
+                    .btn-secondary:hover {
+                        background-color: #7f8c8d;
+                    }
+                    
+                    .modal {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: rgba(0, 0, 0, 0.5);
+                        z-index: 1000;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    
+                    .modal-dialog {
+                        max-width: 500px;
+                        width: 90%;
+                    }
+                    
+                    .modal-content {
+                        background-color: white;
+                        border-radius: 8px;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                    }
+                    
+                    .modal-header {
+                        padding: 15px 20px;
+                        border-bottom: 1px solid #e9ecef;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    
+                    .modal-title {
+                        margin: 0;
+                    }
+                    
+                    .modal-close {
+                        background: none;
+                        border: none;
+                        font-size: 22px;
+                        cursor: pointer;
+                        color: #95a5a6;
+                    }
+                    
+                    .modal-body {
+                        padding: 20px;
+                    }
+                    
+                    .modal-footer {
+                        padding: 15px 20px;
+                        border-top: 1px solid #e9ecef;
+                        text-align: right;
+                    }
+                `;
+                
+                document.head.appendChild(formStyles);
+                
+                // Personal Information Section
+                const personalSection = document.createElement('div');
+                personalSection.className = 'form-section';
+                
+                const personalTitle = document.createElement('h2');
+                personalTitle.textContent = 'Personal Information';
+                personalSection.appendChild(personalTitle);
+                
+                // First Name
+                const firstNameGroup = document.createElement('div');
+                firstNameGroup.className = 'form-group';
+                
+                const firstNameLabel = document.createElement('label');
+                firstNameLabel.className = 'form-label required';
+                firstNameLabel.htmlFor = 'firstName';
+                firstNameLabel.textContent = 'First Name';
+                
+                const firstNameInput = document.createElement('input');
+                firstNameInput.type = 'text';
+                firstNameInput.className = 'form-control';
+                firstNameInput.id = 'firstName';
+                firstNameInput.name = 'firstName';
+                firstNameInput.required = true;
+                
+                const firstNameFeedback = document.createElement('div');
+                firstNameFeedback.className = 'invalid-feedback';
+                firstNameFeedback.textContent = 'First name is required';
+                
+                firstNameGroup.appendChild(firstNameLabel);
+                firstNameGroup.appendChild(firstNameInput);
+                firstNameGroup.appendChild(firstNameFeedback);
+                
+                // Last Name
+                const lastNameGroup = document.createElement('div');
+                lastNameGroup.className = 'form-group';
+                
+                const lastNameLabel = document.createElement('label');
+                lastNameLabel.className = 'form-label required';
+                lastNameLabel.htmlFor = 'lastName';
+                lastNameLabel.textContent = 'Last Name';
+                
+                const lastNameInput = document.createElement('input');
+                lastNameInput.type = 'text';
+                lastNameInput.className = 'form-control';
+                lastNameInput.id = 'lastName';
+                lastNameInput.name = 'lastName';
+                lastNameInput.required = true;
+                
+                const lastNameFeedback = document.createElement('div');
+                lastNameFeedback.className = 'invalid-feedback';
+                lastNameFeedback.textContent = 'Last name is required';
+                
+                lastNameGroup.appendChild(lastNameLabel);
+                lastNameGroup.appendChild(lastNameInput);
+                lastNameGroup.appendChild(lastNameFeedback);
+                
+                // Email
+                const emailGroup = document.createElement('div');
+                emailGroup.className = 'form-group';
+                
+                const emailLabel = document.createElement('label');
+                emailLabel.className = 'form-label required';
+                emailLabel.htmlFor = 'email';
+                emailLabel.textContent = 'Email Address';
+                
+                const emailInput = document.createElement('input');
+                emailInput.type = 'email';
+                emailInput.className = 'form-control';
+                emailInput.id = 'email';
+                emailInput.name = 'email';
+                emailInput.required = true;
+                
+                const emailFeedback = document.createElement('div');
+                emailFeedback.className = 'invalid-feedback';
+                emailFeedback.textContent = 'Please enter a valid email address';
+                
+                emailGroup.appendChild(emailLabel);
+                emailGroup.appendChild(emailInput);
+                emailGroup.appendChild(emailFeedback);
+                
+                // Phone
+                const phoneGroup = document.createElement('div');
+                phoneGroup.className = 'form-group';
+                
+                const phoneLabel = document.createElement('label');
+                phoneLabel.className = 'form-label';
+                phoneLabel.htmlFor = 'phone';
+                phoneLabel.textContent = 'Phone Number';
+                
+                const phoneInput = document.createElement('input');
+                phoneInput.type = 'tel';
+                phoneInput.className = 'form-control';
+                phoneInput.id = 'phone';
+                phoneInput.name = 'phone';
+                phoneInput.placeholder = '123-456-7890';
+                
+                const phoneText = document.createElement('div');
+                phoneText.className = 'form-text';
+                phoneText.textContent = 'Format: 123-456-7890';
+                
+                phoneGroup.appendChild(phoneLabel);
+                phoneGroup.appendChild(phoneInput);
+                phoneGroup.appendChild(phoneText);
+                
+                // Add fields to personal section
+                personalSection.appendChild(firstNameGroup);
+                personalSection.appendChild(lastNameGroup);
+                personalSection.appendChild(emailGroup);
+                personalSection.appendChild(phoneGroup);
+                
+                // Address Section
+                const addressSection = document.createElement('div');
+                addressSection.className = 'form-section';
+                
+                const addressTitle = document.createElement('h2');
+                addressTitle.textContent = 'Address Information';
+                addressSection.appendChild(addressTitle);
+                
+                // Street Address
+                const streetGroup = document.createElement('div');
+                streetGroup.className = 'form-group';
+                
+                const streetLabel = document.createElement('label');
+                streetLabel.className = 'form-label required';
+                streetLabel.htmlFor = 'street';
+                streetLabel.textContent = 'Street Address';
+                
+                const streetInput = document.createElement('input');
+                streetInput.type = 'text';
+                streetInput.className = 'form-control';
+                streetInput.id = 'street';
+                streetInput.name = 'street';
+                streetInput.required = true;
+                
+                const streetFeedback = document.createElement('div');
+                streetFeedback.className = 'invalid-feedback';
+                streetFeedback.textContent = 'Street address is required';
+                
+                streetGroup.appendChild(streetLabel);
+                streetGroup.appendChild(streetInput);
+                streetGroup.appendChild(streetFeedback);
+                
+                // City
+                const cityGroup = document.createElement('div');
+                cityGroup.className = 'form-group';
+                
+                const cityLabel = document.createElement('label');
+                cityLabel.className = 'form-label required';
+                cityLabel.htmlFor = 'city';
+                cityLabel.textContent = 'City';
+                
+                const cityInput = document.createElement('input');
+                cityInput.type = 'text';
+                cityInput.className = 'form-control';
+                cityInput.id = 'city';
+                cityInput.name = 'city';
+                cityInput.required = true;
+                
+                const cityFeedback = document.createElement('div');
+                cityFeedback.className = 'invalid-feedback';
+                cityFeedback.textContent = 'City is required';
+                
+                cityGroup.appendChild(cityLabel);
+                cityGroup.appendChild(cityInput);
+                cityGroup.appendChild(cityFeedback);
+                
+                // State
+                const stateGroup = document.createElement('div');
+                stateGroup.className = 'form-group';
+                
+                const stateLabel = document.createElement('label');
+                stateLabel.className = 'form-label required';
+                stateLabel.htmlFor = 'state';
+                stateLabel.textContent = 'State';
+                
+                const stateSelect = document.createElement('select');
+                stateSelect.className = 'form-control';
+                stateSelect.id = 'state';
+                stateSelect.name = 'state';
+                stateSelect.required = true;
+                
+                // Add options to state select
+                const states = [
+                    { value: '', text: 'Select State' },
+                    { value: 'AL', text: 'Alabama' },
+                    { value: 'AK', text: 'Alaska' },
+                    { value: 'AZ', text: 'Arizona' },
+                    { value: 'CA', text: 'California' },
+                    { value: 'CO', text: 'Colorado' },
+                    { value: 'CT', text: 'Connecticut' },
+                    { value: 'FL', text: 'Florida' },
+                    { value: 'GA', text: 'Georgia' },
+                    { value: 'HI', text: 'Hawaii' },
+                    { value: 'ID', text: 'Idaho' },
+                    { value: 'NY', text: 'New York' },
+                    { value: 'TX', text: 'Texas' },
+                    { value: 'WA', text: 'Washington' }
+                ];
+                
+                states.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state.value;
+                    option.textContent = state.text;
+                    stateSelect.appendChild(option);
+                });
+                
+                const stateFeedback = document.createElement('div');
+                stateFeedback.className = 'invalid-feedback';
+                stateFeedback.textContent = 'Please select a state';
+                
+                stateGroup.appendChild(stateLabel);
+                stateGroup.appendChild(stateSelect);
+                stateGroup.appendChild(stateFeedback);
+                
+                // Zip Code
+                const zipGroup = document.createElement('div');
+                zipGroup.className = 'form-group';
+                
+                const zipLabel = document.createElement('label');
+                zipLabel.className = 'form-label required';
+                zipLabel.htmlFor = 'zipCode';
+                zipLabel.textContent = 'Zip Code';
+                
+                const zipInput = document.createElement('input');
+                zipInput.type = 'text';
+                zipInput.className = 'form-control';
+                zipInput.id = 'zipCode';
+                zipInput.name = 'zipCode';
+                zipInput.required = true;
+                
+                const zipFeedback = document.createElement('div');
+                zipFeedback.className = 'invalid-feedback';
+                zipFeedback.textContent = 'Please enter a valid zip code';
+                
+                zipGroup.appendChild(zipLabel);
+                zipGroup.appendChild(zipInput);
+                zipGroup.appendChild(zipFeedback);
+                
+                // Add fields to address section
+                addressSection.appendChild(streetGroup);
+                addressSection.appendChild(cityGroup);
+                addressSection.appendChild(stateGroup);
+                addressSection.appendChild(zipGroup);
+                
+                // Additional Fields Section
+                const additionalSection = document.createElement('div');
+                additionalSection.className = 'form-section';
+                
+                const additionalTitle = document.createElement('h2');
+                additionalTitle.textContent = 'Additional Fields';
+                additionalSection.appendChild(additionalTitle);
+                
+                // Date of Birth
+                const dobGroup = document.createElement('div');
+                dobGroup.className = 'form-group';
+                
+                const dobLabel = document.createElement('label');
+                dobLabel.className = 'form-label';
+                dobLabel.htmlFor = 'dob';
+                dobLabel.textContent = 'Date of Birth';
+                
+                const dobInput = document.createElement('input');
+                dobInput.type = 'date';
+                dobInput.className = 'form-control';
+                dobInput.id = 'dob';
+                dobInput.name = 'dob';
+                
+                dobGroup.appendChild(dobLabel);
+                dobGroup.appendChild(dobInput);
+                
+                // Preferred Time
+                const timeGroup = document.createElement('div');
+                timeGroup.className = 'form-group';
+                
+                const timeLabel = document.createElement('label');
+                timeLabel.className = 'form-label';
+                timeLabel.htmlFor = 'preferredTime';
+                timeLabel.textContent = 'Preferred Time';
+                
+                const timeInput = document.createElement('input');
+                timeInput.type = 'time';
+                timeInput.className = 'form-control';
+                timeInput.id = 'preferredTime';
+                timeInput.name = 'preferredTime';
+                
+                timeGroup.appendChild(timeLabel);
+                timeGroup.appendChild(timeInput);
+                
+                // Alphanumeric Only
+                const alphanumericGroup = document.createElement('div');
+                alphanumericGroup.className = 'form-group';
+                
+                const alphanumericLabel = document.createElement('label');
+                alphanumericLabel.className = 'form-label';
+                alphanumericLabel.htmlFor = 'alphanumeric';
+                alphanumericLabel.textContent = 'Alphanumeric Only';
+                
+                const alphanumericInput = document.createElement('input');
+                alphanumericInput.type = 'text';
+                alphanumericInput.className = 'form-control';
+                alphanumericInput.id = 'alphanumeric';
+                alphanumericInput.name = 'alphanumeric';
+                
+                const alphanumericText = document.createElement('div');
+                alphanumericText.className = 'form-text';
+                alphanumericText.textContent = 'Only letters and numbers are allowed';
+                
+                alphanumericGroup.appendChild(alphanumericLabel);
+                alphanumericGroup.appendChild(alphanumericInput);
+                alphanumericGroup.appendChild(alphanumericText);
+                
+                // Disabled Field
+                const disabledGroup = document.createElement('div');
+                disabledGroup.className = 'form-group';
+                
+                const disabledLabel = document.createElement('label');
+                disabledLabel.className = 'form-label';
+                disabledLabel.htmlFor = 'disabled';
+                disabledLabel.textContent = 'Disabled Field';
+                
+                const disabledInput = document.createElement('input');
+                disabledInput.type = 'text';
+                disabledInput.className = 'form-control';
+                disabledInput.id = 'disabled';
+                disabledInput.name = 'disabled';
+                disabledInput.value = 'This field is disabled';
+                disabledInput.disabled = true;
+                
+                disabledGroup.appendChild(disabledLabel);
+                disabledGroup.appendChild(disabledInput);
+                
+                // Terms Checkbox
+                const termsGroup = document.createElement('div');
+                termsGroup.className = 'form-group';
+                
+                const termsCheck = document.createElement('div');
+                termsCheck.className = 'form-check';
+                
+                const termsInput = document.createElement('input');
+                termsInput.type = 'checkbox';
+                termsInput.className = 'form-check-input';
+                termsInput.id = 'terms';
+                termsInput.name = 'terms';
+                termsInput.required = true;
+                
+                const termsLabel = document.createElement('label');
+                termsLabel.className = 'form-check-label';
+                termsLabel.htmlFor = 'terms';
+                termsLabel.textContent = 'I agree to the terms and conditions';
+                
+                const termsLink = document.createElement('a');
+                termsLink.href = '#';
+                termsLink.textContent = 'terms and conditions';
+                
+                termsLabel.textContent = 'I agree to the ';
+                termsLabel.appendChild(termsLink);
+                
+                const termsFeedback = document.createElement('div');
+                termsFeedback.className = 'invalid-feedback';
+                termsFeedback.textContent = 'You must agree to the terms and conditions';
+                
+                termsCheck.appendChild(termsInput);
+                termsCheck.appendChild(termsLabel);
+                termsGroup.appendChild(termsCheck);
+                termsGroup.appendChild(termsFeedback);
+                
+                // Add fields to additional section
+                additionalSection.appendChild(dobGroup);
+                additionalSection.appendChild(timeGroup);
+                additionalSection.appendChild(alphanumericGroup);
+                additionalSection.appendChild(disabledGroup);
+                additionalSection.appendChild(termsGroup);
+                
+                // Buttons
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'form-buttons';
+                
+                const submitButton = document.createElement('button');
+                submitButton.type = 'submit';
+                submitButton.className = 'btn btn-primary';
+                submitButton.textContent = 'Submit Form';
+                
+                const modalButton = document.createElement('button');
+                modalButton.type = 'button';
+                modalButton.className = 'btn btn-danger';
+                modalButton.id = 'modal-button';
+                modalButton.textContent = 'Open Modal';
+                
+                const resetButton = document.createElement('button');
+                resetButton.type = 'reset';
+                resetButton.className = 'btn btn-secondary';
+                resetButton.textContent = 'Reset Form';
+                
+                buttonsDiv.appendChild(submitButton);
+                buttonsDiv.appendChild(modalButton);
+                buttonsDiv.appendChild(resetButton);
+                
+                // Create the modal
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.id = 'red-herring-modal';
+                
+                const modalDialog = document.createElement('div');
+                modalDialog.className = 'modal-dialog';
+                
+                const modalContent = document.createElement('div');
+                modalContent.className = 'modal-content';
+                
+                const modalHeader = document.createElement('div');
+                modalHeader.className = 'modal-header';
+                
+                const modalTitle = document.createElement('h4');
+                modalTitle.className = 'modal-title';
+                modalTitle.textContent = 'Red Herring Modal';
+                
+                const modalCloseButton = document.createElement('button');
+                modalCloseButton.type = 'button';
+                modalCloseButton.className = 'modal-close';
+                modalCloseButton.setAttribute('aria-label', 'Close');
+                modalCloseButton.textContent = '×';
+                
+                modalHeader.appendChild(modalTitle);
+                modalHeader.appendChild(modalCloseButton);
+                
+                const modalBody = document.createElement('div');
+                modalBody.className = 'modal-body';
+                
+                const modalText = document.createElement('p');
+                modalText.textContent = 'This is a red herring modal instead of submitting the form.';
+                
+                modalBody.appendChild(modalText);
+                
+                const modalFooter = document.createElement('div');
+                modalFooter.className = 'modal-footer';
+                
+                const modalCloseBtn = document.createElement('button');
+                modalCloseBtn.type = 'button';
+                modalCloseBtn.className = 'btn btn-secondary';
+                modalCloseBtn.textContent = 'Close';
+                
+                modalFooter.appendChild(modalCloseBtn);
+                
+                modalContent.appendChild(modalHeader);
+                modalContent.appendChild(modalBody);
+                modalContent.appendChild(modalFooter);
+                
+                modalDialog.appendChild(modalContent);
+                modal.appendChild(modalDialog);
+                
+                // Build the form
+                form.appendChild(personalSection);
+                form.appendChild(addressSection);
+                form.appendChild(additionalSection);
+                form.appendChild(buttonsDiv);
+                
+                // Add form and modal to the container
+                formContainer.appendChild(form);
+                document.body.appendChild(modal);
+                
+                // Add event listeners
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Validate form
+                    let isValid = true;
+                    const requiredFields = form.querySelectorAll('[required]');
+                    
+                    requiredFields.forEach(field => {
+                        if (field.type === 'checkbox') {
+                            if (!field.checked) {
+                                isValid = false;
+                                field.parentElement.nextElementSibling.style.display = 'block';
+                            } else {
+                                field.parentElement.nextElementSibling.style.display = 'none';
+                            }
+                        } else if (!field.value.trim()) {
+                            isValid = false;
+                            field.nextElementSibling.style.display = 'block';
+                        } else {
+                            field.nextElementSibling.style.display = 'none';
+                        }
+                    });
+                    
+                    // Email validation
+                    const emailField = document.getElementById('email');
+                    if (emailField && emailField.value) {
+                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailPattern.test(emailField.value)) {
+                            isValid = false;
+                            emailField.nextElementSibling.style.display = 'block';
+                        }
+                    }
+                    
+                    // Zip code validation
+                    const zipField = document.getElementById('zipCode');
+                    if (zipField && zipField.value) {
+                        const zipPattern = /^\d{5}(-\d{4})?$/;
+                        if (!zipPattern.test(zipField.value)) {
+                            isValid = false;
+                            zipField.nextElementSibling.style.display = 'block';
+                        }
+                    }
+                    
+                    if (isValid) {
+                        console.log('Form submitted successfully! The secret is: dumbledore');
+                        successMessage.style.display = 'block';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(function() {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+                
+                // Modal functionality
+                const openModalBtn = document.getElementById('modal-button');
+                const modalElement = document.getElementById('red-herring-modal');
+                const closeButtons = document.querySelectorAll('.modal-close, .modal-footer .btn');
+                
+                openModalBtn.addEventListener('click', function() {
+                    modalElement.style.display = 'flex';
+                });
+                
+                closeButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        modalElement.style.display = 'none';
+                    });
+                });
+                
+                modalElement.addEventListener('click', function(e) {
+                    if (e.target === modalElement) {
+                        modalElement.style.display = 'none';
+                    }
+                });
+                
+                // Alphanumeric validation
+                const alphanumericField = document.getElementById('alphanumeric');
+                alphanumericField.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                });
+                
+                // Terms link functionality
+                termsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Terms and Conditions would be displayed here.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

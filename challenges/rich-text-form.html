@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Fields Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #495057;
+            margin-bottom: 20px;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section-title {
+            color: #495057;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .editor-container {
+            margin-bottom: 20px;
+            border-radius: 0.25rem;
+        }
+        
+        .ql-container {
+            min-height: 100px;
+            border-bottom-left-radius: 0.25rem;
+            border-bottom-right-radius: 0.25rem;
+            background: #fff;
+        }
+        
+        .bio-editor .ql-container {
+            min-height: 150px;
+        }
+        
+        .ql-toolbar {
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+            background: #f8f9fa;
+        }
+        
+        .ql-editor {
+            line-height: 1.5;
+        }
+        
+        .ql-editor.ql-blank::before {
+            color: #6c757d;
+        }
+        
+        .is-invalid .ql-toolbar,
+        .is-invalid .ql-container {
+            border-color: #dc3545 !important;
+        }
+        
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 80%;
+            color: #dc3545;
+        }
+        
+        .emoji-picker {
+            margin-bottom: 20px;
+        }
+        
+        .emoji-button {
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .emoji-button:hover {
+            transform: scale(1.2);
+        }
+        
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        
+        .rating input {
+            display: none;
+        }
+        
+        .rating label {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            margin: 0;
+            padding: 0;
+            font-size: 30px;
+            line-height: 40px;
+            text-align: center;
+            color: #ccc;
+        }
+        
+        .rating label:before {
+            content: "★";
+        }
+        
+        .rating input:checked ~ label {
+            color: #ffc107;
+        }
+        
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffc107;
+        }
+        
+        .custom-tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            min-height: 38px;
+        }
+        
+        .custom-tag-container:focus-within {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .custom-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 15px;
+            background-color: #e9ecef;
+            margin-right: 5px;
+        }
+        
+        .custom-tag-text {
+            margin-right: 5px;
+        }
+        
+        .custom-tag-remove {
+            cursor: pointer;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .custom-tag-input {
+            flex: 1;
+            min-width: 60px;
+            border: none;
+            outline: none;
+            padding: 2px;
+            font-size: 1rem;
+        }
+        
+        .markdown-container {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+        
+        .markdown-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ced4da;
+        }
+        
+        .markdown-toolbar button {
+            background-color: transparent;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 4px 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .markdown-toolbar button:hover {
+            background-color: #e9ecef;
+        }
+        
+        .markdown-editor {
+            padding: 10px;
+            min-height: 100px;
+            width: 100%;
+            border: none;
+            resize: vertical;
+            font-family: monospace;
+        }
+        
+        .markdown-preview {
+            padding: 15px;
+            border-top: 1px solid #ced4da;
+            background-color: #fff;
+        }
+        
+        .color-input-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 1px solid #ced4da;
+        }
+        
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        
+        .phone-field {
+            font-family: monospace;
+        }
+        
+        .alert {
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Rich Text Fields Form</h1>
+        <p class="text-center description">
+            This form uses various rich text editors and advanced input fields that challenge autofill systems.
+        </p>
+        
+        <div class="alert alert-success" id="successMessage">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <form id="richTextForm">
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Personal Information</h2>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label required">First Name</label>
+                        <div class="editor-container" id="firstNameEditor">
+                            <div id="firstNameQuill"></div>
+                        </div>
+                        <div class="invalid-feedback" id="firstNameError">First name is required</div>
+                        <input type="hidden" name="firstName" id="firstName">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label required">Last Name</label>
+                        <div class="editor-container" id="lastNameEditor">
+                            <div id="lastNameQuill"></div>
+                        </div>
+                        <div class="invalid-feedback" id="lastNameError">Last name is required</div>
+                        <input type="hidden" name="lastName" id="lastName">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label required">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                        <div class="invalid-feedback" id="emailError">Please enter a valid email address</div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control phone-field" id="phone" name="phone" placeholder="(___) ___-____">
+                        <div class="invalid-feedback" id="phoneError">Please enter a valid phone number</div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Gender</label>
+                        <div class="editor-container" id="genderEditor">
+                            <div id="genderQuill"></div>
+                        </div>
+                        <div class="form-text">Select or type your gender</div>
+                        <input type="hidden" name="gender" id="gender">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="birthDate" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="birthDate" name="birthDate">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="tagsInput" class="form-label">Interests (add tags)</label>
+                        <div class="custom-tag-container" id="tagsContainer">
+                            <input type="text" class="custom-tag-input" id="tagsInput" placeholder="Type and press Enter">
+                        </div>
+                        <input type="hidden" name="interests" id="interests" value="">
+                        <div class="form-text">Type your interests and press Enter to add them as tags</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Biography Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Biography</h2>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="bio" class="form-label">Tell us about yourself</label>
+                        <div class="editor-container bio-editor" id="bioEditor">
+                            <div id="bioQuill"></div>
+                        </div>
+                        <input type="hidden" name="bio" id="bio">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="favoriteEmoji" class="form-label">Favorite Emoji</label>
+                        <input type="hidden" id="favoriteEmoji" name="favoriteEmoji" value="">
+                        <div class="emoji-picker">
+                            <button type="button" class="emoji-button" data-emoji="😀">😀</button>
+                            <button type="button" class="emoji-button" data-emoji="❤️">❤️</button>
+                            <button type="button" class="emoji-button" data-emoji="👍">👍</button>
+                            <button type="button" class="emoji-button" data-emoji="🎉">🎉</button>
+                            <button type="button" class="emoji-button" data-emoji="🔥">🔥</button>
+                            <button type="button" class="emoji-button" data-emoji="🤔">🤔</button>
+                            <button type="button" class="emoji-button" data-emoji="😎">😎</button>
+                            <button type="button" class="emoji-button" data-emoji="🚀">🚀</button>
+                        </div>
+                        <div id="selectedEmoji" class="form-text">No emoji selected</div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Rate your experience with forms</label>
+                        <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5">
+                            <label for="star5" title="5 stars"></label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4" title="4 stars"></label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3" title="3 stars"></label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2" title="2 stars"></label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1" title="1 star"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Information Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Additional Information</h2>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="markdownNotes" class="form-label">Notes (Markdown)</label>
+                        <div class="markdown-container">
+                            <div class="markdown-toolbar">
+                                <button type="button" data-markdown="**bold**">Bold</button>
+                                <button type="button" data-markdown="*italic*">Italic</button>
+                                <button type="button" data-markdown="# ">Heading</button>
+                                <button type="button" data-markdown="- ">List</button>
+                                <button type="button" data-markdown="[text](url)">Link</button>
+                                <button type="button" data-markdown="\`code\`">Code</button>
+                                <button type="button" data-markdown="---">Divider</button>
+                                <button type="button" id="previewToggle">Toggle Preview</button>
+                            </div>
+                            <textarea id="markdownEditor" class="markdown-editor" placeholder="Write your notes using Markdown..."></textarea>
+                            <div id="markdownPreview" class="markdown-preview" style="display: none;"></div>
+                        </div>
+                        <input type="hidden" name="markdownNotes" id="markdownNotes">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="favoriteColor" class="form-label">Favorite Color</label>
+                        <div class="color-input-container">
+                            <div class="color-preview" id="colorPreview"></div>
+                            <input type="text" class="form-control" id="favoriteColor" name="favoriteColor" placeholder="Enter a color name or hex code">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="satisfaction" class="form-label">Satisfaction Level</label>
+                        <input type="range" class="form-range" id="satisfaction" name="satisfaction" min="0" max="100" value="50">
+                        <div class="progress-container">
+                            <div class="progress">
+                                <div id="satisfactionProgress" class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="agreeTerms" name="agreeTerms">
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the Terms and Conditions <span class="text-danger">*</span>
+                            </label>
+                            <div class="invalid-feedback" id="termsError">You must agree to the terms and conditions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2 justify-content-center">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+                <button type="button" class="btn btn-secondary" id="resetButton">Reset</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Quill editors
+            const firstNameQuill = new Quill('#firstNameQuill', {
+                theme: 'snow',
+                placeholder: 'Enter your first name',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic'],
+                        [{ 'color': [] }]
+                    ]
+                }
+            });
+            
+            const lastNameQuill = new Quill('#lastNameQuill', {
+                theme: 'snow',
+                placeholder: 'Enter your last name',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic'],
+                        [{ 'color': [] }]
+                    ]
+                }
+            });
+            
+            const genderQuill = new Quill('#genderQuill', {
+                theme: 'snow',
+                placeholder: 'Enter your gender',
+                modules: {
+                    toolbar: false
+                }
+            });
+            
+            const bioQuill = new Quill('#bioQuill', {
+                theme: 'snow',
+                placeholder: 'Tell us about yourself...',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'header': 1 }, { 'header': 2 }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+            
+            // Sync Quill editors with hidden inputs
+            function updateHiddenField(quill, hiddenField) {
+                const editor = document.getElementById(hiddenField);
+                editor.value = quill.root.innerHTML;
+            }
+            
+            firstNameQuill.on('text-change', function() {
+                updateHiddenField(firstNameQuill, 'firstName');
+                document.getElementById('firstNameEditor').classList.remove('is-invalid');
+                document.getElementById('firstNameError').style.display = 'none';
+            });
+            
+            lastNameQuill.on('text-change', function() {
+                updateHiddenField(lastNameQuill, 'lastName');
+                document.getElementById('lastNameEditor').classList.remove('is-invalid');
+                document.getElementById('lastNameError').style.display = 'none';
+            });
+            
+            genderQuill.on('text-change', function() {
+                updateHiddenField(genderQuill, 'gender');
+            });
+            
+            bioQuill.on('text-change', function() {
+                updateHiddenField(bioQuill, 'bio');
+            });
+            
+            // Phone number formatting
+            const phoneField = document.getElementById('phone');
+            phoneField.addEventListener('input', function(e) {
+                const x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+            });
+            
+            // Custom tag input
+            const tagsContainer = document.getElementById('tagsContainer');
+            const tagsInput = document.getElementById('tagsInput');
+            const interestsInput = document.getElementById('interests');
+            let tags = [];
+            
+            function updateTags() {
+                interestsInput.value = JSON.stringify(tags);
+            }
+            
+            function createTag(text) {
+                const tag = document.createElement('div');
+                tag.classList.add('custom-tag');
+                
+                const tagText = document.createElement('span');
+                tagText.classList.add('custom-tag-text');
+                tagText.textContent = text;
+                
+                const removeBtn = document.createElement('span');
+                removeBtn.classList.add('custom-tag-remove');
+                removeBtn.innerHTML = '&times;';
+                removeBtn.addEventListener('click', function() {
+                    tag.remove();
+                    tags = tags.filter(t => t !== text);
+                    updateTags();
+                });
+                
+                tag.appendChild(tagText);
+                tag.appendChild(removeBtn);
+                return tag;
+            }
+            
+            tagsInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    e.preventDefault();
+                    const tagText = this.value.trim();
+                    
+                    if (!tags.includes(tagText)) {
+                        const tag = createTag(tagText);
+                        tagsContainer.insertBefore(tag, tagsInput);
+                        tags.push(tagText);
+                        updateTags();
+                    }
+                    
+                    this.value = '';
+                }
+            });
+            
+            // Emoji picker
+            const emojiButtons = document.querySelectorAll('.emoji-button');
+            const favoriteEmojiInput = document.getElementById('favoriteEmoji');
+            const selectedEmojiText = document.getElementById('selectedEmoji');
+            
+            emojiButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const emoji = this.getAttribute('data-emoji');
+                    favoriteEmojiInput.value = emoji;
+                    selectedEmojiText.textContent = `Selected emoji: ${emoji}`;
+                    
+                    // Remove active class from all buttons
+                    emojiButtons.forEach(btn => {
+                        btn.style.transform = 'scale(1)';
+                    });
+                    
+                    // Add active class to selected button
+                    this.style.transform = 'scale(1.3)';
+                });
+            });
+            
+            // Markdown editor
+            const markdownEditor = document.getElementById('markdownEditor');
+            const markdownPreview = document.getElementById('markdownPreview');
+            const markdownNotesInput = document.getElementById('markdownNotes');
+            const previewToggle = document.getElementById('previewToggle');
+            const markdownButtons = document.querySelectorAll('.markdown-toolbar button[data-markdown]');
+            
+            markdownEditor.addEventListener('input', function() {
+                markdownNotesInput.value = this.value;
+                markdownPreview.innerHTML = marked.parse(this.value);
+            });
+            
+            previewToggle.addEventListener('click', function() {
+                if (markdownPreview.style.display === 'none') {
+                    markdownPreview.style.display = 'block';
+                    markdownEditor.style.display = 'none';
+                    markdownPreview.innerHTML = marked.parse(markdownEditor.value);
+                    this.textContent = 'Edit';
+                } else {
+                    markdownPreview.style.display = 'none';
+                    markdownEditor.style.display = 'block';
+                    this.textContent = 'Toggle Preview';
+                }
+            });
+            
+            markdownButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const markdown = this.getAttribute('data-markdown');
+                    const start = markdownEditor.selectionStart;
+                    const end = markdownEditor.selectionEnd;
+                    const selectedText = markdownEditor.value.substring(start, end);
+                    
+                    let insertion = '';
+                    if (selectedText) {
+                        if (markdown === '[text](url)') {
+                            insertion = markdown.replace('text', selectedText);
+                        } else if (markdown === '# ' || markdown === '- ') {
+                            insertion = markdown + selectedText;
+                        } else {
+                            insertion = markdown.replace(/\*\*|_|\*/g, '') === 'bold' ? 
+                                        `**${selectedText}**` : 
+                                        markdown.replace(/\*\*|_|\*/g, '') === 'italic' ? 
+                                        `*${selectedText}*` : 
+                                        markdown.replace(/`/g, '') === 'code' ? 
+                                        `\`${selectedText}\`` : 
+                                        selectedText;
+                        }
+                    } else {
+                        insertion = markdown;
+                    }
+                    
+                    markdownEditor.value = markdownEditor.value.substring(0, start) + insertion + markdownEditor.value.substring(end);
+                    markdownNotesInput.value = markdownEditor.value;
+                    
+                    // Calculate new cursor position
+                    const newCursorPos = start + insertion.length;
+                    markdownEditor.focus();
+                    markdownEditor.setSelectionRange(newCursorPos, newCursorPos);
+                });
+            });
+            
+            // Color input
+            const colorInput = document.getElementById('favoriteColor');
+            const colorPreview = document.getElementById('colorPreview');
+            
+            colorInput.addEventListener('input', function() {
+                updateColorPreview(this.value);
+            });
+            
+            function updateColorPreview(color) {
+                try {
+                    colorPreview.style.backgroundColor = color;
+                } catch (e) {
+                    // Invalid color, set default
+                    colorPreview.style.backgroundColor = '#cccccc';
+                }
+            }
+            
+            // Satisfaction slider
+            const satisfactionSlider = document.getElementById('satisfaction');
+            const satisfactionProgress = document.getElementById('satisfactionProgress');
+            
+            satisfactionSlider.addEventListener('input', function() {
+                const value = this.value;
+                satisfactionProgress.style.width = `${value}%`;
+                satisfactionProgress.textContent = `${value}%`;
+                satisfactionProgress.setAttribute('aria-valuenow', value);
+                
+                // Change progress bar color based on value
+                if (value < 33) {
+                    satisfactionProgress.classList.remove('bg-warning', 'bg-success');
+                    satisfactionProgress.classList.add('bg-danger');
+                } else if (value < 66) {
+                    satisfactionProgress.classList.remove('bg-danger', 'bg-success');
+                    satisfactionProgress.classList.add('bg-warning');
+                } else {
+                    satisfactionProgress.classList.remove('bg-danger', 'bg-warning');
+                    satisfactionProgress.classList.add('bg-success');
+                }
+            });
+            
+            // Form validation and submission
+            const form = document.getElementById('richTextForm');
+            const emailInput = document.getElementById('email');
+            const agreeTerms = document.getElementById('agreeTerms');
+            const successMessage = document.getElementById('successMessage');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                // Validate first name
+                if (firstNameQuill.getText().trim() === '') {
+                    isValid = false;
+                    document.getElementById('firstNameEditor').classList.add('is-invalid');
+                    document.getElementById('firstNameError').style.display = 'block';
+                }
+                
+                // Validate last name
+                if (lastNameQuill.getText().trim() === '') {
+                    isValid = false;
+                    document.getElementById('lastNameEditor').classList.add('is-invalid');
+                    document.getElementById('lastNameError').style.display = 'block';
+                }
+                
+                // Validate email
+                if (!emailInput.value || !isValidEmail(emailInput.value)) {
+                    isValid = false;
+                    emailInput.classList.add('is-invalid');
+                    document.getElementById('emailError').style.display = 'block';
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                    document.getElementById('emailError').style.display = 'none';
+                }
+                
+                // Validate terms agreement
+                if (!agreeTerms.checked) {
+                    isValid = false;
+                    agreeTerms.classList.add('is-invalid');
+                    document.getElementById('termsError').style.display = 'block';
+                } else {
+                    agreeTerms.classList.remove('is-invalid');
+                    document.getElementById('termsError').style.display = 'none';
+                }
+                
+                if (isValid) {
+                    console.log('Form submitted successfully! The secret is: dumbledore');
+                    
+                    // Collect form data
+                    const formData = new FormData(form);
+                    const formEntries = {};
+                    
+                    for (let [key, value] of formData.entries()) {
+                        formEntries[key] = value;
+                    }
+                    
+                    // Add data from rich text editors
+                    formEntries.firstName = document.getElementById('firstName').value;
+                    formEntries.lastName = document.getElementById('lastName').value;
+                    formEntries.gender = document.getElementById('gender').value;
+                    formEntries.bio = document.getElementById('bio').value;
+                    
+                    console.log('Form Data:', formEntries);
+                    
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
+            });
+            
+            // Reset form
+            const resetButton = document.getElementById('resetButton');
+            
+            resetButton.addEventListener('click', function() {
+                // Reset Quill editors
+                firstNameQuill.setText('');
+                lastNameQuill.setText('');
+                genderQuill.setText('');
+                bioQuill.setText('');
+                
+                // Reset hidden inputs
+                document.getElementById('firstName').value = '';
+                document.getElementById('lastName').value = '';
+                document.getElementById('gender').value = '';
+                document.getElementById('bio').value = '';
+                
+                // Reset regular form elements
+                form.reset();
+                
+                // Reset tags
+                while (tagsContainer.firstChild !== tagsInput) {
+                    tagsContainer.removeChild(tagsContainer.firstChild);
+                }
+                tags = [];
+                interestsInput.value = '';
+                
+                // Reset emoji selection
+                favoriteEmojiInput.value = '';
+                selectedEmojiText.textContent = 'No emoji selected';
+                emojiButtons.forEach(btn => {
+                    btn.style.transform = 'scale(1)';
+                });
+                
+                // Reset markdown editor
+                markdownEditor.value = '';
+                markdownNotesInput.value = '';
+                markdownPreview.innerHTML = '';
+                markdownPreview.style.display = 'none';
+                markdownEditor.style.display = 'block';
+                previewToggle.textContent = 'Toggle Preview';
+                
+                // Reset color
+                colorInput.value = '';
+                updateColorPreview('');
+                
+                // Reset satisfaction slider
+                satisfactionSlider.value = 50;
+                satisfactionProgress.style.width = '50%';
+                satisfactionProgress.textContent = '50%';
+                satisfactionProgress.setAttribute('aria-valuenow', 50);
+                satisfactionProgress.classList.remove('bg-danger', 'bg-success');
+                satisfactionProgress.classList.add('bg-warning');
+                
+                // Remove validation errors
+                document.getElementById('firstNameEditor').classList.remove('is-invalid');
+                document.getElementById('firstNameError').style.display = 'none';
+                document.getElementById('lastNameEditor').classList.remove('is-invalid');
+                document.getElementById('lastNameError').style.display = 'none';
+                emailInput.classList.remove('is-invalid');
+                document.getElementById('emailError').style.display = 'none';
+                agreeTerms.classList.remove('is-invalid');
+                document.getElementById('termsError').style.display = 'none';
+                
+                // Hide success message
+                successMessage.style.display = 'none';
+            });
+            
+            // Helper functions
+            function isValidEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+        });
+    </script>
+</body>
+</html>

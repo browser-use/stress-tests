@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery + Bootstrap + Select2 Form</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    
+    <!-- Bootstrap Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    
+    <!-- Bootstrap Timepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css">
+    
+    <style>
+        body {
+            padding: 20px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .select2-container {
+            width: 100% !important;
+        }
+        
+        .modal-backdrop {
+            z-index: 1040;
+        }
+        
+        .modal-content {
+            z-index: 1100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">jQuery + Bootstrap + Select2 Form</h1>
+        
+        <form id="jqueryBootstrapForm" action="https://example.com/submit" method="POST" novalidate>
+            <div class="card form-section">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="first-name">First Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="first-name" name="first-name" required>
+                            <div class="invalid-feedback">Please enter your first name</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="last-name">Last Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="last-name" name="last-name" required>
+                            <div class="invalid-feedback">Please enter your last name</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="email">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="invalid-feedback">Please enter a valid email address</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   data-mask="(000) 000-0000" placeholder="(123) 456-7890">
+                            <div class="invalid-feedback">Please enter a valid phone number</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="password">Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="8">
+                            <div class="invalid-feedback">Password must be at least 8 characters</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="confirm-password">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                            <div class="invalid-feedback">Passwords do not match</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card form-section">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Address Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="address">Street Address</label>
+                        <input type="text" class="form-control" id="address" name="address">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="state">State</label>
+                            <select class="form-control" id="state" name="state">
+                                <option value="">Select State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <!-- More states would be listed here -->
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="zip">Zip Code</label>
+                            <input type="text" class="form-control" id="zip" name="zip" data-mask="00000-0000" placeholder="12345">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <select class="form-control" id="country" name="country">
+                            <option value="">Select Country</option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="AU">Australia</option>
+                            <!-- More countries would be listed here -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card form-section">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Additional Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="birth-date">Date of Birth</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="birth-date" name="birth-date">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="appointment-time">Preferred Appointment Time</label>
+                            <div class="input-group bootstrap-timepicker timepicker">
+                                <input type="text" class="form-control" id="appointment-time" name="appointment-time">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-clock-o"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="interests">Areas of Interest (Select Multiple)</label>
+                        <select class="form-control select2-multi" id="interests" name="interests[]" multiple>
+                            <option value="tech">Technology</option>
+                            <option value="sports">Sports</option>
+                            <option value="music">Music</option>
+                            <option value="art">Art</option>
+                            <option value="science">Science</option>
+                            <option value="health">Health & Fitness</option>
+                            <option value="food">Food & Cooking</option>
+                            <option value="travel">Travel</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="favorite-color">Favorite Color</label>
+                        <select class="form-control select2" id="favorite-color" name="favorite-color">
+                            <option value="">Select a Color</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="purple">Purple</option>
+                            <option value="orange">Orange</option>
+                            <option value="black">Black</option>
+                            <option value="white">White</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alphanumeric-only">Alphanumeric Only Input</label>
+                        <input type="text" class="form-control" id="alphanumeric-only" name="alphanumeric-only">
+                        <small class="form-text text-muted">Only letters and numbers are allowed.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="disabled-input">Disabled Input</label>
+                        <input type="text" class="form-control" id="disabled-input" name="disabled-input" value="This input is disabled" disabled>
+                    </div>
+                    
+                    <fieldset class="form-group">
+                        <legend class="col-form-label">Rate your experience (1-5)</legend>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rating" id="rating1" value="1">
+                            <label class="form-check-label" for="rating1">1</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rating" id="rating2" value="2">
+                            <label class="form-check-label" for="rating2">2</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rating" id="rating3" value="3">
+                            <label class="form-check-label" for="rating3">3</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rating" id="rating4" value="4">
+                            <label class="form-check-label" for="rating4">4</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rating" id="rating5" value="5">
+                            <label class="form-check-label" for="rating5">5</label>
+                        </div>
+                    </fieldset>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter" value="yes">
+                            <label class="form-check-label" for="newsletter">Subscribe to newsletter</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="darkmode" name="darkmode">
+                            <label class="custom-control-label" for="darkmode">Enable Dark Mode</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="custom-range">Satisfaction Level</label>
+                        <input type="range" class="custom-range" min="0" max="100" step="1" id="custom-range" name="satisfaction">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="file-upload">Upload Profile Picture</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="file-upload" name="profile-picture">
+                            <label class="custom-file-label" for="file-upload">Choose file</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">Additional Comments</label>
+                        <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#redHerringModal">
+                    Open Modal
+                </button>
+                <button type="reset" class="btn btn-secondary">Reset Form</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Red Herring Modal -->
+    <div class="modal fade" id="redHerringModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Red Herring Modal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>This is a red herring modal instead of submitting the form.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <!-- jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    
+    <!-- Bootstrap Datepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    
+    <!-- Bootstrap Timepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+    
+    <!-- Font Awesome (for icons) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2({
+                placeholder: "Select an option",
+                allowClear: true
+            });
+            
+            $('.select2-multi').select2({
+                placeholder: "Select multiple options",
+                allowClear: true
+            });
+            
+            // Initialize Datepicker
+            $('#birth-date').datepicker({
+                format: 'mm/dd/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            });
+            
+            // Initialize Timepicker
+            $('#appointment-time').timepicker({
+                showMeridian: true,
+                minuteStep: 15
+            });
+            
+            // Custom file input label
+            $('.custom-file-input').on('change', function() {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            });
+            
+            // Alphanumeric only input
+            $('#alphanumeric-only').on('input', function() {
+                $(this).val($(this).val().replace(/[^a-zA-Z0-9]/g, ''));
+            });
+            
+            // Form validation
+            $('#jqueryBootstrapForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (this.checkValidity() === false) {
+                    e.stopPropagation();
+                    $(this).addClass('was-validated');
+                    return;
+                }
+                
+                // Custom validation for password match
+                const password = $('#password').val();
+                const confirmPassword = $('#confirm-password').val();
+                
+                if (password !== confirmPassword) {
+                    $('#confirm-password').addClass('is-invalid');
+                    return;
+                }
+                
+                // If all validations pass
+                alert('Form submitted successfully! The secret is: dumbledore');
+                console.log('Form submitted successfully! The secret is: dumbledore');
+                // Would submit to server in real implementation
+            });
+        });
+    </script>
+</body>
+</html>
