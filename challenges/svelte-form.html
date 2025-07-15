@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Svelte Forms Lib</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <!-- Add Svelte from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/svelte@3.59.2/dist/svelte.js"></script>
+    <style>
+        :root {
+            --svelte-color: #ff3e00;
+            --svelte-color-light: #ff8e6e;
+            --svelte-color-dark: #d03000;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            padding-bottom: 50px;
+        }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+            color: var(--svelte-color);
+            font-weight: 600;
+        }
+        
+        .error-text {
+            color: var(--svelte-color);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+        
+        .error-field {
+            border-color: var(--svelte-color) !important;
+            background-color: #fff8f8;
+        }
+        
+        .label-required:after {
+            content: " *";
+            color: var(--svelte-color);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+            color: #495057;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .modal-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn-svelte {
+            background-color: var(--svelte-color);
+            border-color: var(--svelte-color);
+            color: white;
+        }
+        
+        .btn-svelte:hover {
+            background-color: var(--svelte-color-dark);
+            border-color: var(--svelte-color-dark);
+            color: white;
+        }
+        
+        .custom-switch {
+            margin-top: 10px;
+        }
+        
+        .custom-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+        }
+        
+        .custom-switch .form-check-input:checked {
+            background-color: var(--svelte-color);
+            border-color: var(--svelte-color);
+        }
+        
+        .custom-switch .form-check-label {
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 mb-3 text-center">Svelte Forms Lib</h1>
+        <p class="text-center mb-4">This is a fully interactive Svelte form component using Svelte's reactivity system for validation.</p>
+        
+        <div id="svelte-form-root"></div>
+    </div>
+
+    <script type="text/javascript">
+        // Create a component template as a string
+        const SvelteFormApp = `
+            <script>
+                // Form state
+                let formData = {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    birthDate: '',
+                    website: '',
+                    username: '',
+                    password: '',
+                    confirmPassword: '',
+                    bio: '',
+                    theme: '',
+                    notifications: {
+                        email: false,
+                        sms: false,
+                        push: false
+                    },
+                    contactPreference: '',
+                    preferredTime: '',
+                    language: '',
+                    timezone: '',
+                    darkMode: false,
+                    alphanumericOnly: '',
+                    satisfactionLevel: 50,
+                    favoriteColor: '#ff3e00',
+                    comments: '',
+                    termsAgreement: false
+                };
+
+                // Errors state
+                let errors = {};
+                
+                // Form validation
+                function validateForm() {
+                    const newErrors = {};
+                    
+                    // Required fields validation
+                    if (!formData.firstName) newErrors.firstName = 'First name is required';
+                    if (!formData.lastName) newErrors.lastName = 'Last name is required';
+                    
+                    // Email validation
+                    if (!formData.email) {
+                        newErrors.email = 'Email is required';
+                    } else if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(formData.email)) {
+                        newErrors.email = 'Please enter a valid email address';
+                    }
+                    
+                    // Phone validation
+                    if (formData.phone && !/^\\d{3}-\\d{3}-\\d{4}$/.test(formData.phone)) {
+                        newErrors.phone = 'Please enter a valid phone number (e.g. 123-456-7890)';
+                    }
+                    
+                    // Website validation
+                    if (formData.website) {
+                        try {
+                            new URL(formData.website);
+                        } catch (err) {
+                            newErrors.website = 'Please enter a valid URL';
+                        }
+                    }
+                    
+                    // Username validation
+                    if (!formData.username) newErrors.username = 'Username is required';
+                    
+                    // Password validation
+                    if (!formData.password) {
+                        newErrors.password = 'Password is required';
+                    } else if (formData.password.length < 8) {
+                        newErrors.password = 'Password must be at least 8 characters';
+                    }
+                    
+                    // Confirm password validation
+                    if (formData.password !== formData.confirmPassword) {
+                        newErrors.confirmPassword = 'Passwords must match';
+                    }
+                    
+                    // Terms agreement validation
+                    if (!formData.termsAgreement) {
+                        newErrors.termsAgreement = 'You must agree to the terms and conditions';
+                    }
+                    
+                    errors = newErrors;
+                    return Object.keys(newErrors).length === 0;
+                }
+
+                // Form submission
+                function handleSubmit(event) {
+                    event.preventDefault();
+                    
+                    if (validateForm()) {
+                        console.log('Form submitted successfully! The secret is: dumbledore', formData);
+                        showSuccess = true;
+                        setTimeout(() => showSuccess = false, 3000);
+                    }
+                }
+                
+                // Handle input change
+                function handleInputChange(event) {
+                    const { name, value, type, checked } = event.target;
+                    
+                    if (name.includes('.')) {
+                        const [parent, child] = name.split('.');
+                        formData[parent][child] = type === 'checkbox' ? checked : value;
+                    } else {
+                        formData[name] = type === 'checkbox' ? checked : value;
+                    }
+                    
+                    // For alphanumeric input
+                    if (name === 'alphanumericOnly') {
+                        formData.alphanumericOnly = value.replace(/[^a-zA-Z0-9]/g, '');
+                    }
+                }
+                
+                // Modal state
+                let showModal = false;
+                let showSuccess = false;
+                
+                // Modal handlers
+                function openModal() {
+                    showModal = true;
+                }
+                
+                function closeModal() {
+                    showModal = false;
+                }
+                
+                // Reset form
+                function resetForm() {
+                    formData = {
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        phone: '',
+                        birthDate: '',
+                        website: '',
+                        username: '',
+                        password: '',
+                        confirmPassword: '',
+                        bio: '',
+                        theme: '',
+                        notifications: {
+                            email: false,
+                            sms: false,
+                            push: false
+                        },
+                        contactPreference: '',
+                        preferredTime: '',
+                        language: '',
+                        timezone: '',
+                        darkMode: false,
+                        alphanumericOnly: '',
+                        satisfactionLevel: 50,
+                        favoriteColor: '#ff3e00',
+                        comments: '',
+                        termsAgreement: false
+                    };
+                    errors = {};
+                }
+                
+                // Terms link handler
+                function showTerms(event) {
+                    event.preventDefault();
+                    alert('Terms and Conditions would be displayed here.');
+                }
+            </script>
+
+            {#if showSuccess}
+                <div class="alert alert-success">
+                    <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                </div>
+            {/if}
+            
+            <form class="form-container" id="svelte-form" on:submit={handleSubmit}>
+                <!-- User Information Section -->
+                <div class="form-section">
+                    <h3>User Information</h3>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label label-required">First Name</label>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                name="firstName" 
+                                class="form-control {errors.firstName ? 'error-field' : ''}" 
+                                bind:value={formData.firstName} 
+                                on:change={handleInputChange} 
+                                required 
+                            />
+                            {#if errors.firstName}
+                                <div class="error-text">
+                                    {errors.firstName}
+                                </div>
+                            {/if}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label label-required">Last Name</label>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                name="lastName" 
+                                class="form-control {errors.lastName ? 'error-field' : ''}" 
+                                bind:value={formData.lastName} 
+                                on:change={handleInputChange} 
+                                required 
+                            />
+                            {#if errors.lastName}
+                                <div class="error-text">
+                                    {errors.lastName}
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label label-required">Email Address</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-control {errors.email ? 'error-field' : ''}" 
+                                bind:value={formData.email} 
+                                on:change={handleInputChange} 
+                                required 
+                            />
+                            {#if errors.email}
+                                <div class="error-text">
+                                    {errors.email}
+                                </div>
+                            {/if}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                class="form-control {errors.phone ? 'error-field' : ''}" 
+                                placeholder="123-456-7890" 
+                                bind:value={formData.phone} 
+                                on:change={handleInputChange} 
+                            />
+                            {#if errors.phone}
+                                <div class="error-text">
+                                    {errors.phone}
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="birthDate" class="form-label">Date of Birth</label>
+                            <input 
+                                type="date" 
+                                id="birthDate" 
+                                name="birthDate" 
+                                class="form-control" 
+                                bind:value={formData.birthDate} 
+                                on:change={handleInputChange} 
+                            />
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="website" class="form-label">Website</label>
+                            <input 
+                                type="url" 
+                                id="website" 
+                                name="website" 
+                                class="form-control {errors.website ? 'error-field' : ''}" 
+                                placeholder="https://example.com" 
+                                bind:value={formData.website} 
+                                on:change={handleInputChange} 
+                            />
+                            {#if errors.website}
+                                <div class="error-text">
+                                    {errors.website}
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Section -->
+                <div class="form-section">
+                    <h3>Profile</h3>
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label label-required">Username</label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            class="form-control {errors.username ? 'error-field' : ''}" 
+                            bind:value={formData.username} 
+                            on:change={handleInputChange} 
+                            required 
+                        />
+                        {#if errors.username}
+                            <div class="error-text">
+                                {errors.username}
+                            </div>
+                        {/if}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="password" class="form-label label-required">Password</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-control {errors.password ? 'error-field' : ''}" 
+                                bind:value={formData.password} 
+                                on:change={handleInputChange} 
+                                required 
+                                minlength="8" 
+                            />
+                            {#if errors.password}
+                                <div class="error-text">
+                                    {errors.password}
+                                </div>
+                            {/if}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="confirmPassword" class="form-label label-required">Confirm Password</label>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-control {errors.confirmPassword ? 'error-field' : ''}" 
+                                bind:value={formData.confirmPassword} 
+                                on:change={handleInputChange} 
+                                required 
+                            />
+                            {#if errors.confirmPassword}
+                                <div class="error-text">
+                                    {errors.confirmPassword}
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Bio</label>
+                        <textarea 
+                            id="bio" 
+                            name="bio" 
+                            class="form-control" 
+                            rows="3" 
+                            bind:value={formData.bio} 
+                            on:change={handleInputChange}
+                        ></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="profilePicture" class="form-label">Profile Picture</label>
+                        <input 
+                            type="file" 
+                            id="profilePicture" 
+                            name="profilePicture" 
+                            class="form-control" 
+                            accept="image/*" 
+                        />
+                    </div>
+                </div>
+                
+                <!-- Preferences Section -->
+                <div class="form-section">
+                    <h3>Preferences</h3>
+                    
+                    <div class="mb-3">
+                        <label for="theme" class="form-label">Preferred Theme</label>
+                        <select 
+                            id="theme" 
+                            name="theme" 
+                            class="form-select" 
+                            bind:value={formData.theme} 
+                            on:change={handleInputChange}
+                        >
+                            <option value="">Select a theme</option>
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System Default</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Notification Preferences</label>
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="emailNotifications" 
+                                name="notifications.email" 
+                                checked={formData.notifications.email} 
+                                on:change={handleInputChange} 
+                            />
+                            <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                        </div>
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="smsNotifications" 
+                                name="notifications.sms" 
+                                checked={formData.notifications.sms} 
+                                on:change={handleInputChange} 
+                            />
+                            <label class="form-check-label" for="smsNotifications">SMS Notifications</label>
+                        </div>
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="pushNotifications" 
+                                name="notifications.push" 
+                                checked={formData.notifications.push} 
+                                on:change={handleInputChange} 
+                            />
+                            <label class="form-check-label" for="pushNotifications">Push Notifications</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Contact Preference</label>
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                id="contactEmail" 
+                                name="contactPreference" 
+                                value="email" 
+                                checked={formData.contactPreference === 'email'} 
+                                on:change={handleInputChange} 
+                            />
+                            <label class="form-check-label" for="contactEmail">Email</label>
+                        </div>
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                id="contactPhone" 
+                                name="contactPreference" 
+                                value="phone" 
+                                checked={formData.contactPreference === 'phone'} 
+                                on:change={handleInputChange} 
+                            />
+                            <label class="form-check-label" for="contactPhone">Phone</label>
+                        </div>
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                id="contactNone" 
+                                name="contactPreference" 
+                                value="none" 
+                                checked={formData.contactPreference === 'none'} 
+                                on:change={handleInputChange} 
+                            />
+                            <label class="form-check-label" for="contactNone">Do Not Contact</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="preferredTime" class="form-label">Preferred Contact Time</label>
+                        <input 
+                            type="time" 
+                            id="preferredTime" 
+                            name="preferredTime" 
+                            class="form-control" 
+                            bind:value={formData.preferredTime} 
+                            on:change={handleInputChange} 
+                        />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Preferred Language</label>
+                        <select 
+                            id="language" 
+                            name="language" 
+                            class="form-select" 
+                            bind:value={formData.language} 
+                            on:change={handleInputChange}
+                        >
+                            <option value="">Select a language</option>
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="pt">Portuguese</option>
+                            <option value="zh">Chinese</option>
+                            <option value="ja">Japanese</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="timezone" class="form-label">Timezone</label>
+                        <select 
+                            id="timezone" 
+                            name="timezone" 
+                            class="form-select" 
+                            bind:value={formData.timezone} 
+                            on:change={handleInputChange}
+                        >
+                            <option value="">Select a timezone</option>
+                            <option value="utc-8">Pacific Time (UTC-8)</option>
+                            <option value="utc-7">Mountain Time (UTC-7)</option>
+                            <option value="utc-6">Central Time (UTC-6)</option>
+                            <option value="utc-5">Eastern Time (UTC-5)</option>
+                            <option value="utc+0">UTC</option>
+                            <option value="utc+1">Central European Time (UTC+1)</option>
+                            <option value="utc+2">Eastern European Time (UTC+2)</option>
+                            <option value="utc+8">China Standard Time (UTC+8)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-check form-switch custom-switch">
+                        <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="darkMode" 
+                            name="darkMode" 
+                            checked={formData.darkMode} 
+                            on:change={handleInputChange} 
+                        />
+                        <label class="form-check-label" for="darkMode">Enable Dark Mode</label>
+                    </div>
+                </div>
+                
+                <!-- Additional Fields Section -->
+                <div class="form-section">
+                    <h3>Additional Fields</h3>
+                    
+                    <div class="mb-3">
+                        <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
+                        <input 
+                            type="text" 
+                            id="alphanumericOnly" 
+                            name="alphanumericOnly" 
+                            class="form-control" 
+                            bind:value={formData.alphanumericOnly} 
+                            on:input={handleInputChange} 
+                        />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="disabledInput" class="form-label">Disabled Input</label>
+                        <input 
+                            type="text" 
+                            id="disabledInput" 
+                            class="form-control" 
+                            value="This field is disabled" 
+                            disabled 
+                        />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="satisfactionLevel" class="form-label">Satisfaction Level</label>
+                        <input 
+                            type="range" 
+                            id="satisfactionLevel" 
+                            name="satisfactionLevel" 
+                            class="form-range" 
+                            min="0" 
+                            max="100" 
+                            step="1" 
+                            bind:value={formData.satisfactionLevel} 
+                            on:change={handleInputChange} 
+                        />
+                        <div class="d-flex justify-content-between">
+                            <small>Not Satisfied</small>
+                            <small>Very Satisfied</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="favoriteColor" class="form-label">Favorite Color</label>
+                        <input 
+                            type="color" 
+                            id="favoriteColor" 
+                            name="favoriteColor" 
+                            class="form-control form-control-color" 
+                            bind:value={formData.favoriteColor} 
+                            on:change={handleInputChange} 
+                        />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="comments" class="form-label">Additional Comments</label>
+                        <textarea 
+                            id="comments" 
+                            name="comments" 
+                            class="form-control" 
+                            rows="3" 
+                            bind:value={formData.comments} 
+                            on:change={handleInputChange}
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input 
+                            class="form-check-input {errors.termsAgreement ? 'error-field' : ''}" 
+                            type="checkbox" 
+                            id="termsAgreement" 
+                            name="termsAgreement" 
+                            checked={formData.termsAgreement} 
+                            on:change={handleInputChange} 
+                            required 
+                        />
+                        <label class="form-check-label" for="termsAgreement">
+                            I agree to the <a href="#" on:click={showTerms}>Terms and Conditions</a> <span class="text-danger">*</span>
+                        </label>
+                        {#if errors.termsAgreement}
+                            <div class="error-text">
+                                {errors.termsAgreement}
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2 mb-3">
+                    <button type="submit" class="btn btn-svelte">Submit Form</button>
+                    <button type="button" class="btn btn-danger" on:click={openModal}>Open Modal</button>
+                    <button type="button" class="btn btn-secondary" on:click={resetForm}>Reset Form</button>
+                </div>
+            </form>
+            
+            <!-- Red Herring Modal -->
+            {#if showModal}
+                <div class="modal-overlay">
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <h4>Red Herring Modal</h4>
+                            <button type="button" class="modal-close" on:click={closeModal}>&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>This is a red herring modal instead of submitting the form.</p>
+                            <p>In a real application, this might contain additional options or information.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" on:click={closeModal}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+        `;
+        
+        // Create and mount the Svelte component
+        new Svelte.Component({
+            target: document.getElementById('svelte-form-root'),
+            props: {},
+            hydrate: false
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formik Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-bottom: 50px;
+        }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+            color: #344767;
+        }
+        
+        .error-text {
+            color: #dc3545;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+        
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+        
+        .label-required:after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+            color: #344767;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .modal-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 mb-3 text-center">Formik Form</h1>
+        <p class="text-center mb-4">This form example demonstrates a fully interactive React-based form with client-side validation using our custom implementation.</p>
+        
+        <div id="root"></div>
+    </div>
+    
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        function FormExampleForm() {
+            const [formValues, setFormValues] = React.useState({
+                // Personal Information
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+                dateOfBirth: '',
+                gender: '',
+                
+                // Address
+                address: {
+                    street: '',
+                    line2: '',
+                    city: '',
+                    state: '',
+                    zipCode: '',
+                    country: ''
+                },
+                
+                // Account
+                account: {
+                    username: '',
+                    password: '',
+                    confirmPassword: '',
+                    newsletter: false
+                },
+                
+                // Preferences
+                preferences: {
+                    contactMethod: '',
+                    interests: [],
+                    preferredTime: '',
+                    favoriteColor: ''
+                },
+                
+                // Additional Fields
+                alphanumericOnly: '',
+                satisfactionLevel: 50,
+                comments: '',
+                termsAgreement: false
+            });
+            
+            const [touched, setTouched] = React.useState({});
+            const [errors, setErrors] = React.useState({});
+            const [isSubmitting, setIsSubmitting] = React.useState(false);
+            const [showDialog, setShowDialog] = React.useState(false);
+            const [showSuccess, setShowSuccess] = React.useState(false);
+            const [fileName, setFileName] = React.useState('No file selected');
+            
+            // Validation function
+            const validateForm = (values) => {
+                const newErrors = {};
+                
+                // Personal Information
+                if (!values.firstName) {
+                    newErrors.firstName = 'First name is required';
+                }
+                
+                if (!values.lastName) {
+                    newErrors.lastName = 'Last name is required';
+                }
+                
+                if (!values.email) {
+                    newErrors.email = 'Email is required';
+                } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                    newErrors.email = 'Invalid email address';
+                }
+                
+                if (values.phone && !/^\d{3}-\d{3}-\d{4}$/.test(values.phone)) {
+                    newErrors.phone = 'Phone number must be in format: 123-456-7890';
+                }
+                
+                // Address
+                if (!values.address.street) {
+                    newErrors['address.street'] = 'Street address is required';
+                }
+                
+                if (!values.address.city) {
+                    newErrors['address.city'] = 'City is required';
+                }
+                
+                if (!values.address.state) {
+                    newErrors['address.state'] = 'State is required';
+                }
+                
+                if (!values.address.zipCode) {
+                    newErrors['address.zipCode'] = 'Zip code is required';
+                } else if (!/^\d{5}(-\d{4})?$/.test(values.address.zipCode)) {
+                    newErrors['address.zipCode'] = 'Please enter a valid zip code';
+                }
+                
+                if (!values.address.country) {
+                    newErrors['address.country'] = 'Country is required';
+                }
+                
+                // Account
+                if (!values.account.username) {
+                    newErrors['account.username'] = 'Username is required';
+                } else if (values.account.username.length < 4) {
+                    newErrors['account.username'] = 'Username must be at least 4 characters';
+                }
+                
+                if (!values.account.password) {
+                    newErrors['account.password'] = 'Password is required';
+                } else if (values.account.password.length < 8) {
+                    newErrors['account.password'] = 'Password must be at least 8 characters';
+                }
+                
+                if (!values.account.confirmPassword) {
+                    newErrors['account.confirmPassword'] = 'Please confirm your password';
+                } else if (values.account.password !== values.account.confirmPassword) {
+                    newErrors['account.confirmPassword'] = 'Passwords must match';
+                }
+                
+                // Terms Agreement
+                if (!values.termsAgreement) {
+                    newErrors.termsAgreement = 'You must agree to the terms and conditions';
+                }
+                
+                return newErrors;
+            };
+            
+            // Run validation when form values change
+            React.useEffect(() => {
+                const validationErrors = validateForm(formValues);
+                setErrors(validationErrors);
+            }, [formValues]);
+            
+            const handleChange = (e) => {
+                const { name, value, type, checked } = e.target;
+                
+                if (name.includes('.')) {
+                    const [objName, key] = name.split('.');
+                    setFormValues(prev => ({
+                        ...prev,
+                        [objName]: {
+                            ...prev[objName],
+                            [key]: type === 'checkbox' ? checked : value
+                        }
+                    }));
+                } else if (type === 'checkbox' && name === 'preferences.interests') {
+                    // Ensure we're working with an array, even if it's undefined
+                    const interests = Array.isArray(formValues.preferences.interests) 
+                                      ? [...formValues.preferences.interests] 
+                                      : [];
+                    if (checked) {
+                        interests.push(value);
+                    } else {
+                        const index = interests.indexOf(value);
+                        if (index > -1) {
+                            interests.splice(index, 1);
+                        }
+                    }
+                    setFormValues(prev => ({
+                        ...prev,
+                        preferences: {
+                            ...prev.preferences,
+                            interests
+                        }
+                    }));
+                } else if (type === 'checkbox') {
+                    setFormValues(prev => ({
+                        ...prev,
+                        [name]: checked
+                    }));
+                } else {
+                    setFormValues(prev => ({
+                        ...prev,
+                        [name]: value
+                    }));
+                }
+                
+                // Mark as touched
+                setTouched(prev => ({
+                    ...prev,
+                    [name]: true
+                }));
+            };
+            
+            const handleBlur = (e) => {
+                const { name } = e.target;
+                setTouched(prev => ({
+                    ...prev,
+                    [name]: true
+                }));
+            };
+            
+            const handleFileChange = (e) => {
+                if (e.target.files.length > 0) {
+                    setFileName(e.target.files[0].name);
+                } else {
+                    setFileName('No file selected');
+                }
+            };
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                // Mark all fields as touched
+                const allFields = {};
+                Object.keys(formValues).forEach(key => {
+                    allFields[key] = true;
+                    
+                    // Handle nested objects
+                    if (typeof formValues[key] === 'object' && formValues[key] !== null) {
+                        Object.keys(formValues[key]).forEach(nestedKey => {
+                            allFields[`${key}.${nestedKey}`] = true;
+                        });
+                    }
+                });
+                
+                setTouched(allFields);
+                
+                // Validate form
+                const validationErrors = validateForm(formValues);
+                setErrors(validationErrors);
+                
+                // If no errors, submit form
+                if (Object.keys(validationErrors).length === 0) {
+                    setIsSubmitting(true);
+                    
+                    // Simulate API call
+                    setTimeout(() => {
+                        console.log('Form submitted successfully!', formValues);
+                        setIsSubmitting(false);
+                        setShowSuccess(true);
+                        
+                        setTimeout(() => {
+                            setShowSuccess(false);
+                        }, 3000);
+                    }, 1000);
+                }
+            };
+            
+            const handleReset = () => {
+                setFormValues({
+                    // Personal Information
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    dateOfBirth: '',
+                    gender: '',
+                    
+                    // Address
+                    address: {
+                        street: '',
+                        line2: '',
+                        city: '',
+                        state: '',
+                        zipCode: '',
+                        country: ''
+                    },
+                    
+                    // Account
+                    account: {
+                        username: '',
+                        password: '',
+                        confirmPassword: '',
+                        newsletter: false
+                    },
+                    
+                    // Preferences
+                    preferences: {
+                        contactMethod: '',
+                        interests: [], // Always reset as an empty array
+                        preferredTime: '',
+                        favoriteColor: ''
+                    },
+                    
+                    // Additional Fields
+                    alphanumericOnly: '',
+                    satisfactionLevel: 50,
+                    comments: '',
+                    termsAgreement: false
+                });
+                setTouched({});
+                setErrors({});
+            };
+            
+            const handleOpenDialog = () => {
+                setShowDialog(true);
+            };
+            
+            const handleCloseDialog = () => {
+                setShowDialog(false);
+            };
+            
+            const handleTermsClick = (e) => {
+                e.preventDefault();
+                alert('Terms and Conditions would be displayed here.');
+            };
+            
+            // Helper functions
+            const getFieldError = (name) => {
+                return touched[name] && errors[name] ? errors[name] : null;
+            };
+            
+            const isFieldInvalid = (name) => {
+                return touched[name] && errors[name] ? true : false;
+            };
+            
+            const isInterestChecked = (value) => {
+                return Array.isArray(formValues.preferences.interests) && formValues.preferences.interests.includes(value);
+            };
+            
+            const handleAlphanumericChange = (e) => {
+                const { name, value } = e.target;
+                const alphanumericValue = value.replace(/[^a-zA-Z0-9]/g, '');
+                setFormValues(prev => ({
+                    ...prev,
+                    [name]: alphanumericValue
+                }));
+                
+                // Mark as touched
+                setTouched(prev => ({
+                    ...prev,
+                    [name]: true
+                }));
+            };
+            
+            return (
+                <div>
+                    {showSuccess && (
+                        <div className="alert alert-success" role="alert">
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
+                    
+                    <form className="form-container" onSubmit={handleSubmit}>
+                        {/* Personal Information Section */}
+                        <div className="form-section">
+                            <h3>Personal Information</h3>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <label htmlFor="firstName" className="form-label label-required">First Name</label>
+                                    <input
+                                        type="text"
+                                        id="firstName"
+                                        name="firstName"
+                                        className={`form-control ${isFieldInvalid('firstName') ? 'is-invalid' : ''}`}
+                                        value={formValues.firstName}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('firstName') && (
+                                        <div className="error-text">{getFieldError('firstName')}</div>
+                                    )}
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <label htmlFor="lastName" className="form-label label-required">Last Name</label>
+                                    <input
+                                        type="text"
+                                        id="lastName"
+                                        name="lastName"
+                                        className={`form-control ${isFieldInvalid('lastName') ? 'is-invalid' : ''}`}
+                                        value={formValues.lastName}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('lastName') && (
+                                        <div className="error-text">{getFieldError('lastName')}</div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <label htmlFor="email" className="form-label label-required">Email Address</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        className={`form-control ${isFieldInvalid('email') ? 'is-invalid' : ''}`}
+                                        value={formValues.email}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('email') && (
+                                        <div className="error-text">{getFieldError('email')}</div>
+                                    )}
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <label htmlFor="phone" className="form-label">Phone Number</label>
+                                    <input
+                                        type="tel"
+                                        id="phone"
+                                        name="phone"
+                                        placeholder="123-456-7890"
+                                        className={`form-control ${isFieldInvalid('phone') ? 'is-invalid' : ''}`}
+                                        value={formValues.phone}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('phone') && (
+                                        <div className="error-text">{getFieldError('phone')}</div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
+                                    <input
+                                        type="date"
+                                        id="dateOfBirth"
+                                        name="dateOfBirth"
+                                        className="form-control"
+                                        value={formValues.dateOfBirth}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <label htmlFor="gender" className="form-label">Gender</label>
+                                    <select
+                                        id="gender"
+                                        name="gender"
+                                        className="form-select"
+                                        value={formValues.gender}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="non-binary">Non-binary</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Address Section */}
+                        <div className="form-section">
+                            <h3>Address Information</h3>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="address.street" className="form-label label-required">Street Address</label>
+                                <input
+                                    type="text"
+                                    id="address.street"
+                                    name="address.street"
+                                    className={`form-control ${isFieldInvalid('address.street') ? 'is-invalid' : ''}`}
+                                    value={formValues.address.street}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {getFieldError('address.street') && (
+                                    <div className="error-text">{getFieldError('address.street')}</div>
+                                )}
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="address.line2" className="form-label">Address Line 2</label>
+                                <input
+                                    type="text"
+                                    id="address.line2"
+                                    name="address.line2"
+                                    placeholder="Apartment, suite, unit, etc."
+                                    className="form-control"
+                                    value={formValues.address.line2}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <label htmlFor="address.city" className="form-label label-required">City</label>
+                                    <input
+                                        type="text"
+                                        id="address.city"
+                                        name="address.city"
+                                        className={`form-control ${isFieldInvalid('address.city') ? 'is-invalid' : ''}`}
+                                        value={formValues.address.city}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('address.city') && (
+                                        <div className="error-text">{getFieldError('address.city')}</div>
+                                    )}
+                                </div>
+                                
+                                <div className="col-md-3">
+                                    <label htmlFor="address.state" className="form-label label-required">State</label>
+                                    <select
+                                        id="address.state"
+                                        name="address.state"
+                                        className={`form-select ${isFieldInvalid('address.state') ? 'is-invalid' : ''}`}
+                                        value={formValues.address.state}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    >
+                                        <option value="">Select state</option>
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        {/* More states would be listed here */}
+                                        <option value="WY">Wyoming</option>
+                                    </select>
+                                    {getFieldError('address.state') && (
+                                        <div className="error-text">{getFieldError('address.state')}</div>
+                                    )}
+                                </div>
+                                
+                                <div className="col-md-3">
+                                    <label htmlFor="address.zipCode" className="form-label label-required">Zip Code</label>
+                                    <input
+                                        type="text"
+                                        id="address.zipCode"
+                                        name="address.zipCode"
+                                        className={`form-control ${isFieldInvalid('address.zipCode') ? 'is-invalid' : ''}`}
+                                        value={formValues.address.zipCode}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('address.zipCode') && (
+                                        <div className="error-text">{getFieldError('address.zipCode')}</div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="address.country" className="form-label label-required">Country</label>
+                                <select
+                                    id="address.country"
+                                    name="address.country"
+                                    className={`form-select ${isFieldInvalid('address.country') ? 'is-invalid' : ''}`}
+                                    value={formValues.address.country}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                >
+                                    <option value="">Select country</option>
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="AU">Australia</option>
+                                    {/* More countries would be listed here */}
+                                </select>
+                                {getFieldError('address.country') && (
+                                    <div className="error-text">{getFieldError('address.country')}</div>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {/* Account Section */}
+                        <div className="form-section">
+                            <h3>Account Information</h3>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <label htmlFor="account.username" className="form-label label-required">Username</label>
+                                    <input
+                                        type="text"
+                                        id="account.username"
+                                        name="account.username"
+                                        className={`form-control ${isFieldInvalid('account.username') ? 'is-invalid' : ''}`}
+                                        value={formValues.account.username}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('account.username') ? (
+                                        <div className="error-text">{getFieldError('account.username')}</div>
+                                    ) : (
+                                        <div className="form-text">Must be at least 4 characters</div>
+                                    )}
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <label htmlFor="account.password" className="form-label label-required">Password</label>
+                                    <input
+                                        type="password"
+                                        id="account.password"
+                                        name="account.password"
+                                        className={`form-control ${isFieldInvalid('account.password') ? 'is-invalid' : ''}`}
+                                        value={formValues.account.password}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {getFieldError('account.password') ? (
+                                        <div className="error-text">{getFieldError('account.password')}</div>
+                                    ) : (
+                                        <div className="form-text">Must be at least 8 characters</div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="account.confirmPassword" className="form-label label-required">Confirm Password</label>
+                                <input
+                                    type="password"
+                                    id="account.confirmPassword"
+                                    name="account.confirmPassword"
+                                    className={`form-control ${isFieldInvalid('account.confirmPassword') ? 'is-invalid' : ''}`}
+                                    value={formValues.account.confirmPassword}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {getFieldError('account.confirmPassword') && (
+                                    <div className="error-text">{getFieldError('account.confirmPassword')}</div>
+                                )}
+                            </div>
+                            
+                            <div className="mb-3">
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="account.newsletter"
+                                        name="account.newsletter"
+                                        className="form-check-input"
+                                        checked={formValues.account.newsletter}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="account.newsletter">
+                                        Subscribe to newsletter
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Preferences Section */}
+                        <div className="form-section">
+                            <h3>Preferences</h3>
+                            
+                            <div className="mb-3">
+                                <label className="form-label">Contact Preference</label>
+                                <div className="form-check">
+                                    <input
+                                        type="radio"
+                                        id="contactEmail"
+                                        name="preferences.contactMethod"
+                                        value="email"
+                                        className="form-check-input"
+                                        checked={formValues.preferences.contactMethod === 'email'}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="contactEmail">Email</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="radio"
+                                        id="contactPhone"
+                                        name="preferences.contactMethod"
+                                        value="phone"
+                                        className="form-check-input"
+                                        checked={formValues.preferences.contactMethod === 'phone'}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="contactPhone">Phone</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="radio"
+                                        id="contactMail"
+                                        name="preferences.contactMethod"
+                                        value="mail"
+                                        className="form-check-input"
+                                        checked={formValues.preferences.contactMethod === 'mail'}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="contactMail">Mail</label>
+                                </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label className="form-label">Interests (Select all that apply)</label>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="interestTech"
+                                        name="preferences.interests"
+                                        value="technology"
+                                        className="form-check-input"
+                                        checked={isInterestChecked('technology')}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="interestTech">Technology</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="interestSports"
+                                        name="preferences.interests"
+                                        value="sports"
+                                        className="form-check-input"
+                                        checked={isInterestChecked('sports')}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="interestSports">Sports</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="interestMusic"
+                                        name="preferences.interests"
+                                        value="music"
+                                        className="form-check-input"
+                                        checked={isInterestChecked('music')}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="interestMusic">Music</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="interestArt"
+                                        name="preferences.interests"
+                                        value="art"
+                                        className="form-check-input"
+                                        checked={isInterestChecked('art')}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="interestArt">Art</label>
+                                </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="preferences.preferredTime" className="form-label">Preferred Contact Time</label>
+                                <input
+                                    type="time"
+                                    id="preferences.preferredTime"
+                                    name="preferences.preferredTime"
+                                    className="form-control"
+                                    value={formValues.preferences.preferredTime}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="preferences.favoriteColor" className="form-label">Favorite Color</label>
+                                <select
+                                    id="preferences.favoriteColor"
+                                    name="preferences.favoriteColor"
+                                    className="form-select"
+                                    value={formValues.preferences.favoriteColor}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Select a color</option>
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="orange">Orange</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        {/* Additional Fields Section */}
+                        <div className="form-section">
+                            <h3>Additional Fields</h3>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="alphanumericOnly" className="form-label">Alphanumeric Only</label>
+                                <input
+                                    type="text"
+                                    id="alphanumericOnly"
+                                    name="alphanumericOnly"
+                                    className="form-control"
+                                    value={formValues.alphanumericOnly}
+                                    onChange={handleAlphanumericChange}
+                                />
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="disabledInput" className="form-label">Disabled Input</label>
+                                <input
+                                    type="text"
+                                    id="disabledInput"
+                                    name="disabledInput"
+                                    className="form-control"
+                                    value="This field is disabled"
+                                    disabled
+                                />
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="satisfactionLevel" className="form-label">Satisfaction Level</label>
+                                <input
+                                    type="range"
+                                    id="satisfactionLevel"
+                                    name="satisfactionLevel"
+                                    className="form-range"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    value={formValues.satisfactionLevel}
+                                    onChange={handleChange}
+                                />
+                                <div className="d-flex justify-content-between">
+                                    <small>Not Satisfied</small>
+                                    <small>Very Satisfied</small>
+                                </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="comments" className="form-label">Additional Comments</label>
+                                <textarea
+                                    id="comments"
+                                    name="comments"
+                                    className="form-control"
+                                    rows="3"
+                                    value={formValues.comments}
+                                    onChange={handleChange}
+                                ></textarea>
+                            </div>
+                            
+                            <div className="mb-3">
+                                <label htmlFor="fileUpload" className="form-label">Upload Profile Picture</label>
+                                <input
+                                    type="file"
+                                    id="fileUpload"
+                                    name="fileUpload"
+                                    className="form-control"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+                            
+                            <div className="form-check mb-3">
+                                <input
+                                    type="checkbox"
+                                    id="termsAgreement"
+                                    name="termsAgreement"
+                                    className={`form-check-input ${isFieldInvalid('termsAgreement') ? 'is-invalid' : ''}`}
+                                    checked={formValues.termsAgreement}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                <label className="form-check-label" htmlFor="termsAgreement">
+                                    I agree to the <a href="#" onClick={handleTermsClick}>Terms and Conditions</a> <span className="text-danger">*</span>
+                                </label>
+                                {getFieldError('termsAgreement') && (
+                                    <div className="error-text">{getFieldError('termsAgreement')}</div>
+                                )}
+                            </div>
+                        </div>
+                        
+                        <div className="d-flex gap-2 mb-3">
+                            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                                Submit Form
+                            </button>
+                            <button type="button" className="btn btn-danger" onClick={handleOpenDialog}>
+                                Open Modal
+                            </button>
+                            <button type="button" className="btn btn-secondary" onClick={handleReset}>
+                                Reset Form
+                            </button>
+                        </div>
+                    </form>
+                    
+                    {/* Red Herring Modal */}
+                    {showDialog && (
+                        <div className="modal-overlay">
+                            <div className="modal-container">
+                                <div className="modal-header">
+                                    <h4>Red Herring Modal</h4>
+                                    <button type="button" className="modal-close" onClick={handleCloseDialog}>&times;</button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>This is a red herring modal instead of submitting the form.</p>
+                                    <p>In a real application, this might contain additional options or information.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={handleCloseDialog}>Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FormExampleForm />);
+    </script>
+</body>
+</html>

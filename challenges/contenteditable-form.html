@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentEditable Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #6610f2;
+            margin-bottom: 20px;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section-title {
+            color: #6610f2;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .editable-field {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            background-color: #fff;
+            min-height: 38px;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            overflow: auto;
+        }
+        
+        .editable-field:focus {
+            border-color: #6610f2;
+            outline: none;
+            box-shadow: 0 0 0 0.25rem rgba(102, 16, 242, 0.25);
+        }
+        
+        .editable-field.invalid {
+            border-color: #dc3545;
+        }
+        
+        .editable-field[data-placeholder]:empty::before {
+            content: attr(data-placeholder);
+            color: #6c757d;
+            pointer-events: none;
+        }
+        
+        .editable-field-disabled {
+            background-color: #e9ecef;
+            opacity: 1;
+            pointer-events: none;
+        }
+        
+        .field-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 80%;
+            color: #dc3545;
+        }
+        
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .toolbar button {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+        
+        .toolbar button:hover {
+            background-color: #e9ecef;
+        }
+        
+        .toolbar button.active {
+            background-color: #6610f2;
+            color: white;
+            border-color: #6610f2;
+        }
+        
+        .toolbar select {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* Custom Checkboxes */
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        
+        .custom-checkbox-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            position: relative;
+        }
+        
+        .custom-checkbox.checked .custom-checkbox-indicator::after {
+            content: '✓';
+            position: absolute;
+            top: -4px;
+            left: 3px;
+            color: #6610f2;
+            font-weight: bold;
+        }
+        
+        #contentEditableForm input[type="hidden"] {
+            display: none;
+        }
+        
+        /* Alert styles */
+        .alert {
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-dialog {
+            margin: 30px auto;
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            color: #6610f2;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .modal-body {
+            padding: 15px;
+        }
+        
+        .modal-footer {
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #6610f2;
+            border-color: #6610f2;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a0db7;
+            border-color: #5a0db7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">ContentEditable Form</h1>
+        <p class="text-center description">
+            This form uses contenteditable divs instead of standard form elements, making it difficult for autofill systems to recognize and populate fields.
+        </p>
+        
+        <div class="alert alert-success" id="successMessage">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <form id="contentEditableForm">
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Personal Information</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="field-label required" for="firstNameField">First Name</label>
+                        <div class="editable-field" id="firstNameField" contenteditable="true" data-placeholder="Enter your first name" data-field="firstName" tabindex="1"></div>
+                        <div class="invalid-feedback" id="firstNameError">First name is required</div>
+                        <input type="hidden" name="firstName" id="firstName">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="field-label required" for="lastNameField">Last Name</label>
+                        <div class="editable-field" id="lastNameField" contenteditable="true" data-placeholder="Enter your last name" data-field="lastName" tabindex="2"></div>
+                        <div class="invalid-feedback" id="lastNameError">Last name is required</div>
+                        <input type="hidden" name="lastName" id="lastName">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="field-label required" for="emailField">Email Address</label>
+                        <div class="editable-field" id="emailField" contenteditable="true" data-placeholder="Enter your email address" data-field="email" tabindex="3"></div>
+                        <div class="invalid-feedback" id="emailError">Please enter a valid email address</div>
+                        <input type="hidden" name="email" id="email">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="field-label" for="phoneField">Phone Number</label>
+                        <div class="editable-field" id="phoneField" contenteditable="true" data-placeholder="Enter your phone number" data-field="phone" tabindex="4"></div>
+                        <div class="invalid-feedback" id="phoneError">Please enter a valid phone number</div>
+                        <input type="hidden" name="phone" id="phone">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="field-label" for="birthDateField">Date of Birth</label>
+                        <div class="editable-field" id="birthDateField" contenteditable="true" data-placeholder="YYYY-MM-DD" data-field="birthDate" tabindex="5"></div>
+                        <div class="invalid-feedback" id="birthDateError">Please enter a valid date in YYYY-MM-DD format</div>
+                        <input type="hidden" name="birthDate" id="birthDate">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="field-label" for="genderField">Gender</label>
+                        <div id="genderSelector" class="mb-3">
+                            <div class="custom-checkbox" data-value="male">
+                                <span class="custom-checkbox-indicator"></span>
+                                <span>Male</span>
+                            </div>
+                            <div class="custom-checkbox" data-value="female">
+                                <span class="custom-checkbox-indicator"></span>
+                                <span>Female</span>
+                            </div>
+                            <div class="custom-checkbox" data-value="other">
+                                <span class="custom-checkbox-indicator"></span>
+                                <span>Other</span>
+                            </div>
+                            <div class="custom-checkbox" data-value="prefer-not-to-say">
+                                <span class="custom-checkbox-indicator"></span>
+                                <span>Prefer not to say</span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="gender" id="gender">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Address Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Address Information</h2>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <label class="field-label required" for="streetField">Street Address</label>
+                        <div class="editable-field" id="streetField" contenteditable="true" data-placeholder="Enter your street address" data-field="street" tabindex="6"></div>
+                        <div class="invalid-feedback" id="streetError">Street address is required</div>
+                        <input type="hidden" name="street" id="street">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="field-label required" for="cityField">City</label>
+                        <div class="editable-field" id="cityField" contenteditable="true" data-placeholder="Enter your city" data-field="city" tabindex="7"></div>
+                        <div class="invalid-feedback" id="cityError">City is required</div>
+                        <input type="hidden" name="city" id="city">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="field-label required" for="stateField">State/Province</label>
+                        <div class="editable-field dropdown-trigger" id="stateField" contenteditable="false" data-placeholder="Select..." data-field="state" tabindex="8">Select...</div>
+                        <div class="invalid-feedback" id="stateError">State/Province is required</div>
+                        <input type="hidden" name="state" id="state">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="field-label required" for="zipCodeField">Zip Code</label>
+                        <div class="editable-field" id="zipCodeField" contenteditable="true" data-placeholder="Enter zip code" data-field="zipCode" tabindex="9"></div>
+                        <div class="invalid-feedback" id="zipCodeError">Please enter a valid zip code</div>
+                        <input type="hidden" name="zipCode" id="zipCode">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="field-label required" for="countryField">Country</label>
+                        <div class="editable-field dropdown-trigger" id="countryField" contenteditable="false" data-placeholder="Select..." data-field="country" tabindex="10">Select...</div>
+                        <div class="invalid-feedback" id="countryError">Country is required</div>
+                        <input type="hidden" name="country" id="country">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Information Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Additional Information</h2>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="field-label" for="bioField">Bio</label>
+                        <div class="toolbar">
+                            <button type="button" data-command="bold" title="Bold"><strong>B</strong></button>
+                            <button type="button" data-command="italic" title="Italic"><em>I</em></button>
+                            <button type="button" data-command="underline" title="Underline"><u>U</u></button>
+                            <button type="button" data-command="insertUnorderedList" title="Bullet List">• List</button>
+                            <button type="button" data-command="createLink" title="Insert Link">🔗 Link</button>
+                            <select data-command="fontSize">
+                                <option value="">Font Size</option>
+                                <option value="1">Very Small</option>
+                                <option value="2">Small</option>
+                                <option value="3">Normal</option>
+                                <option value="4">Large</option>
+                                <option value="5">Very Large</option>
+                            </select>
+                            <select data-command="foreColor">
+                                <option value="">Text Color</option>
+                                <option value="black">Black</option>
+                                <option value="#6610f2">Purple</option>
+                                <option value="red">Red</option>
+                                <option value="green">Green</option>
+                                <option value="blue">Blue</option>
+                            </select>
+                        </div>
+                        <div class="editable-field" id="bioField" contenteditable="true" data-placeholder="Tell us about yourself..." data-field="bio" style="min-height: 120px;" tabindex="11"></div>
+                        <input type="hidden" name="bio" id="bio">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="field-label" for="alphanumericField">Alphanumeric Only</label>
+                        <div class="editable-field" id="alphanumericField" contenteditable="true" data-placeholder="Enter alphanumeric text" data-field="alphanumeric" data-pattern="alphanumeric" tabindex="12"></div>
+                        <div class="form-text">Only letters and numbers are allowed</div>
+                        <input type="hidden" name="alphanumeric" id="alphanumeric">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="field-label" for="disabledField">Disabled Field</label>
+                        <div class="editable-field editable-field-disabled" id="disabledField" contenteditable="false" data-field="disabled">This field is disabled</div>
+                        <input type="hidden" name="disabled" id="disabled" value="This field is disabled">
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="custom-checkbox" data-value="terms" id="termsCheckbox">
+                            <span class="custom-checkbox-indicator"></span>
+                            <span>I agree to the <a href="#" id="termsLink">Terms and Conditions</a> <span class="text-danger">*</span></span>
+                        </div>
+                        <div class="invalid-feedback" id="termsError">You must agree to the terms and conditions</div>
+                        <input type="hidden" name="terms" id="terms" value="false">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2 justify-content-center">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+                <button type="button" class="btn btn-danger" id="redHerringButton">Open Modal</button>
+                <button type="button" class="btn btn-secondary" id="resetButton">Reset</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- State Selection Modal -->
+    <div class="modal" id="stateModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select State/Province</h5>
+                    <button type="button" class="modal-close" id="closeStateModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <button type="button" class="list-group-item list-group-item-action" data-value="AL">Alabama</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="AK">Alaska</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="AZ">Arizona</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="AR">Arkansas</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="CA">California</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="CO">Colorado</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="CT">Connecticut</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="DE">Delaware</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="FL">Florida</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="GA">Georgia</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Country Selection Modal -->
+    <div class="modal" id="countryModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select Country</h5>
+                    <button type="button" class="modal-close" id="closeCountryModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <button type="button" class="list-group-item list-group-item-action" data-value="US">United States</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="CA">Canada</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="UK">United Kingdom</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="AU">Australia</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="DE">Germany</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="FR">France</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="JP">Japan</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="BR">Brazil</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="IN">India</button>
+                        <button type="button" class="list-group-item list-group-item-action" data-value="CN">China</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Link Modal -->
+    <div class="modal" id="linkModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Insert Link</h5>
+                    <button type="button" class="modal-close" id="closeLinkModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="linkText" class="form-label">Link Text</label>
+                        <input type="text" class="form-control" id="linkText" placeholder="Enter link text">
+                    </div>
+                    <div class="mb-3">
+                        <label for="linkUrl" class="form-label">URL</label>
+                        <input type="text" class="form-control" id="linkUrl" placeholder="https://example.com">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelLink">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="insertLink">Insert</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Red Herring Modal -->
+    <div class="modal" id="redHerringModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Red Herring Modal</h5>
+                    <button type="button" class="modal-close" id="closeRedHerringModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>This is a red herring modal instead of submitting the form.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="closeRedHerring">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Terms and Conditions Modal -->
+    <div class="modal" id="termsModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Terms and Conditions</h5>
+                    <button type="button" class="modal-close" id="closeTermsModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>These are the terms and conditions for using our service.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="closeTerms">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all elements
+            const form = document.getElementById('contentEditableForm');
+            const editableFields = document.querySelectorAll('.editable-field[contenteditable="true"]');
+            const stateField = document.getElementById('stateField');
+            const countryField = document.getElementById('countryField');
+            const stateModal = document.getElementById('stateModal');
+            const countryModal = document.getElementById('countryModal');
+            const linkModal = document.getElementById('linkModal');
+            const redHerringModal = document.getElementById('redHerringModal');
+            const termsModal = document.getElementById('termsModal');
+            const successMessage = document.getElementById('successMessage');
+            const toolbarButtons = document.querySelectorAll('.toolbar button');
+            const toolbarSelects = document.querySelectorAll('.toolbar select');
+            const customCheckboxes = document.querySelectorAll('.custom-checkbox');
+            const resetButton = document.getElementById('resetButton');
+            
+            // Initialize contenteditable fields to sync with hidden inputs
+            editableFields.forEach(field => {
+                field.addEventListener('input', function() {
+                    const targetId = this.getAttribute('data-field');
+                    const hiddenInput = document.getElementById(targetId);
+                    if (hiddenInput) {
+                        hiddenInput.value = this.textContent.trim();
+                    }
+                    
+                    // Clear any validation errors when user types
+                    this.classList.remove('invalid');
+                    const errorElement = document.getElementById(`${targetId}Error`);
+                    if (errorElement) {
+                        errorElement.style.display = 'none';
+                    }
+                    
+                    // For alphanumeric fields, restrict input
+                    if (this.getAttribute('data-pattern') === 'alphanumeric') {
+                        this.textContent = this.textContent.replace(/[^a-zA-Z0-9]/g, '');
+                    }
+                });
+                
+                // Handle placeholder behavior
+                field.addEventListener('focus', function() {
+                    if (this.textContent.trim() === '' && this.getAttribute('data-placeholder')) {
+                        this.textContent = '';
+                    }
+                });
+                
+                field.addEventListener('blur', function() {
+                    const targetId = this.getAttribute('data-field');
+                    const hiddenInput = document.getElementById(targetId);
+                    if (hiddenInput) {
+                        hiddenInput.value = this.textContent.trim();
+                    }
+                    
+                    if (this.textContent.trim() === '') {
+                        this.innerHTML = '';  // Clear any formatting
+                    }
+                });
+            });
+            
+            // Rich text editor toolbar
+            toolbarButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const command = this.getAttribute('data-command');
+                    
+                    if (command === 'createLink') {
+                        // Store selection before opening modal
+                        window.savedSelection = saveSelection();
+                        
+                        // Show link modal
+                        linkModal.style.display = 'block';
+                    } else {
+                        document.execCommand(command, false, null);
+                        document.getElementById('bioField').focus();
+                    }
+                });
+            });
+            
+            toolbarSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const command = this.getAttribute('data-command');
+                    const value = this.value;
+                    
+                    if (value) {
+                        document.execCommand(command, false, value);
+                        document.getElementById('bioField').focus();
+                    }
+                    
+                    // Reset select to default option
+                    this.selectedIndex = 0;
+                });
+            });
+            
+            // Link modal handlers
+            document.getElementById('insertLink').addEventListener('click', function() {
+                const linkText = document.getElementById('linkText').value;
+                const linkUrl = document.getElementById('linkUrl').value;
+                
+                if (window.savedSelection) {
+                    restoreSelection(window.savedSelection);
+                    
+                    if (linkText && linkUrl) {
+                        // Create a link with the specified text
+                        document.execCommand('insertHTML', false, `<a href="${linkUrl}" target="_blank">${linkText}</a>`);
+                    } else if (linkUrl) {
+                        // Just create a link with selected text
+                        document.execCommand('createLink', false, linkUrl);
+                    }
+                }
+                
+                // Close modal and reset fields
+                linkModal.style.display = 'none';
+                document.getElementById('linkText').value = '';
+                document.getElementById('linkUrl').value = '';
+            });
+            
+            document.getElementById('cancelLink').addEventListener('click', function() {
+                linkModal.style.display = 'none';
+                document.getElementById('linkText').value = '';
+                document.getElementById('linkUrl').value = '';
+            });
+            
+            document.getElementById('closeLinkModal').addEventListener('click', function() {
+                linkModal.style.display = 'none';
+            });
+            
+            // Custom dropdown handlers
+            stateField.addEventListener('click', function() {
+                stateModal.style.display = 'block';
+            });
+            
+            countryField.addEventListener('click', function() {
+                countryModal.style.display = 'block';
+            });
+            
+            // State selection handlers
+            document.querySelectorAll('#stateModal .list-group-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    stateField.textContent = text;
+                    document.getElementById('state').value = value;
+                    stateModal.style.display = 'none';
+                    
+                    // Clear validation error
+                    stateField.classList.remove('invalid');
+                    document.getElementById('stateError').style.display = 'none';
+                });
+            });
+            
+            // Country selection handlers
+            document.querySelectorAll('#countryModal .list-group-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    countryField.textContent = text;
+                    document.getElementById('country').value = value;
+                    countryModal.style.display = 'none';
+                    
+                    // Clear validation error
+                    countryField.classList.remove('invalid');
+                    document.getElementById('countryError').style.display = 'none';
+                });
+            });
+            
+            // Modal close handlers
+            document.getElementById('closeStateModal').addEventListener('click', function() {
+                stateModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeCountryModal').addEventListener('click', function() {
+                countryModal.style.display = 'none';
+            });
+            
+            // Custom checkbox handlers
+            customCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    
+                    if (value === 'terms') {
+                        // Toggle terms checkbox
+                        this.classList.toggle('checked');
+                        document.getElementById('terms').value = this.classList.contains('checked') ? 'true' : 'false';
+                        
+                        // Clear validation error
+                        document.getElementById('termsError').style.display = 'none';
+                    } else {
+                        // For radio-like behavior (gender)
+                        const container = this.parentElement;
+                        container.querySelectorAll('.custom-checkbox').forEach(cb => {
+                            cb.classList.remove('checked');
+                        });
+                        this.classList.add('checked');
+                        document.getElementById('gender').value = value;
+                    }
+                });
+            });
+            
+            // Terms link handler
+            document.getElementById('termsLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                termsModal.style.display = 'block';
+            });
+            
+            document.getElementById('closeTermsModal').addEventListener('click', function() {
+                termsModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeTerms').addEventListener('click', function() {
+                termsModal.style.display = 'none';
+            });
+            
+            // Red herring modal handlers
+            document.getElementById('redHerringButton').addEventListener('click', function() {
+                redHerringModal.style.display = 'block';
+            });
+            
+            document.getElementById('closeRedHerringModal').addEventListener('click', function() {
+                redHerringModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeRedHerring').addEventListener('click', function() {
+                redHerringModal.style.display = 'none';
+            });
+            
+            // Form validation and submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                // Validate required fields
+                const requiredFields = [
+                    { field: 'firstName', error: 'firstNameError' },
+                    { field: 'lastName', error: 'lastNameError' },
+                    { field: 'email', error: 'emailError' },
+                    { field: 'street', error: 'streetError' },
+                    { field: 'city', error: 'cityError' },
+                    { field: 'state', error: 'stateError' },
+                    { field: 'zipCode', error: 'zipCodeError' },
+                    { field: 'country', error: 'countryError' }
+                ];
+                
+                requiredFields.forEach(item => {
+                    const value = document.getElementById(item.field).value;
+                    const displayElement = document.getElementById(`${item.field}Field`);
+                    const errorElement = document.getElementById(item.error);
+                    
+                    if (!value) {
+                        isValid = false;
+                        if (displayElement) displayElement.classList.add('invalid');
+                        if (errorElement) errorElement.style.display = 'block';
+                    }
+                });
+                
+                // Validate email format
+                const emailValue = document.getElementById('email').value;
+                if (emailValue && !isValidEmail(emailValue)) {
+                    isValid = false;
+                    document.getElementById('emailField').classList.add('invalid');
+                    document.getElementById('emailError').style.display = 'block';
+                }
+                
+                // Validate terms agreement
+                if (document.getElementById('terms').value !== 'true') {
+                    isValid = false;
+                    document.getElementById('termsError').style.display = 'block';
+                }
+                
+                if (isValid) {
+                    console.log('Form submitted successfully! The secret is: dumbledore');
+                    
+                    // Get all form values
+                    const formData = {};
+                    document.querySelectorAll('#contentEditableForm input[type="hidden"]').forEach(input => {
+                        formData[input.name] = input.value;
+                    });
+                    
+                    console.log('Form Data:', formData);
+                    
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
+            });
+            
+            // Reset form
+            resetButton.addEventListener('click', function() {
+                // Clear all editable fields
+                editableFields.forEach(field => {
+                    field.textContent = '';
+                    field.innerHTML = '';
+                    
+                    const targetId = field.getAttribute('data-field');
+                    const hiddenInput = document.getElementById(targetId);
+                    if (hiddenInput) {
+                        hiddenInput.value = '';
+                    }
+                    
+                    // Remove validation errors
+                    field.classList.remove('invalid');
+                    const errorElement = document.getElementById(`${targetId}Error`);
+                    if (errorElement) {
+                        errorElement.style.display = 'none';
+                    }
+                });
+                
+                // Reset dropdowns
+                stateField.textContent = 'Select...';
+                countryField.textContent = 'Select...';
+                document.getElementById('state').value = '';
+                document.getElementById('country').value = '';
+                
+                // Reset checkboxes
+                customCheckboxes.forEach(checkbox => {
+                    checkbox.classList.remove('checked');
+                });
+                document.getElementById('terms').value = 'false';
+                document.getElementById('gender').value = '';
+                
+                // Clear validation errors
+                document.querySelectorAll('.invalid-feedback').forEach(element => {
+                    element.style.display = 'none';
+                });
+                
+                // Hide success message
+                successMessage.style.display = 'none';
+                
+                // Reset disabled field
+                document.getElementById('disabledField').textContent = 'This field is disabled';
+                document.getElementById('disabled').value = 'This field is disabled';
+            });
+            
+            // Helper functions
+            function isValidEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            // Save and restore selection for link insertion
+            function saveSelection() {
+                if (window.getSelection) {
+                    const sel = window.getSelection();
+                    if (sel.getRangeAt && sel.rangeCount) {
+                        return sel.getRangeAt(0);
+                    }
+                }
+                return null;
+            }
+            
+            function restoreSelection(range) {
+                if (range) {
+                    if (window.getSelection) {
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                }
+            }
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === stateModal) {
+                    stateModal.style.display = 'none';
+                } else if (event.target === countryModal) {
+                    countryModal.style.display = 'none';
+                } else if (event.target === linkModal) {
+                    linkModal.style.display = 'none';
+                } else if (event.target === redHerringModal) {
+                    redHerringModal.style.display = 'none';
+                } else if (event.target === termsModal) {
+                    termsModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

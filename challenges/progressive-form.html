@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progressive Multi-step Form</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 20px;
+            color: #1f2937;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        p {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #6b7280;
+            font-size: 16px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .alert-success {
+            background-color: #dcfce7;
+            border: 1px solid var(--success-color);
+            color: #166534;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            display: flex;
+            position: relative;
+            justify-content: space-between;
+            counter-reset: step;
+            z-index: 1;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #e5e7eb;
+            z-index: -1;
+        }
+        
+        .progress-step {
+            text-align: center;
+            position: relative;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 50%;
+            font-weight: bold;
+            color: #9ca3af;
+            transition: all 0.3s;
+        }
+        
+        .progress-step.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .progress-step.completed {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+        
+        .progress-step-text {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        
+        /* Form Step Sections */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .form-section h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-label.required::after {
+            content: " *";
+            color: var(--error-color);
+        }
+        
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #1f2937;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--error-color);
+        }
+        
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+        
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 5px;
+            font-size: 14px;
+            color: var(--error-color);
+        }
+        
+        .form-text {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .form-check-input {
+            margin-right: 10px;
+            margin-top: 4px;
+        }
+        
+        /* Form Buttons */
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 10px 15px;
+            font-size: 16px;
+            line-height: 1.5;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .btn-primary {
+            color: white;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            color: #1f2937;
+            background-color: white;
+            border-color: #d1d5db;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f3f4f6;
+            border-color: #9ca3af;
+        }
+        
+        .btn-danger {
+            color: white;
+            background-color: var(--error-color);
+            border-color: var(--error-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            padding: 0;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            margin: 0;
+            color: #1f2937;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Progressive Multi-step Form</h1>
+        <p>This form reveals fields progressively based on previous answers, which can be challenging for autofill systems.</p>
+        
+        <div class="alert alert-success" id="success-message">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step active" id="step-1">
+                    1
+                    <span class="progress-step-text">Basic Info</span>
+                </div>
+                <div class="progress-step" id="step-2">
+                    2
+                    <span class="progress-step-text">Address</span>
+                </div>
+                <div class="progress-step" id="step-3">
+                    3
+                    <span class="progress-step-text">Preferences</span>
+                </div>
+                <div class="progress-step" id="step-4">
+                    4
+                    <span class="progress-step-text">Review</span>
+                </div>
+            </div>
+        </div>
+        
+        <form id="progressive-form">
+            <!-- Step 1: Basic Information -->
+            <div class="form-step active" id="step-1-content">
+                <div class="form-section">
+                    <h2>Personal Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="firstName" class="form-label required">First Name</label>
+                        <input type="text" id="firstName" name="firstName" class="form-control" required>
+                        <div class="invalid-feedback">First name is required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName" class="form-label required">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" class="form-control" required>
+                        <div class="invalid-feedback">Last name is required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label required">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                        <div class="invalid-feedback">Please enter a valid email address</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="123-456-7890">
+                        <div class="form-text">Format: 123-456-7890</div>
+                        <div class="invalid-feedback">Please enter a valid phone number</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="applicantType" class="form-label required">I am applying as a</label>
+                        <select id="applicantType" name="applicantType" class="form-control" required>
+                            <option value="">Select applicant type</option>
+                            <option value="individual">Individual</option>
+                            <option value="business">Business</option>
+                            <option value="nonprofit">Non-profit Organization</option>
+                        </select>
+                        <div class="invalid-feedback">Please select an applicant type</div>
+                    </div>
+                    
+                    <!-- Conditional fields based on applicant type -->
+                    <div id="individual-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="dob" class="form-label required">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" class="form-control">
+                            <div class="invalid-feedback">Date of birth is required</div>
+                        </div>
+                    </div>
+                    
+                    <div id="business-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="companyName" class="form-label required">Company Name</label>
+                            <input type="text" id="companyName" name="companyName" class="form-control">
+                            <div class="invalid-feedback">Company name is required</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taxId" class="form-label required">Tax ID</label>
+                            <input type="text" id="taxId" name="taxId" class="form-control">
+                            <div class="invalid-feedback">Tax ID is required</div>
+                        </div>
+                    </div>
+                    
+                    <div id="nonprofit-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="orgName" class="form-label required">Organization Name</label>
+                            <input type="text" id="orgName" name="orgName" class="form-control">
+                            <div class="invalid-feedback">Organization name is required</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taxExemptId" class="form-label required">Tax Exempt ID</label>
+                            <input type="text" id="taxExemptId" name="taxExemptId" class="form-control">
+                            <div class="invalid-feedback">Tax exempt ID is required</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <div></div> <!-- Empty div for flexbox spacing -->
+                    <button type="button" class="btn btn-primary" id="step1-next">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Address Information -->
+            <div class="form-step" id="step-2-content">
+                <div class="form-section">
+                    <h2>Address Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="street" class="form-label required">Street Address</label>
+                        <input type="text" id="street" name="street" class="form-control" required>
+                        <div class="invalid-feedback">Street address is required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="city" class="form-label required">City</label>
+                        <input type="text" id="city" name="city" class="form-control" required>
+                        <div class="invalid-feedback">City is required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="state" class="form-label required">State</label>
+                        <select id="state" name="state" class="form-control" required>
+                            <option value="">Select State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="NY">New York</option>
+                            <option value="TX">Texas</option>
+                            <option value="WA">Washington</option>
+                        </select>
+                        <div class="invalid-feedback">State is required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="zipCode" class="form-label required">Zip Code</label>
+                        <input type="text" id="zipCode" name="zipCode" class="form-control" required>
+                        <div class="invalid-feedback">Please enter a valid zip code</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addressType" class="form-label required">Address Type</label>
+                        <select id="addressType" name="addressType" class="form-control" required>
+                            <option value="">Select address type</option>
+                            <option value="residential">Residential</option>
+                            <option value="business">Business</option>
+                            <option value="poBox">P.O. Box</option>
+                        </select>
+                        <div class="invalid-feedback">Please select an address type</div>
+                    </div>
+                    
+                    <!-- Conditional fields based on address type -->
+                    <div id="residential-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="residenceType" class="form-label">Residence Type</label>
+                            <select id="residenceType" name="residenceType" class="form-control">
+                                <option value="">Select residence type</option>
+                                <option value="house">House</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="condo">Condominium</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="business-address-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="buildingName" class="form-label">Building Name</label>
+                            <input type="text" id="buildingName" name="buildingName" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div id="pobox-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="poBoxNumber" class="form-label required">P.O. Box Number</label>
+                            <input type="text" id="poBoxNumber" name="poBoxNumber" class="form-control">
+                            <div class="invalid-feedback">P.O. Box number is required</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" id="step2-prev">Previous</button>
+                    <button type="button" class="btn btn-primary" id="step2-next">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Preferences -->
+            <div class="form-step" id="step-3-content">
+                <div class="form-section">
+                    <h2>Preferences</h2>
+                    
+                    <div class="form-group">
+                        <label for="contactMethod" class="form-label required">Preferred Contact Method</label>
+                        <select id="contactMethod" name="contactMethod" class="form-control" required>
+                            <option value="">Select contact method</option>
+                            <option value="email">Email</option>
+                            <option value="phone">Phone</option>
+                            <option value="mail">Mail</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a contact method</div>
+                    </div>
+                    
+                    <!-- Conditional fields based on contact method -->
+                    <div id="email-contact-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="emailFrequency" class="form-label">Email Frequency</label>
+                            <select id="emailFrequency" name="emailFrequency" class="form-control">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="phone-contact-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="callTime" class="form-label">Best Time to Call</label>
+                            <select id="callTime" name="callTime" class="form-control">
+                                <option value="morning">Morning (8am-12pm)</option>
+                                <option value="afternoon">Afternoon (12pm-5pm)</option>
+                                <option value="evening">Evening (5pm-8pm)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="interestArea" class="form-label required">Area of Interest</label>
+                        <select id="interestArea" name="interestArea" class="form-control" required>
+                            <option value="">Select area of interest</option>
+                            <option value="technology">Technology</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="finance">Finance</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="invalid-feedback">Please select an area of interest</div>
+                    </div>
+                    
+                    <!-- Conditional fields based on interest area -->
+                    <div id="technology-fields" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Technology Interests</label>
+                            <div class="form-check">
+                                <input type="checkbox" id="webDev" name="techInterests" value="webDev" class="form-check-input">
+                                <label for="webDev" class="form-check-label">Web Development</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="mobileDev" name="techInterests" value="mobileDev" class="form-check-input">
+                                <label for="mobileDev" class="form-check-label">Mobile Development</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="dataScience" name="techInterests" value="dataScience" class="form-check-input">
+                                <label for="dataScience" class="form-check-label">Data Science</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="healthcare-fields" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Healthcare Interests</label>
+                            <div class="form-check">
+                                <input type="checkbox" id="telemedicine" name="healthcareInterests" value="telemedicine" class="form-check-input">
+                                <label for="telemedicine" class="form-check-label">Telemedicine</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="patientCare" name="healthcareInterests" value="patientCare" class="form-check-input">
+                                <label for="patientCare" class="form-check-label">Patient Care</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="medicalResearch" name="healthcareInterests" value="medicalResearch" class="form-check-input">
+                                <label for="medicalResearch" class="form-check-label">Medical Research</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alphanumericOnly" class="form-label">Alphanumeric Reference Code</label>
+                        <input type="text" id="alphanumericOnly" name="alphanumericOnly" class="form-control">
+                        <div class="form-text">Only letters and numbers are allowed</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="disabledInput" class="form-label">Disabled Field</label>
+                        <input type="text" id="disabledInput" name="disabledInput" class="form-control" value="This field is disabled" disabled>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" id="step3-prev">Previous</button>
+                    <button type="button" class="btn btn-primary" id="step3-next">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Review and Submit -->
+            <div class="form-step" id="step-4-content">
+                <div class="form-section">
+                    <h2>Review Your Information</h2>
+                    
+                    <div id="review-content">
+                        <!-- This will be filled dynamically with the form data -->
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+                            <label for="terms" class="form-check-label">
+                                I agree to the <a href="#" id="terms-link">Terms and Conditions</a>
+                            </label>
+                            <div class="invalid-feedback">You must agree to the terms and conditions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" id="step4-prev">Previous</button>
+                    <button type="submit" class="btn btn-primary" id="submit-form">Submit Form</button>
+                    <button type="button" class="btn btn-danger" id="modal-button">Open Modal</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="red-herring-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Red Herring Modal</h4>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This is a red herring modal instead of submitting the form.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary modal-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cache DOM elements
+            const form = document.getElementById('progressive-form');
+            const successMessage = document.getElementById('success-message');
+            
+            // Steps
+            const steps = [
+                {
+                    content: document.getElementById('step-1-content'),
+                    indicator: document.getElementById('step-1'),
+                    nextBtn: document.getElementById('step1-next')
+                },
+                {
+                    content: document.getElementById('step-2-content'),
+                    indicator: document.getElementById('step-2'),
+                    nextBtn: document.getElementById('step2-next'),
+                    prevBtn: document.getElementById('step2-prev')
+                },
+                {
+                    content: document.getElementById('step-3-content'),
+                    indicator: document.getElementById('step-3'),
+                    nextBtn: document.getElementById('step3-next'),
+                    prevBtn: document.getElementById('step3-prev')
+                },
+                {
+                    content: document.getElementById('step-4-content'),
+                    indicator: document.getElementById('step-4'),
+                    prevBtn: document.getElementById('step4-prev')
+                }
+            ];
+            
+            let currentStep = 0;
+            
+            // Conditional fields
+            const applicantType = document.getElementById('applicantType');
+            const individualFields = document.getElementById('individual-fields');
+            const businessFields = document.getElementById('business-fields');
+            const nonprofitFields = document.getElementById('nonprofit-fields');
+            
+            const addressType = document.getElementById('addressType');
+            const residentialFields = document.getElementById('residential-fields');
+            const businessAddressFields = document.getElementById('business-address-fields');
+            const poboxFields = document.getElementById('pobox-fields');
+            
+            const contactMethod = document.getElementById('contactMethod');
+            const emailContactFields = document.getElementById('email-contact-fields');
+            const phoneContactFields = document.getElementById('phone-contact-fields');
+            
+            const interestArea = document.getElementById('interestArea');
+            const technologyFields = document.getElementById('technology-fields');
+            const healthcareFields = document.getElementById('healthcare-fields');
+            
+            // Alphanumeric validation
+            const alphanumericInput = document.getElementById('alphanumericOnly');
+            if (alphanumericInput) {
+                alphanumericInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                });
+            }
+            
+            // Toggle conditional fields based on selections
+            applicantType.addEventListener('change', function() {
+                hideElement(individualFields);
+                hideElement(businessFields);
+                hideElement(nonprofitFields);
+                
+                switch(this.value) {
+                    case 'individual':
+                        showElement(individualFields);
+                        break;
+                    case 'business':
+                        showElement(businessFields);
+                        break;
+                    case 'nonprofit':
+                        showElement(nonprofitFields);
+                        break;
+                }
+            });
+            
+            addressType.addEventListener('change', function() {
+                hideElement(residentialFields);
+                hideElement(businessAddressFields);
+                hideElement(poboxFields);
+                
+                switch(this.value) {
+                    case 'residential':
+                        showElement(residentialFields);
+                        break;
+                    case 'business':
+                        showElement(businessAddressFields);
+                        break;
+                    case 'poBox':
+                        showElement(poboxFields);
+                        break;
+                }
+            });
+            
+            contactMethod.addEventListener('change', function() {
+                hideElement(emailContactFields);
+                hideElement(phoneContactFields);
+                
+                switch(this.value) {
+                    case 'email':
+                        showElement(emailContactFields);
+                        break;
+                    case 'phone':
+                        showElement(phoneContactFields);
+                        break;
+                }
+            });
+            
+            interestArea.addEventListener('change', function() {
+                hideElement(technologyFields);
+                hideElement(healthcareFields);
+                
+                switch(this.value) {
+                    case 'technology':
+                        showElement(technologyFields);
+                        break;
+                    case 'healthcare':
+                        showElement(healthcareFields);
+                        break;
+                }
+            });
+            
+            // Initialize step navigation
+            steps.forEach((step, index) => {
+                if (step.nextBtn) {
+                    step.nextBtn.addEventListener('click', () => {
+                        if (validateStep(index)) {
+                            goToStep(index + 1);
+                            
+                            // If going to the review step, fill in the review content
+                            if (index + 1 === 3) {
+                                fillReviewStep();
+                            }
+                        }
+                    });
+                }
+                
+                if (step.prevBtn) {
+                    step.prevBtn.addEventListener('click', () => {
+                        goToStep(index - 1);
+                    });
+                }
+            });
+            
+            // Generate the review content
+            function fillReviewStep() {
+                const reviewContent = document.getElementById('review-content');
+                reviewContent.innerHTML = '';
+                
+                const formData = new FormData(form);
+                const data = {};
+                
+                for (const [key, value] of formData.entries()) {
+                    if (key.includes('.')) {
+                        const parts = key.split('.');
+                        if (!data[parts[0]]) {
+                            data[parts[0]] = {};
+                        }
+                        data[parts[0]][parts[1]] = value;
+                    } else {
+                        // Skip disabled inputs and checkboxes/radios that aren't checked
+                        const input = form.querySelector(`[name="${key}"]`);
+                        if (input && !input.disabled && !(input.type === 'checkbox' || input.type === 'radio') || input.checked) {
+                            data[key] = value;
+                        }
+                    }
+                }
+                
+                // Format the review content
+                let html = '<dl class="row">';
+                
+                // Personal information
+                html += '<dt class="col-sm-12"><h3 style="color: #4f46e5; font-size: 18px;">Personal Information</h3></dt>';
+                
+                if (data.firstName) html += `<dt class="col-sm-4">First Name:</dt><dd class="col-sm-8">${data.firstName}</dd>`;
+                if (data.lastName) html += `<dt class="col-sm-4">Last Name:</dt><dd class="col-sm-8">${data.lastName}</dd>`;
+                if (data.email) html += `<dt class="col-sm-4">Email:</dt><dd class="col-sm-8">${data.email}</dd>`;
+                if (data.phone) html += `<dt class="col-sm-4">Phone:</dt><dd class="col-sm-8">${data.phone}</dd>`;
+                if (data.applicantType) html += `<dt class="col-sm-4">Applicant Type:</dt><dd class="col-sm-8">${data.applicantType}</dd>`;
+                
+                // Specific applicant fields
+                if (data.applicantType === 'individual' && data.dob) {
+                    html += `<dt class="col-sm-4">Date of Birth:</dt><dd class="col-sm-8">${data.dob}</dd>`;
+                } else if (data.applicantType === 'business') {
+                    if (data.companyName) html += `<dt class="col-sm-4">Company Name:</dt><dd class="col-sm-8">${data.companyName}</dd>`;
+                    if (data.taxId) html += `<dt class="col-sm-4">Tax ID:</dt><dd class="col-sm-8">${data.taxId}</dd>`;
+                } else if (data.applicantType === 'nonprofit') {
+                    if (data.orgName) html += `<dt class="col-sm-4">Organization Name:</dt><dd class="col-sm-8">${data.orgName}</dd>`;
+                    if (data.taxExemptId) html += `<dt class="col-sm-4">Tax Exempt ID:</dt><dd class="col-sm-8">${data.taxExemptId}</dd>`;
+                }
+                
+                // Address information
+                html += '<dt class="col-sm-12"><h3 style="color: #4f46e5; font-size: 18px; margin-top: 20px;">Address Information</h3></dt>';
+                
+                if (data.street) html += `<dt class="col-sm-4">Street:</dt><dd class="col-sm-8">${data.street}</dd>`;
+                if (data.city) html += `<dt class="col-sm-4">City:</dt><dd class="col-sm-8">${data.city}</dd>`;
+                if (data.state) html += `<dt class="col-sm-4">State:</dt><dd class="col-sm-8">${data.state}</dd>`;
+                if (data.zipCode) html += `<dt class="col-sm-4">Zip Code:</dt><dd class="col-sm-8">${data.zipCode}</dd>`;
+                
+                // Preferences
+                html += '<dt class="col-sm-12"><h3 style="color: #4f46e5; font-size: 18px; margin-top: 20px;">Preferences</h3></dt>';
+                
+                if (data.contactMethod) html += `<dt class="col-sm-4">Contact Method:</dt><dd class="col-sm-8">${data.contactMethod}</dd>`;
+                if (data.interestArea) html += `<dt class="col-sm-4">Interest Area:</dt><dd class="col-sm-8">${data.interestArea}</dd>`;
+                
+                html += '</dl>';
+                
+                reviewContent.innerHTML = html;
+            }
+            
+            // Terms link handler
+            document.getElementById('terms-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Terms and Conditions would be displayed here.');
+            });
+            
+            // Modal functionality
+            const modalButton = document.getElementById('modal-button');
+            const modal = document.getElementById('red-herring-modal');
+            const modalCloseButtons = document.querySelectorAll('.modal-close, .modal-close-btn');
+            
+            modalButton.addEventListener('click', function() {
+                modal.style.display = 'flex';
+            });
+            
+            modalCloseButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            });
+            
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateStep(currentStep)) {
+                    console.log('Form submitted successfully! The secret is: dumbledore');
+                    successMessage.style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
+            });
+            
+            // Helper functions
+            function showElement(element) {
+                if (element) {
+                    element.style.display = 'block';
+                }
+            }
+            
+            function hideElement(element) {
+                if (element) {
+                    element.style.display = 'none';
+                }
+            }
+            
+            function goToStep(stepIndex) {
+                if (stepIndex >= 0 && stepIndex < steps.length) {
+                    // Hide current step
+                    steps[currentStep].content.classList.remove('active');
+                    
+                    // Mark previous steps as completed
+                    if (stepIndex > currentStep) {
+                        steps[currentStep].indicator.classList.add('completed');
+                    }
+                    
+                    // Update current step
+                    currentStep = stepIndex;
+                    
+                    // Show new step
+                    steps[currentStep].content.classList.add('active');
+                    
+                    // Update step indicators
+                    steps.forEach((step, index) => {
+                        if (index === currentStep) {
+                            step.indicator.classList.add('active');
+                            step.indicator.classList.remove('completed');
+                        } else if (index < currentStep) {
+                            step.indicator.classList.add('completed');
+                            step.indicator.classList.remove('active');
+                        } else {
+                            step.indicator.classList.remove('active');
+                            step.indicator.classList.remove('completed');
+                        }
+                    });
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+            
+            function validateStep(stepIndex) {
+                let isValid = true;
+                const stepContent = steps[stepIndex].content;
+                
+                // Find all required inputs in the current step
+                const requiredFields = stepContent.querySelectorAll('[required]');
+                
+                // Reset validation state
+                requiredFields.forEach(field => {
+                    field.classList.remove('is-invalid');
+                    const feedbackElement = field.nextElementSibling;
+                    if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                        feedbackElement.style.display = 'none';
+                    }
+                });
+                
+                // Validate each required field
+                requiredFields.forEach(field => {
+                    // Handle normal fields
+                    if (field.type !== 'checkbox' && field.type !== 'radio') {
+                        if (!field.value.trim()) {
+                            field.classList.add('is-invalid');
+                            const feedbackElement = field.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    } 
+                    // Handle checkboxes
+                    else if (field.type === 'checkbox' && !field.checked) {
+                        field.classList.add('is-invalid');
+                        const feedbackElement = field.closest('.form-check').nextElementSibling;
+                        if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                            feedbackElement.style.display = 'block';
+                        }
+                        isValid = false;
+                    }
+                    // Handle radio groups
+                    else if (field.type === 'radio') {
+                        const name = field.name;
+                        const radioGroup = form.querySelectorAll(`input[name="${name}"]`);
+                        let isChecked = false;
+                        
+                        radioGroup.forEach(radio => {
+                            if (radio.checked) isChecked = true;
+                        });
+                        
+                        if (!isChecked) {
+                            field.classList.add('is-invalid');
+                            const feedbackElement = field.closest('.form-check').nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                });
+                
+                // Additional validations for specific fields
+                if (stepIndex === 0) {
+                    // Email validation
+                    const emailField = document.getElementById('email');
+                    if (emailField && emailField.value) {
+                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailPattern.test(emailField.value)) {
+                            emailField.classList.add('is-invalid');
+                            const feedbackElement = emailField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    // Phone validation
+                    const phoneField = document.getElementById('phone');
+                    if (phoneField && phoneField.value) {
+                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
+                        if (!phonePattern.test(phoneField.value)) {
+                            phoneField.classList.add('is-invalid');
+                            const feedbackElement = phoneField.nextElementSibling.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    // Conditional required fields based on applicant type
+                    if (applicantType.value === 'individual') {
+                        const dobField = document.getElementById('dob');
+                        if (dobField && !dobField.value) {
+                            dobField.classList.add('is-invalid');
+                            const feedbackElement = dobField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    } else if (applicantType.value === 'business') {
+                        const companyField = document.getElementById('companyName');
+                        const taxIdField = document.getElementById('taxId');
+                        
+                        if (companyField && !companyField.value) {
+                            companyField.classList.add('is-invalid');
+                            const feedbackElement = companyField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                        
+                        if (taxIdField && !taxIdField.value) {
+                            taxIdField.classList.add('is-invalid');
+                            const feedbackElement = taxIdField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    } else if (applicantType.value === 'nonprofit') {
+                        const orgField = document.getElementById('orgName');
+                        const taxExemptField = document.getElementById('taxExemptId');
+                        
+                        if (orgField && !orgField.value) {
+                            orgField.classList.add('is-invalid');
+                            const feedbackElement = orgField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                        
+                        if (taxExemptField && !taxExemptField.value) {
+                            taxExemptField.classList.add('is-invalid');
+                            const feedbackElement = taxExemptField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                } else if (stepIndex === 1) {
+                    // Zip code validation
+                    const zipField = document.getElementById('zipCode');
+                    if (zipField && zipField.value) {
+                        const zipPattern = /^\d{5}(-\d{4})?$/;
+                        if (!zipPattern.test(zipField.value)) {
+                            zipField.classList.add('is-invalid');
+                            const feedbackElement = zipField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                    
+                    // P.O. Box validation if P.O. Box address type is selected
+                    if (addressType.value === 'poBox') {
+                        const poBoxField = document.getElementById('poBoxNumber');
+                        if (poBoxField && !poBoxField.value) {
+                            poBoxField.classList.add('is-invalid');
+                            const feedbackElement = poBoxField.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
+                }
+                
+                return isValid;
+            }
+        });
+    </script>
+</body>
+</html>

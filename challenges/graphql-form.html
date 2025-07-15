@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Mutation Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #6f42c1;
+            margin-bottom: 20px;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section-title {
+            color: #6f42c1;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .btn-primary {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5e37a6;
+            border-color: #5e37a6;
+        }
+        
+        .card {
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: #f0ebf8;
+            color: #6f42c1;
+            font-weight: 500;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            overflow: auto;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .mutation-preview {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .gql-type {
+            color: #0366d6;
+        }
+        
+        .gql-field {
+            color: #24292e;
+        }
+        
+        .gql-operation {
+            color: #6f42c1;
+        }
+        
+        .gql-string {
+            color: #032f62;
+        }
+        
+        .gql-variable {
+            color: #e36209;
+        }
+        
+        .gql-delimiter {
+            color: #24292e;
+        }
+        
+        .schema-explorer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            max-height: 300px;
+            overflow: auto;
+        }
+        
+        .schema-type {
+            margin-bottom: 10px;
+        }
+        
+        .schema-type-name {
+            font-weight: bold;
+            cursor: pointer;
+            color: #6f42c1;
+        }
+        
+        .schema-type-fields {
+            padding-left: 20px;
+            display: none;
+        }
+        
+        .schema-field {
+            margin: 5px 0;
+        }
+        
+        .schema-field-name {
+            color: #0366d6;
+        }
+        
+        .schema-field-type {
+            color: #6f42c1;
+            font-style: italic;
+        }
+        
+        .response-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+            max-height: 300px;
+            overflow: auto;
+            display: none;
+        }
+        
+        .response-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #6f42c1;
+        }
+        
+        .response-success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .response-error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            background-color: transparent;
+        }
+        
+        .tab.active {
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+            color: #6f42c1;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .variables-editor {
+            width: 100%;
+            height: 100px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 10px;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: #f0ebf8;
+            color: #6f42c1;
+        }
+        
+        .accordion-button:focus {
+            box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
+        }
+        
+        .alert {
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .spinner-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .spinner-border {
+            color: #6f42c1;
+        }
+        
+        .address-fields, .payment-fields {
+            display: none;
+        }
+        
+        .show-fields {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">GraphQL Mutation Form</h1>
+        <p class="text-center description">
+            This form uses GraphQL mutations to submit data, presenting a unique challenge for autofill systems that expect traditional form submissions.
+        </p>
+        
+        <div class="alert alert-success" id="successMessage">
+            <strong>Success!</strong> Mutation executed successfully! The secret is: dumbledore
+        </div>
+        
+        <div class="alert alert-danger" id="errorMessage">
+            <strong>Error!</strong> <span id="errorText"></span>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-7">
+                <div class="form-section">
+                    <h2 class="form-section-title">User Registration</h2>
+                    
+                    <form id="graphqlForm">
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label required">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" data-gql-field="firstName">
+                            <div class="invalid-feedback">First name is required</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label required">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" data-gql-field="lastName">
+                            <div class="invalid-feedback">Last name is required</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label required">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" data-gql-field="email">
+                            <div class="invalid-feedback">Please enter a valid email address</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label required">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" data-gql-field="password">
+                            <div class="invalid-feedback">Password must be at least 8 characters</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" data-gql-field="phone">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includeAddress" name="includeAddress">
+                                <label class="form-check-label" for="includeAddress">
+                                    Include Address Information
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="address-fields">
+                            <h4 class="mb-3">Address Information</h4>
+                            
+                            <div class="mb-3">
+                                <label for="street" class="form-label required">Street Address</label>
+                                <input type="text" class="form-control" id="street" name="street" data-gql-field="address.street">
+                                <div class="invalid-feedback">Street address is required</div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="city" class="form-label required">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" data-gql-field="address.city">
+                                    <div class="invalid-feedback">City is required</div>
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    <label for="state" class="form-label required">State</label>
+                                    <select class="form-select" id="state" name="state" data-gql-field="address.state">
+                                        <option value="">Select...</option>
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                    </select>
+                                    <div class="invalid-feedback">State is required</div>
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    <label for="zipCode" class="form-label required">Zip Code</label>
+                                    <input type="text" class="form-control" id="zipCode" name="zipCode" data-gql-field="address.zipCode">
+                                    <div class="invalid-feedback">Please enter a valid zip code</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="country" class="form-label required">Country</label>
+                                <select class="form-select" id="country" name="country" data-gql-field="address.country">
+                                    <option value="">Select...</option>
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="DE">Germany</option>
+                                </select>
+                                <div class="invalid-feedback">Country is required</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includePayment" name="includePayment">
+                                <label class="form-check-label" for="includePayment">
+                                    Add Payment Method
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-fields">
+                            <h4 class="mb-3">Payment Information</h4>
+                            
+                            <div class="mb-3">
+                                <label for="cardName" class="form-label required">Name on Card</label>
+                                <input type="text" class="form-control" id="cardName" name="cardName" data-gql-field="paymentMethod.cardholderName">
+                                <div class="invalid-feedback">Name on card is required</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label required">Card Number</label>
+                                <input type="text" class="form-control" id="cardNumber" name="cardNumber" data-gql-field="paymentMethod.cardNumber">
+                                <div class="invalid-feedback">Please enter a valid card number</div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="expiryDate" class="form-label required">Expiry Date (MM/YY)</label>
+                                    <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY" data-gql-field="paymentMethod.expiryDate">
+                                    <div class="invalid-feedback">Please enter a valid expiry date</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="cvv" class="form-label required">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" name="cvv" data-gql-field="paymentMethod.cvv">
+                                    <div class="invalid-feedback">Please enter a valid CVV</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" data-gql-field="agreeToTerms">
+                                <label class="form-check-label" for="agreeTerms">
+                                    I agree to the Terms and Conditions <span class="text-danger">*</span>
+                                </label>
+                                <div class="invalid-feedback">You must agree to the terms and conditions</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 justify-content-center">
+                            <button type="submit" class="btn btn-primary">Execute Mutation</button>
+                            <button type="button" class="btn btn-secondary" id="resetButton">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="accordion" id="gqlAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingMutation">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMutation" aria-expanded="true" aria-controls="collapseMutation">
+                                Generated Mutation
+                            </button>
+                        </h2>
+                        <div id="collapseMutation" class="accordion-collapse collapse show" aria-labelledby="headingMutation" data-bs-parent="#gqlAccordion">
+                            <div class="accordion-body">
+                                <div class="tabs">
+                                    <button class="tab active" data-tab="mutation">Mutation</button>
+                                    <button class="tab" data-tab="variables">Variables</button>
+                                </div>
+                                
+                                <div class="tab-content active" id="mutationTab">
+                                    <pre><code id="mutationCode" class="language-graphql"></code></pre>
+                                </div>
+                                
+                                <div class="tab-content" id="variablesTab">
+                                    <pre><code id="variablesCode" class="language-json"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSchema">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSchema" aria-expanded="false" aria-controls="collapseSchema">
+                                Schema Explorer
+                            </button>
+                        </h2>
+                        <div id="collapseSchema" class="accordion-collapse collapse" aria-labelledby="headingSchema" data-bs-parent="#gqlAccordion">
+                            <div class="accordion-body">
+                                <div class="schema-explorer">
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="User">User</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">id</span>: <span class="schema-field-type">ID!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">firstName</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">lastName</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">email</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">phone</span>: <span class="schema-field-type">String</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">address</span>: <span class="schema-field-type">Address</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">paymentMethod</span>: <span class="schema-field-type">PaymentMethod</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">agreeToTerms</span>: <span class="schema-field-type">Boolean!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="Address">Address</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">street</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">city</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">state</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">zipCode</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">country</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="PaymentMethod">PaymentMethod</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">cardholderName</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">cardNumber</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">expiryDate</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">cvv</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="CreateUserInput">CreateUserInput</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">firstName</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">lastName</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">email</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">password</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">phone</span>: <span class="schema-field-type">String</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">address</span>: <span class="schema-field-type">AddressInput</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">paymentMethod</span>: <span class="schema-field-type">PaymentMethodInput</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">agreeToTerms</span>: <span class="schema-field-type">Boolean!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="AddressInput">AddressInput</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">street</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">city</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">state</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">zipCode</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">country</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="PaymentMethodInput">PaymentMethodInput</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">cardholderName</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">cardNumber</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">expiryDate</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">cvv</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingResponse">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResponse" aria-expanded="false" aria-controls="collapseResponse">
+                                Response
+                            </button>
+                        </h2>
+                        <div id="collapseResponse" class="accordion-collapse collapse" aria-labelledby="headingResponse" data-bs-parent="#gqlAccordion">
+                            <div class="accordion-body">
+                                <div class="spinner-container" id="loadingSpinner">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="response-container" id="responseContainer">
+                                    <div class="response-title">Response:</div>
+                                    <pre><code id="responseCode" class="language-json"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/graphql.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/json.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            hljs.registerLanguage('graphql', window.hljsDefineGraphQL);
+            hljs.registerLanguage('json', window.hljsDefineJson);
+            
+            const form = document.getElementById('graphqlForm');
+            const inputFields = form.querySelectorAll('input, select');
+            const includeAddressCheckbox = document.getElementById('includeAddress');
+            const includePaymentCheckbox = document.getElementById('includePayment');
+            const addressFields = document.querySelector('.address-fields');
+            const paymentFields = document.querySelector('.payment-fields');
+            const mutationCode = document.getElementById('mutationCode');
+            const variablesCode = document.getElementById('variablesCode');
+            const resetButton = document.getElementById('resetButton');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const schemaTypeNames = document.querySelectorAll('.schema-type-name');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseCode = document.getElementById('responseCode');
+            
+            // Toggle address fields
+            includeAddressCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    addressFields.classList.add('show-fields');
+                } else {
+                    addressFields.classList.remove('show-fields');
+                }
+                updateMutation();
+            });
+            
+            // Toggle payment fields
+            includePaymentCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    paymentFields.classList.add('show-fields');
+                } else {
+                    paymentFields.classList.remove('show-fields');
+                }
+                updateMutation();
+            });
+            
+            // Update mutation on input changes
+            inputFields.forEach(field => {
+                field.addEventListener('input', updateMutation);
+                field.addEventListener('change', updateMutation);
+                
+                // Clear validation styles on input
+                field.addEventListener('input', function() {
+                    this.classList.remove('is-invalid');
+                });
+            });
+            
+            // Format card number with spaces
+            const cardNumberInput = document.getElementById('cardNumber');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                    let formattedValue = '';
+                    
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && i % 4 === 0) {
+                            formattedValue += ' ';
+                        }
+                        formattedValue += value[i];
+                    }
+                    
+                    e.target.value = formattedValue;
+                });
+            }
+            
+            // Format expiry date
+            const expiryDateInput = document.getElementById('expiryDate');
+            if (expiryDateInput) {
+                expiryDateInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    
+                    if (value.length > 0) {
+                        value = value.match(new RegExp('.{1,2}', 'g')).join('/');
+                        
+                        // Limit to MM/YY format (5 characters)
+                        if (value.length > 5) {
+                            value = value.substring(0, 5);
+                        }
+                    }
+                    
+                    e.target.value = value;
+                });
+            }
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active content
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                });
+            });
+            
+            // Schema explorer type toggling
+            schemaTypeNames.forEach(typeName => {
+                typeName.addEventListener('click', function() {
+                    const fields = this.nextElementSibling;
+                    if (fields.style.display === 'block') {
+                        fields.style.display = 'none';
+                    } else {
+                        fields.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Show loading spinner
+                    loadingSpinner.style.display = 'flex';
+                    responseContainer.style.display = 'none';
+                    
+                    // Expand response accordion
+                    const responseAccordion = new bootstrap.Collapse(document.getElementById('collapseResponse'));
+                    responseAccordion.show();
+                    
+                    // Get form data
+                    const formData = getFormData();
+                    
+                    // Simulate GraphQL request
+                    simulateGraphQLRequest(formData)
+                        .then(response => {
+                            // Hide loading spinner
+                            loadingSpinner.style.display = 'none';
+                            
+                            // Show response
+                            responseContainer.style.display = 'block';
+                            responseContainer.classList.remove('response-error');
+                            responseContainer.classList.add('response-success');
+                            
+                            // Format and display response
+                            responseCode.textContent = JSON.stringify(response, null, 2);
+                            hljs.highlightElement(responseCode);
+                            
+                            // Show success message
+                            successMessage.style.display = 'block';
+                            errorMessage.style.display = 'none';
+                            
+                            // Hide success message after 3 seconds
+                            setTimeout(function() {
+                                successMessage.style.display = 'none';
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            // Hide loading spinner
+                            loadingSpinner.style.display = 'none';
+                            
+                            // Show response
+                            responseContainer.style.display = 'block';
+                            responseContainer.classList.remove('response-success');
+                            responseContainer.classList.add('response-error');
+                            
+                            // Format and display error
+                            responseCode.textContent = JSON.stringify(error, null, 2);
+                            hljs.highlightElement(responseCode);
+                            
+                            // Show error message
+                            errorMessage.style.display = 'block';
+                            successMessage.style.display = 'none';
+                            errorText.textContent = error.errors[0].message;
+                            
+                            // Hide error message after 5 seconds
+                            setTimeout(function() {
+                                errorMessage.style.display = 'none';
+                            }, 5000);
+                        });
+                }
+            });
+            
+            // Reset form
+            resetButton.addEventListener('click', function() {
+                form.reset();
+                addressFields.classList.remove('show-fields');
+                paymentFields.classList.remove('show-fields');
+                updateMutation();
+                
+                // Clear validation styles
+                inputFields.forEach(field => {
+                    field.classList.remove('is-invalid');
+                });
+                
+                // Hide messages
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                
+                // Hide response
+                responseContainer.style.display = 'none';
+            });
+            
+            // Generate and update the mutation
+            function updateMutation() {
+                const formData = getFormData();
+                const mutation = generateMutation(formData);
+                const variables = generateVariables(formData);
+                
+                mutationCode.textContent = mutation;
+                variablesCode.textContent = JSON.stringify(variables, null, 2);
+                
+                hljs.highlightElement(mutationCode);
+                hljs.highlightElement(variablesCode);
+            }
+            
+            // Get form data
+            function getFormData() {
+                const data = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    phone: document.getElementById('phone').value,
+                    agreeToTerms: document.getElementById('agreeTerms').checked
+                };
+                
+                // Add address if included
+                if (includeAddressCheckbox.checked) {
+                    data.address = {
+                        street: document.getElementById('street').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        zipCode: document.getElementById('zipCode').value,
+                        country: document.getElementById('country').value
+                    };
+                }
+                
+                // Add payment method if included
+                if (includePaymentCheckbox.checked) {
+                    data.paymentMethod = {
+                        cardholderName: document.getElementById('cardName').value,
+                        cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
+                        expiryDate: document.getElementById('expiryDate').value,
+                        cvv: document.getElementById('cvv').value
+                    };
+                }
+                
+                return data;
+            }
+            
+            // Generate GraphQL mutation
+            function generateMutation(data) {
+                let addressFields = '';
+                let paymentFields = '';
+                
+                if (includeAddressCheckbox.checked) {
+                    addressFields = `
+        address {
+            street
+            city
+            state
+            zipCode
+            country
+        }`;
+                }
+                
+                if (includePaymentCheckbox.checked) {
+                    paymentFields = `
+        paymentMethod {
+            cardholderName
+            cardNumber
+            expiryDate
+            cvv
+        }`;
+                }
+                
+                return `mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+        id
+        firstName
+        lastName
+        email
+        phone${addressFields}${paymentFields}
+        agreeToTerms
+    }
+}`;
+            }
+            
+            // Generate variables for GraphQL mutation
+            function generateVariables(data) {
+                const variables = {
+                    input: {
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        email: data.email,
+                        password: data.password,
+                        agreeToTerms: data.agreeToTerms
+                    }
+                };
+                
+                if (data.phone) {
+                    variables.input.phone = data.phone;
+                }
+                
+                if (data.address) {
+                    variables.input.address = data.address;
+                }
+                
+                if (data.paymentMethod) {
+                    variables.input.paymentMethod = data.paymentMethod;
+                }
+                
+                return variables;
+            }
+            
+            // Validate form
+            function validateForm() {
+                let isValid = true;
+                
+                // Validate required fields
+                const requiredFields = [
+                    { id: 'firstName', message: 'First name is required' },
+                    { id: 'lastName', message: 'Last name is required' },
+                    { id: 'email', message: 'Email is required' },
+                    { id: 'password', message: 'Password is required' }
+                ];
+                
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field.id);
+                    if (!element.value.trim()) {
+                        element.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                });
+                
+                // Validate email format
+                const emailInput = document.getElementById('email');
+                if (emailInput.value && !isValidEmail(emailInput.value)) {
+                    emailInput.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                // Validate password length
+                const passwordInput = document.getElementById('password');
+                if (passwordInput.value && passwordInput.value.length < 8) {
+                    passwordInput.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                // Validate address fields if included
+                if (includeAddressCheckbox.checked) {
+                    const addressRequiredFields = [
+                        { id: 'street', message: 'Street address is required' },
+                        { id: 'city', message: 'City is required' },
+                        { id: 'state', message: 'State is required' },
+                        { id: 'zipCode', message: 'Zip code is required' },
+                        { id: 'country', message: 'Country is required' }
+                    ];
+                    
+                    addressRequiredFields.forEach(field => {
+                        const element = document.getElementById(field.id);
+                        if (!element.value.trim()) {
+                            element.classList.add('is-invalid');
+                            isValid = false;
+                        }
+                    });
+                }
+                
+                // Validate payment fields if included
+                if (includePaymentCheckbox.checked) {
+                    const paymentRequiredFields = [
+                        { id: 'cardName', message: 'Name on card is required' },
+                        { id: 'cardNumber', message: 'Card number is required' },
+                        { id: 'expiryDate', message: 'Expiry date is required' },
+                        { id: 'cvv', message: 'CVV is required' }
+                    ];
+                    
+                    paymentRequiredFields.forEach(field => {
+                        const element = document.getElementById(field.id);
+                        if (!element.value.trim()) {
+                            element.classList.add('is-invalid');
+                            isValid = false;
+                        }
+                    });
+                    
+                    // Validate card number format
+                    const cardNumberInput = document.getElementById('cardNumber');
+                    if (cardNumberInput.value && !isValidCardNumber(cardNumberInput.value.replace(/\s/g, ''))) {
+                        cardNumberInput.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    
+                    // Validate expiry date format
+                    const expiryDateInput = document.getElementById('expiryDate');
+                    if (expiryDateInput.value && !isValidExpiryDate(expiryDateInput.value)) {
+                        expiryDateInput.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    
+                    // Validate CVV format
+                    const cvvInput = document.getElementById('cvv');
+                    if (cvvInput.value && !isValidCVV(cvvInput.value)) {
+                        cvvInput.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                }
+                
+                // Validate terms agreement
+                const agreeTerms = document.getElementById('agreeTerms');
+                if (!agreeTerms.checked) {
+                    agreeTerms.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            // Helper functions for validation
+            function isValidEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function isValidCardNumber(cardNumber) {
+                // Simplified validation - just check if it's 16 digits
+                return /^\d{16}$/.test(cardNumber);
+            }
+            
+            function isValidExpiryDate(expiryDate) {
+                // Check format MM/YY
+                if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+                    return false;
+                }
+                
+                const [month, year] = expiryDate.split('/');
+                const currentDate = new Date();
+                const currentYear = currentDate.getFullYear() % 100;
+                const currentMonth = currentDate.getMonth() + 1;
+                
+                // Convert to numbers
+                const monthNum = parseInt(month, 10);
+                const yearNum = parseInt(year, 10);
+                
+                // Check month is valid
+                if (monthNum < 1 || monthNum > 12) {
+                    return false;
+                }
+                
+                // Check expiry date is in the future
+                if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            function isValidCVV(cvv) {
+                // Check if it's 3 or 4 digits
+                return /^\d{3,4}$/.test(cvv);
+            }
+            
+            // Simulate GraphQL request
+            function simulateGraphQLRequest(formData) {
+                return new Promise((resolve, reject) => {
+                    // Simulate network delay
+                    setTimeout(() => {
+                        // Check if the email is already "registered"
+                        if (formData.email === 'test@example.com') {
+                            reject({
+                                errors: [
+                                    {
+                                        message: "Email address is already registered",
+                                        locations: [{ line: 2, column: 5 }],
+                                        path: ["createUser"]
+                                    }
+                                ],
+                                data: null
+                            });
+                            return;
+                        }
+                        
+                        // Simulate successful response
+                        resolve({
+                            data: {
+                                createUser: {
+                                    id: "user_" + Math.random().toString(36).substr(2, 9),
+                                    firstName: formData.firstName,
+                                    lastName: formData.lastName,
+                                    email: formData.email,
+                                    phone: formData.phone || null,
+                                    ...(formData.address ? { address: formData.address } : {}),
+                                    ...(formData.paymentMethod ? { 
+                                        paymentMethod: {
+                                            cardholderName: formData.paymentMethod.cardholderName,
+                                            cardNumber: "************" + formData.paymentMethod.cardNumber.slice(-4),
+                                            expiryDate: formData.paymentMethod.expiryDate,
+                                            cvv: "***"
+                                        } 
+                                    } : {}),
+                                    agreeToTerms: formData.agreeToTerms
+                                }
+                            }
+                        });
+                    }, 1500);
+                });
+            }
+            
+            // Initialize the mutation on page load
+            updateMutation();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TanStack Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom": "https://esm.sh/react-dom@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "@tanstack/react-form": "https://esm.sh/@tanstack/react-form@0.41.3"
+      }
+    }
+    </script>
+    <script type="module" src="https://esm.sh/tsx@3.12.7"></script>
+    <script>
+      console.log('Page loading, scripts loading');
+      window.addEventListener('error', (event) => {
+        console.error('Global error caught:', event.error);
+      });
+    </script>
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+            color: #0d6efd;
+        }
+        
+        .error-text {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        
+        .invalid-field {
+            border-color: #dc3545;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 mb-4">TanStack Form</h1>
+        <p>This is a fully interactive React component using TanStack Form for validation.</p>
+        
+        <div id="tanstack-form-root"></div>
+    </div>
+    
+    <script type="text/babel">
+        // Import React, ReactDOM, and TanStack Form from the importmap
+        import React from 'react';
+        import ReactDOM from 'react-dom';
+        import { createRoot } from 'react-dom/client';
+        import { useForm } from '@tanstack/react-form';
+        
+        console.log('Module script loaded', { React, ReactDOM, createRoot, useForm });
+        
+        // Create the TanStack Form component
+        function TanStackFormApp() {
+            const [showModal, setShowModal] = React.useState(false);
+            const [showSuccess, setShowSuccess] = React.useState(false);
+            
+            // Define form using TanStack Form
+            const form = useForm({
+                defaultValues: {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    employment: {
+                        jobTitle: '',
+                        department: '',
+                        startDate: '',
+                        salary: '',
+                        workSchedule: ''
+                    },
+                    qualifications: {
+                        skills: '',
+                        education: '',
+                        certifications: [],
+                        yearsExperience: 0
+                    },
+                    references: [
+                        { name: '', relationship: '', email: '', phone: '' },
+                        { name: '', relationship: '', email: '', phone: '' }
+                    ],
+                    alphanumericOnly: '',
+                    preferredWorkTime: '',
+                    comments: '',
+                    termsAgreement: false
+                },
+                onSubmit: async ({ value }) => {
+                    console.log('Form submitted successfully! The secret is: dumbledore', value);
+                    setShowSuccess(true);
+                    setTimeout(() => setShowSuccess(false), 3000);
+                }
+            });
+            
+            // Handle certification checkboxes
+            const handleCertificationChange = (e, setValue) => {
+                const { value, checked } = e.target;
+                setValue(prev => {
+                    const certs = [...(prev || [])];
+                    if (checked) {
+                        certs.push(value);
+                    } else {
+                        const index = certs.indexOf(value);
+                        if (index !== -1) {
+                            certs.splice(index, 1);
+                        }
+                    }
+                    return certs;
+                });
+            };
+            
+            // Reset form
+            const resetForm = () => {
+                form.reset();
+            };
+            
+            return (
+                <>
+                    {showSuccess && (
+                        <div className="alert alert-success">
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
+                    
+                    <form
+                        className="form-container"
+                        id="tanstack-form"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            form.handleSubmit();
+                        }}
+                    >
+                        {/* Personal Information Section */}
+                        <div className="form-section">
+                            <h3>Personal Information</h3>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="firstName"
+                                        validators={{
+                                            onChange: ({ value }) => !value ? 'First name is required' : undefined
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label 
+                                                    htmlFor="firstName" 
+                                                    className="form-label"
+                                                >
+                                                    First Name <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="firstName"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && <div className="error-text">{field.state.meta.errors}</div>}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="lastName"
+                                        validators={{
+                                            onChange: ({ value }) => !value ? 'Last name is required' : undefined
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label 
+                                                    htmlFor="lastName" 
+                                                    className="form-label"
+                                                >
+                                                    Last Name <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="lastName"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && <div className="error-text">{field.state.meta.errors}</div>}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                            </div>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="email"
+                                        validators={{
+                                            onChange: ({ value }) => {
+                                                if (!value) return 'Email is required';
+                                                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                                                    return 'Please enter a valid email address';
+                                                }
+                                                return undefined;
+                                            }
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label 
+                                                    htmlFor="email" 
+                                                    className="form-label"
+                                                >
+                                                    Email Address <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="email"
+                                                    id="email"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && <div className="error-text">{field.state.meta.errors}</div>}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="phone"
+                                        validators={{
+                                            onChange: ({ value }) => {
+                                                if (value && !/^\d{3}-\d{3}-\d{4}$/.test(value)) {
+                                                    return 'Please enter a valid phone number (e.g. 123-456-7890)';
+                                                }
+                                                return undefined;
+                                            }
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label 
+                                                    htmlFor="phone" 
+                                                    className="form-label"
+                                                >
+                                                    Phone Number
+                                                </label>
+                                                <input
+                                                    type="tel"
+                                                    id="phone"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    placeholder="123-456-7890"
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                />
+                                                {field.state.meta.errors && <div className="error-text">{field.state.meta.errors}</div>}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Employment Section */}
+                        <div className="form-section">
+                            <h3>Employment Information</h3>
+                            
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="employment.jobTitle"
+                                        validators={{
+                                            onChange: ({ value }) => !value ? 'Job title is required' : undefined
+                                        }}
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label 
+                                                    htmlFor="jobTitle" 
+                                                    className="form-label"
+                                                >
+                                                    Job Title <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="jobTitle"
+                                                    className={`form-control ${field.state.meta.errors ? 'invalid-field' : ''}`}
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    required
+                                                />
+                                                {field.state.meta.errors && <div className="error-text">{field.state.meta.errors}</div>}
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <form.Field
+                                        name="employment.department"
+                                    >
+                                        {(field) => (
+                                            <>
+                                                <label 
+                                                    htmlFor="department" 
+                                                    className="form-label"
+                                                >
+                                                    Department
+                                                </label>
+                                                <select
+                                                    id="department"
+                                                    className="form-select"
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                >
+                                                    <option value="">Select Department</option>
+                                                    <option value="engineering">Engineering</option>
+                                                    <option value="marketing">Marketing</option>
+                                                    <option value="sales">Sales</option>
+                                                    <option value="hr">Human Resources</option>
+                                                    <option value="finance">Finance</option>
+                                                    <option value="operations">Operations</option>
+                                                </select>
+                                            </>
+                                        )}
+                                    </form.Field>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Submit buttons */}
+                        <div className="d-flex gap-2 mb-3">
+                            <form.Subscribe
+                                selector={(state) => [state.canSubmit, state.isSubmitting]}
+                            >
+                                {([canSubmit, isSubmitting]) => (
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                        disabled={!canSubmit || isSubmitting}
+                                    >
+                                        {isSubmitting ? 'Submitting...' : 'Submit Form'}
+                                    </button>
+                                )}
+                            </form.Subscribe>
+                            
+                            <button
+                                type="button"
+                                className="btn btn-danger"
+                                onClick={() => setShowModal(true)}
+                            >
+                                Open Modal
+                            </button>
+                            
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={resetForm}
+                            >
+                                Reset Form
+                            </button>
+                        </div>
+                    </form>
+                    
+                    {showModal && (
+                        <div className="modal-overlay">
+                            <div className="modal-container">
+                                <div className="modal-header">
+                                    <h4>Red Herring Modal</h4>
+                                    <button
+                                        type="button"
+                                        className="modal-close"
+                                        onClick={() => setShowModal(false)}
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>This is a red herring modal instead of submitting the form.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={() => setShowModal(false)}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </>
+            );
+        }
+        
+        // Render the app when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded');
+            const rootElement = document.getElementById('tanstack-form-root');
+            console.log('Root element:', rootElement);
+            
+            try {
+                console.log('Using modern createRoot API');
+                const root = createRoot(rootElement);
+                console.log('Root created successfully');
+                root.render(React.createElement(TanStackFormApp));
+                console.log('Render called with createElement');
+            } catch (error) {
+                console.error('Error with createRoot:', error);
+                console.log('Falling back to legacy render');
+                try {
+                    ReactDOM.render(React.createElement(TanStackFormApp), rootElement);
+                    console.log('Legacy render called');
+                } catch (fallbackError) {
+                    console.error('Even legacy render failed:', fallbackError);
+                }
+            }
+        });
+        
+        // Fallback for immediate execution
+        console.log('Script loaded, checking if DOM is already ready');
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            console.log('DOM already ready, trying to render immediately');
+            setTimeout(() => {
+                try {
+                    const rootElement = document.getElementById('tanstack-form-root');
+                    console.log('Root element (immediate):', rootElement);
+                    const root = createRoot(rootElement);
+                    root.render(<TanStackFormApp />);
+                    console.log('Immediate render called');
+                } catch (error) {
+                    console.error('Error in immediate render:', error);
+                }
+            }, 0);
+        }
+    </script>
+</body>
+</html>

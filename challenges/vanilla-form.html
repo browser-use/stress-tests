@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanilla HTML + JS Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        form {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        
+        fieldset {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+        }
+        
+        legend {
+            font-weight: bold;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        input[type="checkbox"], input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .radio-group, .checkbox-group {
+            margin-bottom: 15px;
+        }
+        
+        .radio-label, .checkbox-label {
+            font-weight: normal;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button.modal-btn {
+            background-color: #f44336;
+        }
+        
+        button.modal-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .required:after {
+            content: " *";
+            color: red;
+        }
+        
+        .error {
+            color: red;
+            font-size: 0.8em;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vanilla HTML + JavaScript Form</h1>
+    
+    <form id="vanillaForm" action="https://example.com/submit" method="POST" novalidate>
+        <fieldset>
+            <legend>Basic Information</legend>
+            
+            <div>
+                <label for="text-input" class="required">Text Input:</label>
+                <input type="text" id="text-input" name="text-input" required>
+                <span class="error" id="text-input-error">This field is required</span>
+            </div>
+            
+            <div>
+                <label for="email-input" class="required">Email Address:</label>
+                <input type="email" id="email-input" name="email-input" required>
+                <span class="error" id="email-input-error">Please enter a valid email address</span>
+            </div>
+            
+            <div>
+                <label for="password-input" class="required">Password:</label>
+                <input type="password" id="password-input" name="password-input" required minlength="8">
+                <span class="error" id="password-input-error">Password must be at least 8 characters</span>
+            </div>
+            
+            <div>
+                <label for="number-input">Number Input:</label>
+                <input type="number" id="number-input" name="number-input" min="0" max="100">
+                <span class="error" id="number-input-error">Please enter a number between 0 and 100</span>
+            </div>
+            
+            <div>
+                <label for="tel-input">Phone Number:</label>
+                <input type="tel" id="tel-input" name="tel-input" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+                <span class="error" id="tel-input-error">Please enter a phone number in format: 123-456-7890</span>
+            </div>
+            
+            <div>
+                <label for="url-input">Website URL:</label>
+                <input type="url" id="url-input" name="url-input">
+                <span class="error" id="url-input-error">Please enter a valid URL</span>
+            </div>
+            
+            <div>
+                <label for="search-input">Search Input:</label>
+                <input type="search" id="search-input" name="search-input">
+            </div>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Additional Fields</legend>
+            
+            <div>
+                <label for="date-input">Date Input:</label>
+                <input type="date" id="date-input" name="date-input">
+            </div>
+            
+            <div>
+                <label for="time-input">Time Input:</label>
+                <input type="time" id="time-input" name="time-input">
+            </div>
+            
+            <div>
+                <label for="datetime-input">Date and Time Input:</label>
+                <input type="datetime-local" id="datetime-input" name="datetime-input">
+            </div>
+            
+            <div>
+                <label for="month-input">Month Input:</label>
+                <input type="month" id="month-input" name="month-input">
+            </div>
+            
+            <div>
+                <label for="week-input">Week Input:</label>
+                <input type="week" id="week-input" name="week-input">
+            </div>
+            
+            <div>
+                <label for="color-input">Color Input:</label>
+                <input type="color" id="color-input" name="color-input">
+            </div>
+            
+            <div>
+                <label for="range-input">Range Input:</label>
+                <input type="range" id="range-input" name="range-input" min="0" max="100" step="10">
+            </div>
+            
+            <div>
+                <label for="file-input">File Input:</label>
+                <input type="file" id="file-input" name="file-input">
+            </div>
+            
+            <div>
+                <label for="hidden-input">Hidden Input:</label>
+                <input type="hidden" id="hidden-input" name="hidden-input" value="hidden-value">
+            </div>
+            
+            <div>
+                <label for="alphanumeric-input">Alphanumeric Only:</label>
+                <input type="text" id="alphanumeric-input" name="alphanumeric-input">
+                <span class="error" id="alphanumeric-input-error">Only letters and numbers are allowed</span>
+            </div>
+            
+            <div>
+                <label for="disabled-input">Disabled Input:</label>
+                <input type="text" id="disabled-input" name="disabled-input" value="This field is disabled" disabled>
+            </div>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Selection Fields</legend>
+            
+            <div>
+                <label for="select-input">Dropdown Selection:</label>
+                <select id="select-input" name="select-input">
+                    <option value="">Please select an option</option>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="multiple-select">Multiple Selection:</label>
+                <select id="multiple-select" name="multiple-select" multiple>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                    <option value="option4">Option 4</option>
+                </select>
+            </div>
+            
+            <div class="radio-group">
+                <label>Radio Buttons:</label>
+                <div>
+                    <input type="radio" id="radio1" name="radio-group" value="radio1">
+                    <label for="radio1" class="radio-label">Option 1</label>
+                </div>
+                <div>
+                    <input type="radio" id="radio2" name="radio-group" value="radio2">
+                    <label for="radio2" class="radio-label">Option 2</label>
+                </div>
+                <div>
+                    <input type="radio" id="radio3" name="radio-group" value="radio3">
+                    <label for="radio3" class="radio-label">Option 3</label>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <label>Checkboxes:</label>
+                <div>
+                    <input type="checkbox" id="checkbox1" name="checkbox1" value="yes">
+                    <label for="checkbox1" class="checkbox-label">Option 1</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="checkbox2" name="checkbox2" value="yes">
+                    <label for="checkbox2" class="checkbox-label">Option 2</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="checkbox3" name="checkbox3" value="yes">
+                    <label for="checkbox3" class="checkbox-label">Option 3</label>
+                </div>
+            </div>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Text Areas</legend>
+            
+            <div>
+                <label for="textarea-input">Text Area:</label>
+                <textarea id="textarea-input" name="textarea-input" rows="4"></textarea>
+            </div>
+            
+            <div>
+                <label for="readonly-textarea">Read-only Text Area:</label>
+                <textarea id="readonly-textarea" name="readonly-textarea" rows="2" readonly>This text area is read-only.</textarea>
+            </div>
+        </fieldset>
+        
+        <div>
+            <button type="submit" id="submit-button">Submit Form</button>
+            <button type="button" class="modal-btn" id="modal-button">Open Modal</button>
+            <button type="reset">Reset Form</button>
+        </div>
+    </form>
+    
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Modal Window</h2>
+            <p>This is a red herring modal instead of submitting the form.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Alphanumeric input validation
+        document.getElementById('alphanumeric-input').addEventListener('input', function(e) {
+            // Replace any non-alphanumeric character with empty string
+            e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+        });
+        
+        // Form validation
+        document.getElementById('vanillaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+            
+            // Text input validation
+            const textInput = document.getElementById('text-input');
+            if (!textInput.value.trim()) {
+                document.getElementById('text-input-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('text-input-error').style.display = 'none';
+            }
+            
+            // Email validation
+            const emailInput = document.getElementById('email-input');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value)) {
+                document.getElementById('email-input-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('email-input-error').style.display = 'none';
+            }
+            
+            // Password validation
+            const passwordInput = document.getElementById('password-input');
+            if (passwordInput.value.length < 8) {
+                document.getElementById('password-input-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('password-input-error').style.display = 'none';
+            }
+            
+            // Number validation
+            const numberInput = document.getElementById('number-input');
+            if (numberInput.value && (parseInt(numberInput.value) < 0 || parseInt(numberInput.value) > 100)) {
+                document.getElementById('number-input-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('number-input-error').style.display = 'none';
+            }
+            
+            // Phone validation
+            const telInput = document.getElementById('tel-input');
+            const telPattern = /^\d{3}-\d{3}-\d{4}$/;
+            if (telInput.value && !telPattern.test(telInput.value)) {
+                document.getElementById('tel-input-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('tel-input-error').style.display = 'none';
+            }
+            
+            // URL validation
+            const urlInput = document.getElementById('url-input');
+            if (urlInput.value) {
+                try {
+                    new URL(urlInput.value);
+                    document.getElementById('url-input-error').style.display = 'none';
+                } catch (error) {
+                    document.getElementById('url-input-error').style.display = 'block';
+                    isValid = false;
+                }
+            }
+            
+            if (isValid) {
+                console.log('Form submitted successfully! The secret is: dumbledore');
+                alert('Form submitted successfully! The secret is: dumbledore');
+                // Would send to server in a real implementation
+                // this.submit();
+            }
+        });
+        
+        // Modal functionality
+        const modal = document.getElementById('myModal');
+        const modalBtn = document.getElementById('modal-button');
+        const closeBtn = document.getElementsByClassName('close')[0];
+        
+        modalBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+        
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
