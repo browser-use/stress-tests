@@ -2,6 +2,8 @@
 
 > - Guided Evaluation Challenge: https://browser-use.github.io/stress-tests/challenge.html
 > - All the Form Libraries All At Once: https://browser-use.github.io/stress-tests/index.html
+> - All the CAPTCHAs: https://2captcha.com/demo
+> - All the browser fingerprints: https://abrahamjuliot.github.io/creepjs/
 
 
 <img width="991" alt="Screenshot 2025-05-01 at 1 33 54 AM" src="https://github.com/user-attachments/assets/f4e1c0d5-3b90-423a-8279-028ca93a4093" />
