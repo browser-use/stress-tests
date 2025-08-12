@@ -151,7 +151,9 @@
         }
         
         .floating-label-input:focus ~ .floating-label,
-        .floating-label-input:not(:placeholder-shown) ~ .floating-label {
+        .floating-label-input:not(:placeholder-shown) ~ .floating-label,
+        .floating-label-input:valid ~ .floating-label,
+        select.floating-label-input:not([value=""]) ~ .floating-label {
             top: -10px;
             left: 8px;
             padding: 0 5px;
@@ -213,6 +215,11 @@
             display: flex;
             justify-content: space-between;
             margin-top: 30px;
+        }
+        
+        .navigation-buttons.reveal.active {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
         
         /* Progress bar */
@@ -486,7 +493,6 @@
                 <div class="progress-step active" data-step="1">1</div>
                 <div class="progress-step" data-step="2">2</div>
                 <div class="progress-step" data-step="3">3</div>
-                <div class="progress-step" data-step="4">4</div>
                 <div class="progress-step-line" style="left: 15px; width: calc(100% - 30px);"></div>
                 <div class="progress-step-line completed" style="left: 15px; width: 0%;"></div>
             </div>
@@ -564,7 +570,7 @@
                         Address Information
                     </h2>
                     
-                    <div class="reveal">
+                    <div class="reveal active">
                         <div class="floating-label-group">
                             <input type="text" id="street" name="street" class="floating-label-input" placeholder=" " autocomplete="off">
                             <label for="street" class="floating-label required">Street Address</label>
@@ -643,7 +649,7 @@
                         Preferences
                     </h2>
                     
-                    <div class="reveal">
+                    <div class="reveal active">
                         <label class="form-label">Interests</label>
                         <div class="styled-checkbox-group">
                             <input type="checkbox" class="styled-checkbox" id="interestTechnology" name="interests" value="technology">
@@ -654,114 +660,17 @@
                             
                             <input type="checkbox" class="styled-checkbox" id="interestMusic" name="interests" value="music">
                             <label for="interestMusic" class="styled-checkbox-label">Music</label>
-                            
-                            <input type="checkbox" class="styled-checkbox" id="interestTravel" name="interests" value="travel">
-                            <label for="interestTravel" class="styled-checkbox-label">Travel</label>
-                            
-                            <input type="checkbox" class="styled-checkbox" id="interestFood" name="interests" value="food">
-                            <label for="interestFood" class="styled-checkbox-label">Food</label>
                         </div>
                     </div>
                     
-                    <div class="reveal" style="transition-delay: 0.1s;">
-                        <div class="floating-label-group">
-                            <select id="contactPreference" name="contactPreference" class="floating-label-input" autocomplete="off">
-                                <option value=""></option>
-                                <option value="email">Email</option>
-                                <option value="phone">Phone</option>
-                                <option value="sms">SMS</option>
-                                <option value="none">No contact</option>
-                            </select>
-                            <label for="contactPreference" class="floating-label">Preferred Contact Method</label>
-                        </div>
-                    </div>
-                    
-                    <div class="reveal" style="transition-delay: 0.2s;">
-                        <div class="floating-label-group">
-                            <textarea id="comments" name="comments" class="floating-label-input" placeholder=" " rows="4" autocomplete="off"></textarea>
-                            <label for="comments" class="floating-label">Additional Comments</label>
-                        </div>
-                    </div>
-                    
-                    <div class="reveal" style="transition-delay: 0.3s;">
+                    <div class="reveal active" style="transition-delay: 0.1s;">
                         <div class="styled-checkbox-group">
                             <input type="checkbox" class="styled-checkbox" id="subscribeNewsletter" name="subscribeNewsletter" value="yes">
                             <label for="subscribeNewsletter" class="styled-checkbox-label">Subscribe to our newsletter</label>
                         </div>
                     </div>
                     
-                    <div class="navigation-buttons reveal" style="transition-delay: 0.4s;">
-                        <button type="button" class="btn-nav btn-prev" data-step="3">Previous</button>
-                        <button type="button" class="btn-nav btn-next" data-step="3">Next</button>
-                    </div>
-                </div>
-                
-                <!-- Step 4: Review & Submit -->
-                <div class="form-step step-inactive" id="step4">
-                    <h2 class="form-step-title">
-                        <div class="step-icon">4</div>
-                        Review & Submit
-                    </h2>
-                    
-                    <div class="reveal">
-                        <div class="summary-section">
-                            <h3>Personal Information</h3>
-                            <div class="summary-item">
-                                <div class="summary-label">Name</div>
-                                <div class="summary-value" id="summary-name">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">Email</div>
-                                <div class="summary-value" id="summary-email">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">Phone</div>
-                                <div class="summary-value" id="summary-phone">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">Gender</div>
-                                <div class="summary-value" id="summary-gender">-</div>
-                            </div>
-                        </div>
-                        
-                        <div class="summary-section">
-                            <h3>Address</h3>
-                            <div class="summary-item">
-                                <div class="summary-label">Street</div>
-                                <div class="summary-value" id="summary-street">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">City, State, Zip</div>
-                                <div class="summary-value" id="summary-city-state-zip">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">Country</div>
-                                <div class="summary-value" id="summary-country">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">Address Type</div>
-                                <div class="summary-value" id="summary-address-type">-</div>
-                            </div>
-                        </div>
-                        
-                        <div class="summary-section">
-                            <h3>Preferences</h3>
-                            <div class="summary-item">
-                                <div class="summary-label">Interests</div>
-                                <div class="summary-value" id="summary-interests">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">Contact Preference</div>
-                                <div class="summary-value" id="summary-contact-preference">-</div>
-                            </div>
-                            <div class="summary-item">
-                                <div class="summary-label">Newsletter</div>
-                                <div class="summary-value" id="summary-newsletter">-</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="reveal" style="transition-delay: 0.3s;">
+                    <div class="reveal active" style="transition-delay: 0.2s;">
                         <div class="styled-checkbox-group">
                             <input type="checkbox" class="styled-checkbox" id="agreeTerms" name="agreeTerms">
                             <label for="agreeTerms" class="styled-checkbox-label">
@@ -773,11 +682,13 @@
                     
                     <div class="spinner" id="submitSpinner"></div>
                     
-                    <div class="navigation-buttons reveal" style="transition-delay: 0.4s;">
-                        <button type="button" class="btn-nav btn-prev" data-step="4">Previous</button>
+                    <div class="navigation-buttons reveal active" style="transition-delay: 0.3s;">
+                        <button type="button" class="btn-nav btn-prev" data-step="3">Previous</button>
                         <button type="submit" class="btn-nav" id="submitButton">Submit Form</button>
                     </div>
                 </div>
+                
+
             </form>
         </div>
     </div>
@@ -826,7 +737,6 @@
                         updateSteps();
                         updateProgressBar();
                         animateStepChange();
-                        updateSummary();
                     } else {
                         shakeStep();
                     }
@@ -849,7 +759,7 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                if (validateStep(4)) {
+                if (validateStep(3)) {
                     // Show loading spinner
                     submitButton.style.display = 'none';
                     submitSpinner.style.display = 'block';
@@ -911,6 +821,40 @@
                         feedbackElement.style.display = 'none';
                     }
                 });
+                
+                // Handle select elements for floating labels
+                if (input.tagName === 'SELECT') {
+                    input.addEventListener('change', function() {
+                        const label = this.nextElementSibling;
+                        if (label && label.classList.contains('floating-label')) {
+                            if (this.value !== '') {
+                                label.style.top = '-10px';
+                                label.style.fontSize = '0.8rem';
+                                label.style.color = 'var(--primary-color)';
+                                label.style.backgroundColor = 'var(--white-color)';
+                                label.style.padding = '0 5px';
+                            } else {
+                                label.style.top = '15px';
+                                label.style.fontSize = '1rem';
+                                label.style.color = '#6c757d';
+                                label.style.backgroundColor = 'transparent';
+                                label.style.padding = '0';
+                            }
+                        }
+                    });
+                    
+                    // Initialize floating label position for selects
+                    if (input.value !== '') {
+                        const label = input.nextElementSibling;
+                        if (label && label.classList.contains('floating-label')) {
+                            label.style.top = '-10px';
+                            label.style.fontSize = '0.8rem';
+                            label.style.color = 'var(--primary-color)';
+                            label.style.backgroundColor = 'var(--white-color)';
+                            label.style.padding = '0 5px';
+                        }
+                    }
+                }
             });
             
             // Reveal elements on scroll
@@ -924,6 +868,15 @@
                         setTimeout(function() {
                             element.classList.add('active');
                         }, 100 * i); // Stagger the animations
+                    }
+                }
+                
+                // Also ensure all navigation buttons in active step are visible
+                const activeStep = document.querySelector('.step-active');
+                if (activeStep) {
+                    const navButtons = activeStep.querySelector('.navigation-buttons');
+                    if (navButtons) {
+                        navButtons.classList.add('active');
                     }
                 }
             }
@@ -944,8 +897,8 @@
                 
                 // Reset reveal animations for current step
                 const currentStepElement = document.getElementById(`step${currentStep}`);
-                const revealElements = currentStepElement.querySelectorAll('.reveal');
-                revealElements.forEach(el => el.classList.remove('active'));
+                const revealEls = currentStepElement.querySelectorAll('.reveal');
+                revealEls.forEach(el => el.classList.remove('active'));
                 
                 // Trigger reveal animations after a small delay
                 setTimeout(function() {
@@ -1021,18 +974,18 @@
                         validateField('country', value => value.trim() !== '', 'Country is required');
                         break;
                         
-                    case 4:
-                        // Terms agreement
-                        const agreeTerms = document.getElementById('agreeTerms');
-                        if (!agreeTerms.checked) {
-                            agreeTerms.classList.add('is-invalid');
-                            const feedbackElement = agreeTerms.nextElementSibling.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
+                                            case 3:
+                            // Terms agreement
+                            const agreeTerms = document.getElementById('agreeTerms');
+                            if (!agreeTerms.checked) {
+                                agreeTerms.classList.add('is-invalid');
+                                const feedbackElement = agreeTerms.nextElementSibling.nextElementSibling;
+                                if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                    feedbackElement.style.display = 'block';
+                                }
+                                isValid = false;
                             }
-                            isValid = false;
-                        }
-                        break;
+                            break;
                 }
                 
                 return isValid;
@@ -1058,69 +1011,7 @@
                 }, 500);
             }
             
-            // Update summary on step 4
-            function updateSummary() {
-                if (currentStep === 4) {
-                    // Personal information
-                    const firstName = document.getElementById('firstName').value;
-                    const lastName = document.getElementById('lastName').value;
-                    document.getElementById('summary-name').textContent = firstName && lastName ? `${firstName} ${lastName}` : '-';
-                    document.getElementById('summary-email').textContent = document.getElementById('email').value || '-';
-                    document.getElementById('summary-phone').textContent = document.getElementById('phone').value || '-';
-                    
-                    // Gender
-                    const genderRadios = document.querySelectorAll('input[name="gender"]');
-                    let selectedGender = '-';
-                    genderRadios.forEach(radio => {
-                        if (radio.checked) {
-                            selectedGender = radio.value;
-                        }
-                    });
-                    document.getElementById('summary-gender').textContent = selectedGender;
-                    
-                    // Address
-                    document.getElementById('summary-street').textContent = document.getElementById('street').value || '-';
-                    
-                    const city = document.getElementById('city').value;
-                    const state = document.getElementById('state').value;
-                    const zip = document.getElementById('zipCode').value;
-                    document.getElementById('summary-city-state-zip').textContent = 
-                        city && state && zip ? `${city}, ${state} ${zip}` : '-';
-                    
-                    const countrySelect = document.getElementById('country');
-                    const countryValue = countrySelect.value;
-                    document.getElementById('summary-country').textContent = countryValue ? 
-                        countrySelect.options[countrySelect.selectedIndex].text : '-';
-                    
-                    // Address type
-                    const addressTypeRadios = document.querySelectorAll('input[name="addressType"]');
-                    let selectedAddressType = '-';
-                    addressTypeRadios.forEach(radio => {
-                        if (radio.checked) {
-                            selectedAddressType = radio.value;
-                        }
-                    });
-                    document.getElementById('summary-address-type').textContent = selectedAddressType;
-                    
-                    // Interests
-                    const interestCheckboxes = document.querySelectorAll('input[name="interests"]:checked');
-                    let interests = [];
-                    interestCheckboxes.forEach(checkbox => {
-                        interests.push(checkbox.value);
-                    });
-                    document.getElementById('summary-interests').textContent = interests.length > 0 ? interests.join(', ') : '-';
-                    
-                    // Contact preference
-                    const contactPreferenceSelect = document.getElementById('contactPreference');
-                    const contactPreferenceValue = contactPreferenceSelect.value;
-                    document.getElementById('summary-contact-preference').textContent = contactPreferenceValue ? 
-                        contactPreferenceSelect.options[contactPreferenceSelect.selectedIndex].text : '-';
-                    
-                    // Newsletter
-                    document.getElementById('summary-newsletter').textContent = 
-                        document.getElementById('subscribeNewsletter').checked ? 'Yes' : 'No';
-                }
-            }
+
             
             // Confetti effect
             function showConfetti() {
