@@ -32,6 +32,13 @@
             padding: 20px 0;
             overflow-x: hidden;
         }
+
+        /* Hide any unwanted modals that might be injected */
+        .modal-overlay,
+        .modal[style*="display: block"],
+        div[class*="modal"]:not(.modal-close):not(.modal-title):not(.modal-body):not(.modal-footer):not(.modal-header) {
+            display: none !important;
+        }
         
         .container {
             max-width: 900px;
@@ -775,10 +782,7 @@
                         // Show confetti
                         showConfetti();
                         
-                        // Hide success notification after 5 seconds
-                        setTimeout(function() {
-                            successAlert.classList.remove('show');
-                        }, 5000);
+                        // Success notification will stay visible
                         
                         // Reset form (optional)
                         // form.reset();
