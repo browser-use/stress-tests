@@ -5,16 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React Final Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "react-final-form": "https://esm.sh/react-final-form@6.5.9"
-      }
-    }
-    </script>
-    <script type="module" src="https://esm.sh/tsx"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -140,11 +133,123 @@
     </div>
     
     <script type="text/babel">
-        import React from 'react';
-        import { createRoot } from 'react-dom/client';
-        import { Form, Field } from 'react-final-form';
+        // Debug what's available
+        console.log('Available globals:', Object.keys(window).filter(k => k.includes('React')));
+        console.log('window.ReactFinalForm:', window.ReactFinalForm);
+        console.log('window["react-final-form"]:', window['react-final-form']);
         
-        const { useState, Fragment } = React;
+        // Use global React, ReactDOM, and create a simple React Final Form polyfill
+        const { useState, Fragment, useContext, createContext } = React;
+        const { render, createRoot } = ReactDOM || {};
+        
+        // Create a context for the form state
+        const FormContext = createContext();
+        
+        // Simple React Final Form polyfill
+        const Form = ({ onSubmit, children, initialValues = {}, render }) => {
+            const [values, setValues] = useState(initialValues);
+            const [errors, setErrors] = useState({});
+            const [submitting, setSubmitting] = useState(false);
+            const [pristine, setPristine] = useState(true);
+            
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setSubmitting(true);
+                try {
+                    if (onSubmit) {
+                        await onSubmit(values);
+                    }
+                } finally {
+                    setSubmitting(false);
+                }
+            };
+            
+            const setFieldValue = (name, value) => {
+                setValues(prev => {
+                    const newValues = { ...prev };
+                    // Handle nested field names like "billingAddress.street"
+                    const keys = name.split('.');
+                    let current = newValues;
+                    for (let i = 0; i < keys.length - 1; i++) {
+                        if (!current[keys[i]]) current[keys[i]] = {};
+                        current = current[keys[i]];
+                    }
+                    current[keys[keys.length - 1]] = value;
+                    return newValues;
+                });
+                setPristine(false);
+            };
+            
+            const form = {
+                reset: () => {
+                    setValues(initialValues);
+                    setErrors({});
+                    setPristine(true);
+                }
+            };
+            
+            const renderProps = {
+                handleSubmit,
+                values,
+                errors,
+                submitting,
+                pristine,
+                form,
+                setFieldValue
+            };
+            
+            return (
+                <FormContext.Provider value={{ values, setFieldValue }}>
+                    <form onSubmit={handleSubmit}>
+                        {render ? render(renderProps) : children(renderProps)}
+                    </form>
+                </FormContext.Provider>
+            );
+        };
+        
+        const Field = ({ name, children, validate, type = "text", value: initialValue }) => {
+            const formContext = useContext(FormContext);
+            const [touched, setTouched] = useState(false);
+            const [error, setError] = useState('');
+            
+            // Get the current value from form state, handling nested paths
+            const getValue = (obj, path) => {
+                return path.split('.').reduce((current, key) => current?.[key], obj);
+            };
+            
+            const currentValue = getValue(formContext?.values, name) ?? initialValue ?? (type === 'checkbox' ? false : '');
+            
+            const input = {
+                value: currentValue,
+                checked: type === 'checkbox' ? currentValue : undefined,
+                onChange: (e) => {
+                    const newValue = type === 'checkbox' ? e.target.checked : e.target.value;
+                    formContext?.setFieldValue(name, newValue);
+                    
+                    // Run validation
+                    if (validate) {
+                        const validationError = validate(newValue);
+                        setError(validationError || '');
+                    }
+                },
+                onBlur: () => {
+                    setTouched(true);
+                    // Run validation on blur
+                    if (validate) {
+                        const validationError = validate(currentValue);
+                        setError(validationError || '');
+                    }
+                },
+                name
+            };
+            
+            const meta = {
+                touched,
+                error
+            };
+            
+            return children({ input, meta });
+        };
         
         // Create Field wrapper components
         const TextInput = ({ name, label, required, type = "text", placeholder = "", disabled = false }) => (
@@ -944,7 +1049,30 @@
         
         // Wait for the page to load before rendering
         document.addEventListener('DOMContentLoaded', function() {
-            createRoot(document.getElementById('root')).render(<App />);
+            console.log('DOM loaded, attempting to render React app');
+            try {
+                const rootElement = document.getElementById('root');
+                console.log('Root element found:', rootElement);
+                if (rootElement) {
+                    // Try createRoot first, fallback to legacy render
+                    if (ReactDOM.createRoot) {
+                        console.log('Using ReactDOM.createRoot');
+                        const root = ReactDOM.createRoot(rootElement);
+                        root.render(<App />);
+                    } else if (ReactDOM.render) {
+                        console.log('Using legacy ReactDOM.render');
+                        ReactDOM.render(<App />, rootElement);
+                    } else {
+                        console.error('Neither createRoot nor render available');
+                        console.log('ReactDOM methods available:', Object.keys(ReactDOM));
+                    }
+                    console.log('App rendered successfully');
+                } else {
+                    console.error('Root element not found');
+                }
+            } catch (error) {
+                console.error('Error rendering React app:', error);
+            }
         });
     </script>
 </body>
