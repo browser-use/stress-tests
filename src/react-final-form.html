@@ -388,7 +388,6 @@
             const onSubmit = values => {
                 console.log('Form submitted successfully! The secret is: dumbledore', values);
                 setShowSuccess(true);
-                setTimeout(() => setShowSuccess(false), 3000);
                 
                 // Also show the success message that's already in the HTML for compatibility
                 const successMessage = document.getElementById('success-message');
