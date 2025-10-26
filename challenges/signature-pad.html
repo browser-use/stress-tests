@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draw Circle Challenge</title>
+    <title>Signature Pad Challenge</title>
     <style>
         :root {
             --primary-color: #4a6bff;
@@ -93,7 +93,7 @@
             text-decoration: none;
             padding: 0 5px;
         }
-        
+
         .task-badge a {
             color: white;
             text-decoration: none;
@@ -111,106 +111,130 @@
             font-size: 1.2rem;
         }
 
-        #draw-container {
-            width: 300px;
-            height: 300px;
+        .signature-container {
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            margin: 1rem 0;
+            background-color: white;
             position: relative;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin: 1rem auto;
         }
 
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 4px;
+        #signature-canvas {
+            display: block;
+            width: 100%;
+            height: 200px;
+            cursor: crosshair;
+            touch-action: none;
         }
 
-        #draw-instructions {
+        .signature-controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #3755d8;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.clear-btn {
+            background-color: #6c757d;
+        }
+
+        button.clear-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .signature-instruction {
+            color: #999;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 1rem 0;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            text-align: center;
             pointer-events: none;
-            color: var(--text-color);
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 0.5rem;
-            border-radius: 4px;
-        }
-
-        .instructions {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            border-left: 4px solid var(--primary-color);
-            text-align: center;
         }
 
         .success-message {
-            margin-top: 1rem;
+            display: none;
+            background-color: var(--success-color);
+            color: white;
             padding: 1rem;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
             border-radius: 4px;
-            color: #155724;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: bold;
         }
 
         .success-message.show {
-            opacity: 1;
-            transform: translateY(0);
+            display: block;
         }
 
         .confetti {
             position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
             top: -10px;
-            z-index: 9999;
-            pointer-events: none;
-            animation: confetti-fall linear forwards;
+            animation: fall 4s linear forwards;
+            z-index: 1000;
         }
 
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-10px) rotate(0deg);
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-            }
+        @keyframes fall {
+            0% { top: -10px; transform: translateX(0) rotate(0deg); }
+            100% { top: 100vh; transform: translateX(100px) rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Draw Circle Challenge</h1>
+        <h1>Signature Pad Challenge</h1>
     </header>
 
     <div class="container">
         <a href="../challenges-index.html" class="back-link">← Back to Challenges</a>
 
-        <div class="task" id="draw-circle">
-            <div class="task-badge"><a href="#draw-circle" id="draw-circle-link">draw-circle</a></div>
-            <div class="task-title">Draw a circle with your mouse by hovering</div>
-            <div class="instructions">
-                Hover your mouse in a circular pattern over the canvas area to complete the circle
+        <div class="task" id="signature-pad">
+            <div class="task-badge"><a href="#signature-pad" id="signature-pad-link">signature-pad</a></div>
+            <div class="task-title">Draw your signature in the box below</div>
+
+            <div class="signature-container">
+                <div class="signature-instruction" id="signature-instruction">✍️ Sign above</div>
+                <canvas id="signature-canvas"></canvas>
             </div>
-            <div id="draw-container">
-                <canvas id="draw-canvas" width="300" height="300"></canvas>
-                <div id="draw-instructions">
-                    Hover your mouse in a circular pattern
-                </div>
+
+            <div class="signature-controls">
+                <button id="verify-btn">Verify Signature</button>
+                <button id="clear-btn" class="clear-btn">Clear</button>
             </div>
+
             <div class="success-message" id="success-message">
-                ✅ Challenge completed successfully! You drew a circle with your mouse.
+                ✅ Challenge completed successfully! Signature verified.
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <script>
         function completeTask(taskElement) {
             if (taskElement.classList.contains('completed')) return;
@@ -242,57 +266,48 @@
         }
 
         // Task-specific logic
-        const drawCanvas = document.getElementById('draw-canvas');
-        const drawCtx = drawCanvas.getContext('2d');
-        const drawInstructions = document.getElementById('draw-instructions');
-        const centerX = drawCanvas.width / 2;
-        const centerY = drawCanvas.height / 2;
-        const radius = 100;
-        const pointsNeeded = 20;
-        
-        // Draw circle guide (faint)
-        drawCtx.beginPath();
-        drawCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        drawCtx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
-        drawCtx.stroke();
-        
-        // For tracking points along the circle
-        const points = [];
-        const angleSegments = 8; // Divide circle into segments
-        const segmentStatus = new Array(angleSegments).fill(false);
-        
-        drawCanvas.addEventListener('mousemove', function(e) {
-            const rect = drawCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            // Draw dot where mouse is
-            drawCtx.beginPath();
-            drawCtx.arc(x, y, 3, 0, Math.PI * 2);
-            drawCtx.fillStyle = 'rgba(74, 107, 255, 0.5)';
-            drawCtx.fill();
-            
-            // Calculate angle from center
-            const dx = x - centerX;
-            const dy = y - centerY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            // If within certain range from the circle
-            if (Math.abs(distance - radius) < 20) {
-                let angle = Math.atan2(dy, dx);
-                if (angle < 0) angle += Math.PI * 2;
-                
-                // Determine which segment this angle falls into
-                const segment = Math.floor((angle / (Math.PI * 2)) * angleSegments);
-                segmentStatus[segment] = true;
-                
-                // If all segments have been touched
-                if (segmentStatus.every(status => status)) {
-                    drawInstructions.textContent = "Great job! Circle completed!";
-                    completeTask(document.getElementById('draw-circle'));
-                }
+        const canvas = document.getElementById('signature-canvas');
+        const instruction = document.getElementById('signature-instruction');
+        const verifyBtn = document.getElementById('verify-btn');
+        const clearBtn = document.getElementById('clear-btn');
+
+        // Initialize signature pad
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+
+        // Resize canvas to match container
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Hide instruction when user starts drawing
+        signaturePad.addEventListener('beginStroke', () => {
+            instruction.style.display = 'none';
+        });
+
+        // Verify button - check if signature is not empty
+        verifyBtn.addEventListener('click', () => {
+            if (!signaturePad.isEmpty()) {
+                completeTask(document.getElementById('signature-pad'));
+            } else {
+                alert('Please draw your signature first!');
             }
+        });
+
+        // Clear button
+        clearBtn.addEventListener('click', () => {
+            signaturePad.clear();
+            instruction.style.display = 'block';
         });
     </script>
 </body>
-</html> 
+</html>
