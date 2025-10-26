@@ -29,78 +29,18 @@
             padding-bottom: 10px;
             border-bottom: 1px solid #dee2e6;
         }
-
-        .ng-invalid.ng-touched {
-            border-color: #dc3545;
-        }
-
-        .error-message {
-            color: #dc3545;
-            font-size: 0.875em;
-            margin-top: 0.25rem;
-        }
-
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .modal-header h4 {
-            margin: 0;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .modal-footer {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid #dee2e6;
-            display: flex;
-            justify-content: flex-end;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="mt-4 mb-4">Angular (v2+) Reactive Form</h1>
         <p>A fully interactive Angular component with reactive forms.</p>
-
+        
         <div id="angular-app">
             <app-root></app-root>
         </div>
     </div>
-
+    
     <!-- Angular dependencies -->
     <script src="https://unpkg.com/angular@1.8.3/angular.min.js"></script>
     <script>
@@ -109,24 +49,13 @@
         .controller('FormController', function($scope) {
             // Initialize form data
             $scope.formData = {
-                textInput: '',
                 email: '',
-                number: '',
-                date: '',
-                file: null,
-                rangeSlider: 50,
-                dropdown: '',
-                multiSelect: [],
-                radioOption: '',
-                checkboxes: {
-                    option1: false,
-                    option2: false,
-                    option3: false
-                },
-                textarea: ''
+                favoriteColor: '',
+                country: '',
+                birthDate: '',
+                contactPreference: ''
             };
 
-            $scope.showModal = false;
             $scope.formSubmitted = false;
 
             $scope.submitForm = function() {
@@ -141,38 +70,8 @@
                     }, 3000);
                 }
             };
-
-            $scope.resetForm = function() {
-                $scope.formData = {
-                    textInput: '',
-                    email: '',
-                    number: '',
-                    date: '',
-                    file: null,
-                    rangeSlider: 50,
-                    dropdown: '',
-                    multiSelect: [],
-                    radioOption: '',
-                    checkboxes: {
-                        option1: false,
-                        option2: false,
-                        option3: false
-                    },
-                    textarea: ''
-                };
-                $scope.userForm.$setPristine();
-                $scope.userForm.$setUntouched();
-            };
-
-            $scope.openModal = function() {
-                $scope.showModal = true;
-            };
-
-            $scope.closeModal = function() {
-                $scope.showModal = false;
-            };
         });
-
+        
         // Update the HTML of angular-app div
         document.getElementById('angular-app').innerHTML = `
                 <div ng-app="formApp" ng-controller="FormController">
@@ -182,127 +81,73 @@
 
                     <form name="userForm" class="form-container" ng-submit="submitForm()" novalidate>
                         <div class="form-section">
-                            <h3>Form Fields</h3>
-
-                            <div class="mb-3">
-                                <label for="textInput" class="form-label">Text Input <span class="text-danger">*</span></label>
-                                <input type="text" id="textInput" name="textInput" ng-model="formData.textInput" class="form-control" required>
-                                <div class="error-message" ng-if="userForm.textInput.$invalid && userForm.textInput.$touched">
-                                    Text input is required
-                                </div>
-                            </div>
+                            <h3>Simple Form</h3>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" id="email" name="email" ng-model="formData.email" class="form-control" required>
-                                <div class="error-message" ng-if="userForm.email.$invalid && userForm.email.$touched">
-                                    <span ng-if="userForm.email.$error.required">Email is required</span>
-                                    <span ng-if="userForm.email.$error.email">Enter a valid email address</span>
-                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="number" class="form-label">Number Input</label>
-                                <input type="number" id="number" name="number" ng-model="formData.number" class="form-control" min="0" max="100">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="date" class="form-label">Date Input</label>
-                                <input type="date" id="date" name="date" ng-model="formData.date" class="form-control">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="file" class="form-label">File Upload</label>
-                                <input type="file" id="file" class="form-control">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="rangeSlider" class="form-label">Range Slider</label>
-                                <input type="range" id="rangeSlider" name="rangeSlider" ng-model="formData.rangeSlider" class="form-range" min="0" max="100" step="1">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="dropdown" class="form-label">Dropdown Selection</label>
-                                <select id="dropdown" name="dropdown" ng-model="formData.dropdown" class="form-select">
-                                    <option value="">Please select an option</option>
-                                    <option value="option1">Option 1</option>
-                                    <option value="option2">Option 2</option>
-                                    <option value="option3">Option 3</option>
+                                <label for="favoriteColor" class="form-label">Favorite Color</label>
+                                <select id="favoriteColor" name="favoriteColor" ng-model="formData.favoriteColor" class="form-select">
+                                    <option value="">Select a color</option>
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="orange">Orange</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
-                                <label for="multiSelect" class="form-label">Multiple Selection</label>
-                                <select id="multiSelect" name="multiSelect" ng-model="formData.multiSelect" class="form-select" multiple size="3">
-                                    <option value="option1">Option 1</option>
-                                    <option value="option2">Option 2</option>
-                                    <option value="option3">Option 3</option>
+                                <label for="country" class="form-label">Country</label>
+                                <select id="country" name="country" ng-model="formData.country" class="form-select">
+                                    <option value="">Select a country</option>
+                                    <option value="usa">United States</option>
+                                    <option value="canada">Canada</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="germany">Germany</option>
+                                    <option value="france">France</option>
+                                    <option value="japan">Japan</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Radio Buttons</label>
+                                <label for="birthDate" class="form-label">Date of Birth</label>
+                                <input type="date" id="birthDate" name="birthDate" ng-model="formData.birthDate" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Contact Preference</label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="radio1" name="radioOption" value="option1" ng-model="formData.radioOption">
-                                    <label class="form-check-label" for="radio1">Option 1</label>
+                                    <input class="form-check-input" type="radio" id="contactEmail" name="contactPreference" value="email" ng-model="formData.contactPreference">
+                                    <label class="form-check-label" for="contactEmail">Email</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="radio2" name="radioOption" value="option2" ng-model="formData.radioOption">
-                                    <label class="form-check-label" for="radio2">Option 2</label>
+                                    <input class="form-check-input" type="radio" id="contactPhone" name="contactPreference" value="phone" ng-model="formData.contactPreference">
+                                    <label class="form-check-label" for="contactPhone">Phone</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="radio3" name="radioOption" value="option3" ng-model="formData.radioOption">
-                                    <label class="form-check-label" for="radio3">Option 3</label>
+                                    <input class="form-check-input" type="radio" id="contactMail" name="contactPreference" value="mail" ng-model="formData.contactPreference">
+                                    <label class="form-check-label" for="contactMail">Mail</label>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Checkboxes</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="checkbox1" ng-model="formData.checkboxes.option1">
-                                    <label class="form-check-label" for="checkbox1">Option 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="checkbox2" ng-model="formData.checkboxes.option2">
-                                    <label class="form-check-label" for="checkbox2">Option 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="checkbox3" ng-model="formData.checkboxes.option3">
-                                    <label class="form-check-label" for="checkbox3">Option 3</label>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="textarea" class="form-label">Text Area</label>
-                                <textarea id="textarea" name="textarea" ng-model="formData.textarea" class="form-control" rows="3"></textarea>
+                                <label for="fileUpload" class="form-label">Upload File</label>
+                                <input type="file" id="fileUpload" class="form-control">
                             </div>
                         </div>
 
-                        <div class="d-flex gap-2 mb-3">
+                        <div class="mb-3">
                             <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit Form</button>
-                            <button type="button" class="btn btn-danger" ng-click="openModal()">Open Modal</button>
-                            <button type="button" class="btn btn-secondary" ng-click="resetForm()">Reset Form</button>
                         </div>
                     </form>
-
-                    <!-- Red Herring Modal -->
-                    <div class="modal-backdrop" ng-if="showModal">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4>Red Herring Modal</h4>
-                                <button type="button" class="modal-close" ng-click="closeModal()">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <p>This is a red herring modal instead of submitting the form.</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" ng-click="closeModal()">Close</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 `;
-
+            
             // Initialize the AngularJS application when DOM is loaded
             angular.element(document).ready(function() {
                 angular.bootstrap(document.getElementById('angular-app'), ['formApp']);

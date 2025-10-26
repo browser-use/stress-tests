@@ -1,264 +1,759 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>GraphQL Mutation Form</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<style>
-		body {
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			background-color: #f8f9fa;
-			padding: 40px 20px;
-		}
-
-		.container {
-			max-width: 900px;
-			margin: 0 auto;
-			background: white;
-			border-radius: 10px;
-			box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-			padding: 25px;
-		}
-
-		h1 {
-			color: #6f42c1;
-			margin-bottom: 20px;
-		}
-
-		.description {
-			margin-bottom: 30px;
-		}
-
-		.form-label {
-			font-weight: 600;
-			color: #495057;
-		}
-
-		.form-control, .form-select {
-			border: 2px solid #e0e0e0;
-			border-radius: 6px;
-		}
-
-		.form-control:focus, .form-select:focus {
-			border-color: #6f42c1;
-			box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
-		}
-
-		.btn-primary {
-			background-color: #6f42c1;
-			border-color: #6f42c1;
-		}
-
-		.btn-primary:hover {
-			background-color: #5e37a6;
-			border-color: #5e37a6;
-		}
-
-		.alert {
-			display: none;
-		}
-
-		.graphql-preview {
-			background-color: #f8f9fa;
-			padding: 15px;
-			border-radius: 8px;
-			margin-bottom: 20px;
-			border: 1px solid #e9ecef;
-			font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-			font-size: 13px;
-			white-space: pre-wrap;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Mutation Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #6f42c1;
+            margin-bottom: 20px;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section-title {
+            color: #6f42c1;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .btn-primary {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5e37a6;
+            border-color: #5e37a6;
+        }
+        
+        .card {
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: #f0ebf8;
+            color: #6f42c1;
+            font-weight: 500;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            overflow: auto;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .mutation-preview {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .gql-type {
+            color: #0366d6;
+        }
+        
+        .gql-field {
+            color: #24292e;
+        }
+        
+        .gql-operation {
+            color: #6f42c1;
+        }
+        
+        .gql-string {
+            color: #032f62;
+        }
+        
+        .gql-variable {
+            color: #e36209;
+        }
+        
+        .gql-delimiter {
+            color: #24292e;
+        }
+        
+        .schema-explorer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            max-height: 300px;
+            overflow: auto;
+        }
+        
+        .schema-type {
+            margin-bottom: 10px;
+        }
+        
+        .schema-type-name {
+            font-weight: bold;
+            cursor: pointer;
+            color: #6f42c1;
+        }
+        
+        .schema-type-fields {
+            padding-left: 20px;
+            display: none;
+        }
+        
+        .schema-field {
+            margin: 5px 0;
+        }
+        
+        .schema-field-name {
+            color: #0366d6;
+        }
+        
+        .schema-field-type {
+            color: #6f42c1;
+            font-style: italic;
+        }
+        
+        .response-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+            max-height: 300px;
+            overflow: auto;
+            display: none;
+        }
+        
+        .response-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #6f42c1;
+        }
+        
+        .response-success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .response-error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            background-color: transparent;
+        }
+        
+        .tab.active {
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+            color: #6f42c1;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .variables-editor {
+            width: 100%;
+            height: 100px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 10px;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: #f0ebf8;
+            color: #6f42c1;
+        }
+        
+        .accordion-button:focus {
+            box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
+        }
+        
+        .alert {
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .spinner-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .spinner-border {
+            color: #6f42c1;
+        }
+    </style>
 </head>
 <body>
-	<div class="container">
-		<h1 class="text-center">GraphQL Mutation Form</h1>
-		<p class="text-center description">
-			This form uses GraphQL mutations to submit data, presenting a unique challenge for autofill systems.
-		</p>
+    <div class="container">
+        <h1 class="text-center">GraphQL Mutation Form</h1>
+        <p class="text-center description">
+            This form uses GraphQL mutations to submit data, presenting a unique challenge for autofill systems that expect traditional form submissions.
+        </p>
+        
+        <div class="alert alert-success" id="successMessage">
+            <strong>Success!</strong> Mutation executed successfully! The secret is: dumbledore
+        </div>
+        
+        <div class="alert alert-danger" id="errorMessage">
+            <strong>Error!</strong> <span id="errorText"></span>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-7">
+                <div class="form-section">
+                    <h2 class="form-section-title">User Registration</h2>
 
-		<div class="alert alert-success mb-3" id="successMessage">
-			<strong>Success!</strong> Mutation executed successfully! The secret is: dumbledore
-		</div>
+                    <form id="graphqlForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label required">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" data-gql-field="email">
+                            <div class="invalid-feedback">Please enter a valid email address</div>
+                        </div>
 
-		<div class="row">
-			<div class="col-md-12">
-				<form id="graphqlForm">
-					<!-- Text Input -->
-					<div class="mb-3">
-						<label for="name" class="form-label">Full Name</label>
-						<input type="text" class="form-control" id="name" name="name" data-gql-field="name" required>
-					</div>
+                        <div class="mb-3">
+                            <label for="accountType" class="form-label required">Account Type</label>
+                            <select class="form-select" id="accountType" name="accountType" data-gql-field="accountType">
+                                <option value="">Select...</option>
+                                <option value="personal">Personal</option>
+                                <option value="business">Business</option>
+                                <option value="enterprise">Enterprise</option>
+                            </select>
+                            <div class="invalid-feedback">Account type is required</div>
+                        </div>
 
-					<!-- Email Input -->
-					<div class="mb-3">
-						<label for="email" class="form-label">Email Address</label>
-						<input type="email" class="form-control" id="email" name="email" data-gql-field="email" required>
-					</div>
+                        <div class="mb-3">
+                            <label for="country" class="form-label required">Country</label>
+                            <select class="form-select" id="country" name="country" data-gql-field="country">
+                                <option value="">Select...</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="AU">Australia</option>
+                                <option value="DE">Germany</option>
+                            </select>
+                            <div class="invalid-feedback">Country is required</div>
+                        </div>
 
-					<!-- Number Input -->
-					<div class="mb-3">
-						<label for="age" class="form-label">Age</label>
-						<input type="number" class="form-control" id="age" name="age" data-gql-field="age" min="0" max="150">
-					</div>
+                        <div class="mb-3">
+                            <label for="birthdate" class="form-label required">Birth Date</label>
+                            <input type="date" class="form-control" id="birthdate" name="birthdate" data-gql-field="birthdate">
+                            <div class="invalid-feedback">Birth date is required</div>
+                        </div>
 
-					<!-- Date Input -->
-					<div class="mb-3">
-						<label for="birthdate" class="form-label">Birthdate</label>
-						<input type="date" class="form-control" id="birthdate" name="birthdate" data-gql-field="birthdate">
-					</div>
+                        <div class="mb-3">
+                            <label class="form-label required">Subscription Plan</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="subscriptionPlan" id="planFree" value="free" data-gql-field="subscriptionPlan">
+                                <label class="form-check-label" for="planFree">
+                                    Free
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="subscriptionPlan" id="planPro" value="pro" data-gql-field="subscriptionPlan">
+                                <label class="form-check-label" for="planPro">
+                                    Pro
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="subscriptionPlan" id="planEnterprise" value="enterprise" data-gql-field="subscriptionPlan">
+                                <label class="form-check-label" for="planEnterprise">
+                                    Enterprise
+                                </label>
+                            </div>
+                            <div class="invalid-feedback">Please select a subscription plan</div>
+                        </div>
 
-					<!-- File Input -->
-					<div class="mb-3">
-						<label for="resume" class="form-label">Upload Resume</label>
-						<input type="file" class="form-control" id="resume" name="resume" data-gql-field="resume">
-					</div>
+                        <div class="mb-3">
+                            <label for="profilePicture" class="form-label">Profile Picture</label>
+                            <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*" data-gql-field="profilePicture">
+                        </div>
 
-					<!-- Range Input -->
-					<div class="mb-3">
-						<label for="satisfaction" class="form-label">Satisfaction: <span id="satisfactionValue">50</span></label>
-						<input type="range" class="form-range" id="satisfaction" name="satisfaction" data-gql-field="satisfaction" min="0" max="100" value="50">
-					</div>
+                        <div class="d-flex gap-2 justify-content-center">
+                            <button type="submit" class="btn btn-primary">Execute Mutation</button>
+                            <button type="button" class="btn btn-secondary" id="resetButton">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="accordion" id="gqlAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingMutation">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMutation" aria-expanded="true" aria-controls="collapseMutation">
+                                Generated Mutation
+                            </button>
+                        </h2>
+                        <div id="collapseMutation" class="accordion-collapse collapse show" aria-labelledby="headingMutation" data-bs-parent="#gqlAccordion">
+                            <div class="accordion-body">
+                                <div class="tabs">
+                                    <button class="tab active" data-tab="mutation">Mutation</button>
+                                    <button class="tab" data-tab="variables">Variables</button>
+                                </div>
+                                
+                                <div class="tab-content active" id="mutationTab">
+                                    <pre><code id="mutationCode" class="language-graphql"></code></pre>
+                                </div>
+                                
+                                <div class="tab-content" id="variablesTab">
+                                    <pre><code id="variablesCode" class="language-json"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSchema">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSchema" aria-expanded="false" aria-controls="collapseSchema">
+                                Schema Explorer
+                            </button>
+                        </h2>
+                        <div id="collapseSchema" class="accordion-collapse collapse" aria-labelledby="headingSchema" data-bs-parent="#gqlAccordion">
+                            <div class="accordion-body">
+                                <div class="schema-explorer">
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="User">User</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">id</span>: <span class="schema-field-type">ID!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">email</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">accountType</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">country</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">birthdate</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">subscriptionPlan</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">profilePicture</span>: <span class="schema-field-type">String</span>
+                                            </div>
+                                        </div>
+                                    </div>
 
-					<!-- Select Dropdown -->
-					<div class="mb-3">
-						<label for="country" class="form-label">Country</label>
-						<select class="form-select" id="country" name="country" data-gql-field="country">
-							<option value="">Select a country</option>
-							<option value="USA">United States</option>
-							<option value="Canada">Canada</option>
-							<option value="UK">United Kingdom</option>
-						</select>
-					</div>
+                                    <div class="schema-type">
+                                        <div class="schema-type-name" data-type="CreateUserInput">CreateUserInput</div>
+                                        <div class="schema-type-fields">
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">email</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">accountType</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">country</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">birthdate</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">subscriptionPlan</span>: <span class="schema-field-type">String!</span>
+                                            </div>
+                                            <div class="schema-field">
+                                                <span class="schema-field-name">profilePicture</span>: <span class="schema-field-type">String</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingResponse">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResponse" aria-expanded="false" aria-controls="collapseResponse">
+                                Response
+                            </button>
+                        </h2>
+                        <div id="collapseResponse" class="accordion-collapse collapse" aria-labelledby="headingResponse" data-bs-parent="#gqlAccordion">
+                            <div class="accordion-body">
+                                <div class="spinner-container" id="loadingSpinner">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="response-container" id="responseContainer">
+                                    <div class="response-title">Response:</div>
+                                    <pre><code id="responseCode" class="language-json"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/graphql.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/json.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            hljs.registerLanguage('graphql', window.hljsDefineGraphQL);
+            hljs.registerLanguage('json', window.hljsDefineJson);
 
-					<!-- Multi-Select -->
-					<div class="mb-3">
-						<label for="interests" class="form-label">Interests (hold Ctrl to select multiple)</label>
-						<select class="form-select" id="interests" name="interests" data-gql-field="interests" multiple size="3">
-							<option value="Technology">Technology</option>
-							<option value="Sports">Sports</option>
-							<option value="Music">Music</option>
-						</select>
-					</div>
+            const form = document.getElementById('graphqlForm');
+            const inputFields = form.querySelectorAll('input, select');
+            const mutationCode = document.getElementById('mutationCode');
+            const variablesCode = document.getElementById('variablesCode');
+            const resetButton = document.getElementById('resetButton');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const schemaTypeNames = document.querySelectorAll('.schema-type-name');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseCode = document.getElementById('responseCode');
 
-					<!-- Radio Buttons -->
-					<div class="mb-3">
-						<label class="form-label">Gender</label>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="gender" id="male" value="male" data-gql-field="gender">
-							<label class="form-check-label" for="male">Male</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="gender" id="female" value="female" data-gql-field="gender">
-							<label class="form-check-label" for="female">Female</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="gender" id="other" value="other" data-gql-field="gender">
-							<label class="form-check-label" for="other">Other</label>
-						</div>
-					</div>
+            // Update mutation on input changes
+            inputFields.forEach(field => {
+                field.addEventListener('input', updateMutation);
+                field.addEventListener('change', updateMutation);
 
-					<!-- Checkboxes -->
-					<div class="mb-3">
-						<label class="form-label">Preferences</label>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="newsletter" name="preferences" value="newsletter" data-gql-field="preferences">
-							<label class="form-check-label" for="newsletter">Newsletter</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="notifications" name="preferences" value="notifications" data-gql-field="preferences">
-							<label class="form-check-label" for="notifications">Notifications</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="updates" name="preferences" value="updates" data-gql-field="preferences">
-							<label class="form-check-label" for="updates">Updates</label>
-						</div>
-					</div>
+                // Clear validation styles on input
+                field.addEventListener('input', function() {
+                    this.classList.remove('is-invalid');
+                });
+            });
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active content
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                });
+            });
+            
+            // Schema explorer type toggling
+            schemaTypeNames.forEach(typeName => {
+                typeName.addEventListener('click', function() {
+                    const fields = this.nextElementSibling;
+                    if (fields.style.display === 'block') {
+                        fields.style.display = 'none';
+                    } else {
+                        fields.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Show loading spinner
+                    loadingSpinner.style.display = 'flex';
+                    responseContainer.style.display = 'none';
+                    
+                    // Expand response accordion
+                    const responseAccordion = new bootstrap.Collapse(document.getElementById('collapseResponse'));
+                    responseAccordion.show();
+                    
+                    // Get form data
+                    const formData = getFormData();
+                    
+                    // Simulate GraphQL request
+                    simulateGraphQLRequest(formData)
+                        .then(response => {
+                            // Hide loading spinner
+                            loadingSpinner.style.display = 'none';
+                            
+                            // Show response
+                            responseContainer.style.display = 'block';
+                            responseContainer.classList.remove('response-error');
+                            responseContainer.classList.add('response-success');
+                            
+                            // Format and display response
+                            responseCode.textContent = JSON.stringify(response, null, 2);
+                            hljs.highlightElement(responseCode);
+                            
+                            // Show success message
+                            successMessage.style.display = 'block';
+                            errorMessage.style.display = 'none';
+                            
+                            // Hide success message after 3 seconds
+                            setTimeout(function() {
+                                successMessage.style.display = 'none';
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            // Hide loading spinner
+                            loadingSpinner.style.display = 'none';
+                            
+                            // Show response
+                            responseContainer.style.display = 'block';
+                            responseContainer.classList.remove('response-success');
+                            responseContainer.classList.add('response-error');
+                            
+                            // Format and display error
+                            responseCode.textContent = JSON.stringify(error, null, 2);
+                            hljs.highlightElement(responseCode);
+                            
+                            // Show error message
+                            errorMessage.style.display = 'block';
+                            successMessage.style.display = 'none';
+                            errorText.textContent = error.errors[0].message;
+                            
+                            // Hide error message after 5 seconds
+                            setTimeout(function() {
+                                errorMessage.style.display = 'none';
+                            }, 5000);
+                        });
+                }
+            });
+            
+            // Reset form
+            resetButton.addEventListener('click', function() {
+                form.reset();
+                updateMutation();
 
-					<!-- Textarea -->
-					<div class="mb-3">
-						<label for="comments" class="form-label">Comments</label>
-						<textarea class="form-control" id="comments" name="comments" data-gql-field="comments" rows="3"></textarea>
-					</div>
+                // Clear validation styles
+                inputFields.forEach(field => {
+                    field.classList.remove('is-invalid');
+                });
 
-					<!-- GraphQL Mutation Preview -->
-					<div class="graphql-preview">
-						<strong>GraphQL Mutation:</strong>
-						<code id="mutationPreview">mutation { createUser(input: { ... }) { id name email } }</code>
-					</div>
+                // Hide messages
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
 
-					<!-- Submit Button -->
-					<div class="text-center">
-						<button type="submit" class="btn btn-primary">Execute Mutation</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+                // Hide response
+                responseContainer.style.display = 'none';
+            });
+            
+            // Generate and update the mutation
+            function updateMutation() {
+                const formData = getFormData();
+                const mutation = generateMutation(formData);
+                const variables = generateVariables(formData);
+                
+                mutationCode.textContent = mutation;
+                variablesCode.textContent = JSON.stringify(variables, null, 2);
+                
+                hljs.highlightElement(mutationCode);
+                hljs.highlightElement(variablesCode);
+            }
+            
+            // Get form data
+            function getFormData() {
+                const subscriptionPlanRadio = document.querySelector('input[name="subscriptionPlan"]:checked');
+                const profilePictureInput = document.getElementById('profilePicture');
 
-	<script>
-		// Update range value display
-		document.getElementById('satisfaction').addEventListener('input', function(e) {
-			document.getElementById('satisfactionValue').textContent = e.target.value;
-		});
+                const data = {
+                    email: document.getElementById('email').value,
+                    accountType: document.getElementById('accountType').value,
+                    country: document.getElementById('country').value,
+                    birthdate: document.getElementById('birthdate').value,
+                    subscriptionPlan: subscriptionPlanRadio ? subscriptionPlanRadio.value : '',
+                    profilePicture: profilePictureInput.files.length > 0 ? profilePictureInput.files[0].name : ''
+                };
 
-		// Generate GraphQL mutation preview
-		function updateMutationPreview() {
-			const formData = {
-				name: document.getElementById('name').value || 'null',
-				email: document.getElementById('email').value || 'null',
-				age: document.getElementById('age').value || 'null',
-				birthdate: document.getElementById('birthdate').value || 'null',
-				satisfaction: document.getElementById('satisfaction').value || '50',
-				country: document.getElementById('country').value || 'null',
-				gender: document.querySelector('input[name="gender"]:checked')?.value || 'null',
-				comments: document.getElementById('comments').value || 'null'
-			};
-
-			const mutation = `mutation {
-  createUser(input: {
-    name: "${formData.name}"
-    email: "${formData.email}"
-    age: ${formData.age}
-    birthdate: "${formData.birthdate}"
-    satisfaction: ${formData.satisfaction}
-    country: "${formData.country}"
-    gender: "${formData.gender}"
-    comments: "${formData.comments}"
-  }) {
-    id
-    name
-    email
-  }
+                return data;
+            }
+            
+            // Generate GraphQL mutation
+            function generateMutation(data) {
+                return `mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+        id
+        email
+        accountType
+        country
+        birthdate
+        subscriptionPlan
+        profilePicture
+    }
 }`;
+            }
+            
+            // Generate variables for GraphQL mutation
+            function generateVariables(data) {
+                const variables = {
+                    input: {
+                        email: data.email,
+                        accountType: data.accountType,
+                        country: data.country,
+                        birthdate: data.birthdate,
+                        subscriptionPlan: data.subscriptionPlan
+                    }
+                };
 
-			document.getElementById('mutationPreview').textContent = mutation;
-		}
+                if (data.profilePicture) {
+                    variables.input.profilePicture = data.profilePicture;
+                }
 
-		// Update preview on input changes
-		document.querySelectorAll('input, select, textarea').forEach(el => {
-			el.addEventListener('input', updateMutationPreview);
-			el.addEventListener('change', updateMutationPreview);
-		});
+                return variables;
+            }
+            
+            // Validate form
+            function validateForm() {
+                let isValid = true;
 
-		// Form submission handler
-		document.getElementById('graphqlForm').addEventListener('submit', function(e) {
-			e.preventDefault();
+                // Validate email
+                const emailInput = document.getElementById('email');
+                if (!emailInput.value.trim() || !isValidEmail(emailInput.value)) {
+                    emailInput.classList.add('is-invalid');
+                    isValid = false;
+                }
 
-			// Simulate GraphQL request
-			setTimeout(() => {
-				document.getElementById('successMessage').style.display = 'block';
-				setTimeout(() => {
-					document.getElementById('successMessage').style.display = 'none';
-				}, 3000);
-			}, 500);
-		});
+                // Validate account type
+                const accountTypeInput = document.getElementById('accountType');
+                if (!accountTypeInput.value) {
+                    accountTypeInput.classList.add('is-invalid');
+                    isValid = false;
+                }
 
-		// Initialize mutation preview
-		updateMutationPreview();
-	</script>
+                // Validate country
+                const countryInput = document.getElementById('country');
+                if (!countryInput.value) {
+                    countryInput.classList.add('is-invalid');
+                    isValid = false;
+                }
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+                // Validate birthdate
+                const birthdateInput = document.getElementById('birthdate');
+                if (!birthdateInput.value) {
+                    birthdateInput.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                // Validate subscription plan
+                const subscriptionPlanRadio = document.querySelector('input[name="subscriptionPlan"]:checked');
+                if (!subscriptionPlanRadio) {
+                    // Add validation styling to the first radio button as a visual cue
+                    document.getElementById('planFree').classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            // Helper function for email validation
+            function isValidEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            // Simulate GraphQL request
+            function simulateGraphQLRequest(formData) {
+                return new Promise((resolve, reject) => {
+                    // Simulate network delay
+                    setTimeout(() => {
+                        // Check if the email is already "registered"
+                        if (formData.email === 'test@example.com') {
+                            reject({
+                                errors: [
+                                    {
+                                        message: "Email address is already registered",
+                                        locations: [{ line: 2, column: 5 }],
+                                        path: ["createUser"]
+                                    }
+                                ],
+                                data: null
+                            });
+                            return;
+                        }
+
+                        // Simulate successful response
+                        resolve({
+                            data: {
+                                createUser: {
+                                    id: "user_" + Math.random().toString(36).substr(2, 9),
+                                    email: formData.email,
+                                    accountType: formData.accountType,
+                                    country: formData.country,
+                                    birthdate: formData.birthdate,
+                                    subscriptionPlan: formData.subscriptionPlan,
+                                    profilePicture: formData.profilePicture || null
+                                }
+                            }
+                        });
+                    }, 1500);
+                });
+            }
+            
+            // Initialize the mutation on page load
+            updateMutation();
+        });
+    </script>
 </body>
 </html>

@@ -1,188 +1,484 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Shadow DOM Form</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<style>
-		body {
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			background-color: #f5f7fa;
-			padding: 40px 20px;
-		}
-
-		.container {
-			max-width: 700px;
-			margin: 0 auto;
-			background: white;
-			padding: 40px;
-			border-radius: 12px;
-			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-		}
-
-		h1 {
-			color: #2c3e50;
-			margin-bottom: 10px;
-		}
-
-		.subtitle {
-			color: #6c757d;
-			margin-bottom: 30px;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow DOM Form</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        p {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--success-color);
+            color: #27ae60;
+        }
+        
+        /* Default styles for our custom elements */
+        custom-form-section {
+            display: block;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        custom-form-field {
+            display: block;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-	<div class="container">
-		<h1 class="text-center">Shadow DOM Form</h1>
-		<p class="text-center subtitle">Form fields are encapsulated within Shadow DOM</p>
+    <div class="container">
+        <h1>Shadow DOM Form</h1>
+        <p>This form uses Shadow DOM to encapsulate form elements, which might make autofill challenging.</p>
+        
+        <div class="alert alert-success" id="success-message">
+            <strong>Success!</strong> Form submitted successfully!
+        </div>
 
-		<div class="alert alert-success" id="successMessage" style="display: none;">
-			<strong>Success!</strong> The secret is: dumbledore
-		</div>
+        <div id="shadow-form-container">
+            <!-- Our custom elements will be rendered here -->
+        </div>
+    </div>
+    
+    <template id="form-template">
+        <style>
+            .shadow-form {
+                padding: 20px;
+            }
+            
+            .form-title {
+                color: var(--primary-color);
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+                margin-top: 0;
+            }
+            
+            .form-buttons {
+                margin-top: 30px;
+                text-align: center;
+            }
+            
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                border: none;
+                margin: 0 5px;
+            }
+            
+            .btn-primary {
+                background-color: var(--primary-color);
+                color: white;
+            }
+            
+            .btn-primary:hover {
+                background-color: #3a7bc8;
+            }
+        </style>
+        <form class="shadow-form">
+            <slot></slot>
+            
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+            </div>
+        </form>
+    </template>
+    
+    <template id="form-section-template">
+        <style>
+            .section-title {
+                color: var(--primary-color);
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+                margin-top: 0;
+            }
+        </style>
+        <div class="form-section">
+            <h3 class="section-title"><slot name="title"></slot></h3>
+            <div class="section-content">
+                <slot></slot>
+            </div>
+        </div>
+    </template>
+    
+    <template id="form-field-template">
+        <style>
+            .form-field {
+                margin-bottom: 15px;
+            }
+            
+            .form-label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+            
+            .form-label.required::after {
+                content: " *";
+                color: var(--error-color);
+            }
+            
+            .form-input, 
+            .form-select,
+            .form-textarea {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 16px;
+                transition: border-color 0.3s;
+                box-sizing: border-box;
+            }
+            
+            .form-input:focus, 
+            .form-select:focus,
+            .form-textarea:focus {
+                border-color: var(--primary-color);
+                outline: none;
+            }
+            
+            .form-error {
+                color: var(--error-color);
+                font-size: 14px;
+                margin-top: 5px;
+                display: none;
+            }
+            
+            .form-help {
+                color: #7f8c8d;
+                font-size: 14px;
+                margin-top: 5px;
+            }
+            
+            .checkbox-field,
+            .radio-field {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            
+            .checkbox-input,
+            .radio-input {
+                margin-right: 10px;
+            }
+        </style>
+        <div class="form-field">
+            <label id="field-label" class="form-label">
+                <slot name="label"></slot>
+            </label>
+            <div class="field-input-container">
+                <slot name="input"></slot>
+            </div>
+            <div class="form-error">
+                <slot name="error"></slot>
+            </div>
+            <div class="form-help">
+                <slot name="help"></slot>
+            </div>
+        </div>
+    </template>
+    
+    <script>
+        class CustomForm extends HTMLElement {
+            constructor() {
+                super();
+                
+                // Create shadow DOM
+                this.attachShadow({ mode: 'open' });
+                
+                // Get the template
+                const template = document.getElementById('form-template');
+                const templateContent = template.content.cloneNode(true);
+                
+                // Add event listeners
+                this.shadowRoot.appendChild(templateContent);
 
-		<custom-form id="shadowForm"></custom-form>
-	</div>
+                const form = this.shadowRoot.querySelector('form');
+                form.addEventListener('submit', this.handleSubmit.bind(this));
+            }
 
-	<script>
-		class CustomForm extends HTMLElement {
-			constructor() {
-				super();
-				this.attachShadow({ mode: 'open' });
+            handleSubmit(event) {
+                event.preventDefault();
 
-				const style = document.createElement('style');
-				style.textContent = `
-					:host {
-						display: block;
-					}
-					.form-label {
-						font-weight: 600;
-						color: #34495e;
-						margin-bottom: 8px;
-						display: block;
-					}
-					.form-control, select {
-						width: 100%;
-						padding: 10px;
-						border: 2px solid #e0e0e0;
-						border-radius: 6px;
-						font-size: 14px;
-						margin-bottom: 15px;
-						box-sizing: border-box;
-					}
-					.form-control:focus, select:focus {
-						outline: none;
-						border-color: #3498db;
-					}
-					.form-check {
-						margin: 8px 0;
-					}
-					.btn-primary {
-						background-color: #3498db;
-						color: white;
-						border: none;
-						padding: 12px 40px;
-						font-weight: 600;
-						border-radius: 6px;
-						cursor: pointer;
-					}
-					.btn-primary:hover {
-						background-color: #2980b9;
-					}
-					.text-center {
-						text-align: center;
-					}
-				`;
+                console.log('Form submitted successfully!');
+                document.getElementById('success-message').style.display = 'block';
 
-				const form = document.createElement('form');
-				form.innerHTML = `
-					<label class="form-label">Full Name</label>
-					<input type="text" class="form-control" name="name" required>
+                // Hide success message after 3 seconds
+                setTimeout(function() {
+                    document.getElementById('success-message').style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        class FormSection extends HTMLElement {
+            constructor() {
+                super();
+                
+                // Create shadow DOM
+                this.attachShadow({ mode: 'open' });
+                
+                // Get the template
+                const template = document.getElementById('form-section-template');
+                const templateContent = template.content.cloneNode(true);
+                
+                // Add to shadow DOM
+                this.shadowRoot.appendChild(templateContent);
+            }
+        }
+        
+        class FormField extends HTMLElement {
+            constructor() {
+                super();
+                
+                // Create shadow DOM
+                this.attachShadow({ mode: 'open' });
+                
+                // Get the template
+                const template = document.getElementById('form-field-template');
+                const templateContent = template.content.cloneNode(true);
+                
+                // Add to shadow DOM
+                this.shadowRoot.appendChild(templateContent);
+                
+                // Add required class if needed
+                if (this.hasAttribute('required')) {
+                    const label = this.shadowRoot.querySelector('.form-label');
+                    label.classList.add('required');
+                }
+            }
+        }
+        
+        // Define the custom elements
+        customElements.define('custom-form', CustomForm);
+        customElements.define('custom-form-section', FormSection);
+        customElements.define('custom-form-field', FormField);
+        
+        // After DOM is loaded, create the form
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('shadow-form-container');
+            
+            // Create custom form
+            const form = document.createElement('custom-form');
 
-					<label class="form-label">Email Address</label>
-					<input type="email" class="form-control" name="email" required>
+            // Form Section
+            const formSection = document.createElement('custom-form-section');
+            const formTitle = document.createElement('span');
+            formTitle.slot = 'title';
+            formTitle.textContent = 'Simple Form';
+            formSection.appendChild(formTitle);
 
-					<label class="form-label">Age</label>
-					<input type="number" class="form-control" name="age" min="0" max="150">
+            // Email Field
+            const emailField = document.createElement('custom-form-field');
 
-					<label class="form-label">Birthdate</label>
-					<input type="date" class="form-control" name="birthdate">
+            const emailLabel = document.createElement('span');
+            emailLabel.slot = 'label';
+            emailLabel.textContent = 'Email Address';
 
-					<label class="form-label">Upload Resume</label>
-					<input type="file" class="form-control" name="resume">
+            const emailInput = document.createElement('input');
+            emailInput.type = 'email';
+            emailInput.name = 'email';
+            emailInput.id = 'email';
+            emailInput.className = 'form-input';
+            emailInput.slot = 'input';
 
-					<label class="form-label">Satisfaction: <span id="satisfactionValue">50</span></label>
-					<input type="range" class="form-control" name="satisfaction" min="0" max="100" value="50">
+            emailField.appendChild(emailLabel);
+            emailField.appendChild(emailInput);
 
-					<label class="form-label">Country</label>
-					<select class="form-control" name="country">
-						<option value="">Select a country</option>
-						<option value="usa">United States</option>
-						<option value="canada">Canada</option>
-						<option value="uk">United Kingdom</option>
-					</select>
+            // Country Select
+            const countryField = document.createElement('custom-form-field');
 
-					<label class="form-label">Interests (hold Ctrl to select multiple)</label>
-					<select class="form-control" name="interests" multiple size="3">
-						<option value="tech">Technology</option>
-						<option value="sports">Sports</option>
-						<option value="music">Music</option>
-					</select>
+            const countryLabel = document.createElement('span');
+            countryLabel.slot = 'label';
+            countryLabel.textContent = 'Country';
 
-					<label class="form-label">Gender</label>
-					<div class="form-check">
-						<input type="radio" name="gender" value="male"> Male
-					</div>
-					<div class="form-check">
-						<input type="radio" name="gender" value="female"> Female
-					</div>
-					<div class="form-check">
-						<input type="radio" name="gender" value="other"> Other
-					</div>
+            const countrySelect = document.createElement('select');
+            countrySelect.name = 'country';
+            countrySelect.id = 'country';
+            countrySelect.className = 'form-select';
+            countrySelect.slot = 'input';
 
-					<label class="form-label">Preferences</label>
-					<div class="form-check">
-						<input type="checkbox" name="preferences" value="newsletter"> Newsletter
-					</div>
-					<div class="form-check">
-						<input type="checkbox" name="preferences" value="notifications"> Notifications
-					</div>
-					<div class="form-check">
-						<input type="checkbox" name="preferences" value="updates"> Updates
-					</div>
+            const countryOptions = [
+                { value: '', text: 'Select Country' },
+                { value: 'us', text: 'United States' },
+                { value: 'uk', text: 'United Kingdom' },
+                { value: 'ca', text: 'Canada' },
+                { value: 'au', text: 'Australia' }
+            ];
 
-					<label class="form-label">Comments</label>
-					<textarea class="form-control" name="comments" rows="3"></textarea>
+            countryOptions.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                countrySelect.appendChild(optionElement);
+            });
 
-					<div class="text-center">
-						<button type="submit" class="btn-primary">Submit Form</button>
-					</div>
-				`;
+            countryField.appendChild(countryLabel);
+            countryField.appendChild(countrySelect);
 
-				this.shadowRoot.appendChild(style);
-				this.shadowRoot.appendChild(form);
+            // Category Select
+            const categoryField = document.createElement('custom-form-field');
 
-				// Range value update
-				const rangeInput = this.shadowRoot.querySelector('input[name="satisfaction"]');
-				const rangeValue = this.shadowRoot.querySelector('#satisfactionValue');
-				rangeInput.addEventListener('input', (e) => {
-					rangeValue.textContent = e.target.value;
-				});
+            const categoryLabel = document.createElement('span');
+            categoryLabel.slot = 'label';
+            categoryLabel.textContent = 'Category';
 
-				// Form submission
-				form.addEventListener('submit', (e) => {
-					e.preventDefault();
-					document.getElementById('successMessage').style.display = 'block';
-					setTimeout(() => {
-						document.getElementById('successMessage').style.display = 'none';
-					}, 3000);
-				});
-			}
-		}
+            const categorySelect = document.createElement('select');
+            categorySelect.name = 'category';
+            categorySelect.id = 'category';
+            categorySelect.className = 'form-select';
+            categorySelect.slot = 'input';
 
-		customElements.define('custom-form', CustomForm);
-	</script>
+            const categoryOptions = [
+                { value: '', text: 'Select Category' },
+                { value: 'work', text: 'Work' },
+                { value: 'personal', text: 'Personal' },
+                { value: 'other', text: 'Other' }
+            ];
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+            categoryOptions.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                categorySelect.appendChild(optionElement);
+            });
+
+            categoryField.appendChild(categoryLabel);
+            categoryField.appendChild(categorySelect);
+
+            // Date Field
+            const dateField = document.createElement('custom-form-field');
+
+            const dateLabel = document.createElement('span');
+            dateLabel.slot = 'label';
+            dateLabel.textContent = 'Date';
+
+            const dateInput = document.createElement('input');
+            dateInput.type = 'date';
+            dateInput.name = 'date';
+            dateInput.id = 'date';
+            dateInput.className = 'form-input';
+            dateInput.slot = 'input';
+
+            dateField.appendChild(dateLabel);
+            dateField.appendChild(dateInput);
+
+            // Radio Buttons
+            const radioField = document.createElement('custom-form-field');
+
+            const radioLabel = document.createElement('span');
+            radioLabel.slot = 'label';
+            radioLabel.textContent = 'Priority';
+
+            const radioContainer = document.createElement('div');
+            radioContainer.slot = 'input';
+
+            const radioOptions = [
+                { value: 'low', text: 'Low' },
+                { value: 'medium', text: 'Medium' },
+                { value: 'high', text: 'High' }
+            ];
+
+            radioOptions.forEach((option, index) => {
+                const radioWrapper = document.createElement('div');
+                radioWrapper.className = 'radio-field';
+
+                const radioInput = document.createElement('input');
+                radioInput.type = 'radio';
+                radioInput.name = 'priority';
+                radioInput.value = option.value;
+                radioInput.id = 'priority-' + option.value;
+                radioInput.className = 'radio-input';
+                if (index === 0) radioInput.checked = true;
+
+                const radioLabelElement = document.createElement('label');
+                radioLabelElement.textContent = option.text;
+                radioLabelElement.htmlFor = 'priority-' + option.value;
+
+                radioWrapper.appendChild(radioInput);
+                radioWrapper.appendChild(radioLabelElement);
+                radioContainer.appendChild(radioWrapper);
+            });
+
+            radioField.appendChild(radioLabel);
+            radioField.appendChild(radioContainer);
+
+            // File Upload
+            const fileField = document.createElement('custom-form-field');
+
+            const fileLabel = document.createElement('span');
+            fileLabel.slot = 'label';
+            fileLabel.textContent = 'Upload File';
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.name = 'file';
+            fileInput.id = 'file';
+            fileInput.className = 'form-input';
+            fileInput.slot = 'input';
+
+            fileField.appendChild(fileLabel);
+            fileField.appendChild(fileInput);
+
+            // Add fields to section
+            formSection.appendChild(emailField);
+            formSection.appendChild(countryField);
+            formSection.appendChild(categoryField);
+            formSection.appendChild(dateField);
+            formSection.appendChild(radioField);
+            formSection.appendChild(fileField);
+
+            // Add section to form
+            form.appendChild(formSection);
+
+            // Add form to container
+            container.appendChild(form);
+        });
+    </script>
 </body>
 </html>

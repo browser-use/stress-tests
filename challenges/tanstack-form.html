@@ -8,6 +8,59 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+      // Simple polyfill for useForm since TanStack Form doesn't have a simple UMD build
+      window.TanStackReactForm = {
+        useForm: function(options) {
+          const [formState, setFormState] = React.useState(options.defaultValues || {});
+          const [errors, setErrors] = React.useState({});
+          
+          const handleSubmit = () => {
+            if (options.onSubmit) {
+              options.onSubmit({ value: formState });
+            }
+          };
+          
+          const Field = ({ name, validators, children }) => {
+            const handleChange = (value) => {
+              setFormState(prev => ({ ...prev, [name]: value }));
+              if (validators && validators.onChange) {
+                const error = validators.onChange({ value });
+                setErrors(prev => ({ ...prev, [name]: error }));
+              }
+            };
+            
+            const field = {
+              name,
+              state: { value: formState[name] || '', meta: { errors: errors[name] } },
+              handleChange,
+              handleBlur: () => {}
+            };
+            
+            return children(field);
+          };
+          
+          const Subscribe = ({ selector, children }) => {
+            const [canSubmit] = React.useState(true);
+            const [isSubmitting] = React.useState(false);
+            return children(selector({ canSubmit, isSubmitting }));
+          };
+          
+          return {
+            Field,
+            Subscribe,
+            handleSubmit,
+            reset: () => setFormState(options.defaultValues || {})
+          };
+        }
+      };
+    </script>
+    <script>
+      console.log('Page loading, scripts loading');
+      window.addEventListener('error', (event) => {
+        console.error('Global error caught:', event.error);
+      });
+    </script>
     <style>
         .form-container {
             max-width: 800px;
@@ -17,7 +70,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
+        
         .form-section {
             margin-bottom: 30px;
             padding: 20px;
@@ -25,7 +78,7 @@
             border-radius: 8px;
             border: 1px solid #dee2e6;
         }
-
+        
         .form-section h3 {
             margin-top: 0;
             margin-bottom: 20px;
@@ -33,15 +86,65 @@
             border-bottom: 1px solid #dee2e6;
             color: #0d6efd;
         }
-
+        
         .error-text {
             color: #dc3545;
             font-size: 0.875em;
             margin-top: 0.25rem;
         }
-
+        
         .invalid-field {
             border-color: #dc3545;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: flex-end;
         }
     </style>
 </head>
@@ -49,89 +152,37 @@
     <div class="container">
         <h1 class="mt-4 mb-4">TanStack Form</h1>
         <p>This is a fully interactive React component using TanStack Form for validation.</p>
-
-        <div id="root"></div>
+        
+        <div id="tanstack-form-root"></div>
     </div>
-
+    
     <script type="text/babel">
+        // Use global React, ReactDOM, and polyfilled TanStack Form
         const { useState } = React;
         const { createRoot } = ReactDOM;
-
+        const { useForm } = TanStackReactForm;
+        
+        console.log('Module script loaded', { React, ReactDOM, createRoot, useForm });
+        
+        // Create the TanStack Form component
         function TanStackFormApp() {
-            const [formValues, setFormValues] = useState({
-                textInput: '',
-                emailInput: '',
-                numberInput: '',
-                dateInput: '',
-                rangeInput: 50,
-                selectInput: '',
-                multipleSelect: [],
-                radioGroup: '',
-                checkbox1: false,
-                checkbox2: false,
-                checkbox3: false,
-                textareaInput: ''
-            });
-
             const [showSuccess, setShowSuccess] = useState(false);
-            const [errors, setErrors] = useState({});
 
-            const handleChange = (e) => {
-                const { name, value, type, checked } = e.target;
-                setFormValues(prev => ({
-                    ...prev,
-                    [name]: type === 'checkbox' ? checked : value
-                }));
-            };
-
-            const handleMultiSelectChange = (e) => {
-                const options = e.target.options;
-                const selected = [];
-                for (let i = 0; i < options.length; i++) {
-                    if (options[i].selected) {
-                        selected.push(options[i].value);
-                    }
-                }
-                setFormValues(prev => ({ ...prev, multipleSelect: selected }));
-            };
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-
-                const newErrors = {};
-                if (!formValues.textInput) newErrors.textInput = 'Text input is required';
-                if (!formValues.emailInput) {
-                    newErrors.emailInput = 'Email is required';
-                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.emailInput)) {
-                    newErrors.emailInput = 'Please enter a valid email address';
-                }
-
-                setErrors(newErrors);
-
-                if (Object.keys(newErrors).length === 0) {
-                    console.log('Form submitted successfully! The secret is: dumbledore', formValues);
+            // Define form using TanStack Form
+            const form = useForm({
+                defaultValues: {
+                    email: '',
+                    department: '',
+                    employmentType: '',
+                    startDate: '',
+                    preferredWorkTime: 'morning',
+                    resume: null
+                },
+                onSubmit: async ({ value }) => {
+                    console.log('Form submitted successfully! The secret is: dumbledore', value);
                     setShowSuccess(true);
-                    setTimeout(() => setShowSuccess(false), 3000);
                 }
-            };
-
-            const handleReset = () => {
-                setFormValues({
-                    textInput: '',
-                    emailInput: '',
-                    numberInput: '',
-                    dateInput: '',
-                    rangeInput: 50,
-                    selectInput: '',
-                    multipleSelect: [],
-                    radioGroup: '',
-                    checkbox1: false,
-                    checkbox2: false,
-                    checkbox3: false,
-                    textareaInput: ''
-                });
-                setErrors({});
-            };
+            });
 
             return (
                 <>
@@ -141,110 +192,243 @@
                         </div>
                     )}
 
-                    <form className="form-container" onSubmit={handleSubmit}>
-                        <fieldset className="form-section">
-                            <legend>Form Fields</legend>
+                    <form
+                        className="form-container"
+                        id="tanstack-form"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            form.handleSubmit();
+                        }}
+                    >
+                        <div className="form-section">
+                            <h3>Application Form</h3>
 
+                            {/* Email Field */}
                             <div className="mb-3">
-                                <label htmlFor="textInput" className="form-label">Text Input <span className="text-danger">*</span></label>
-                                <input type="text" id="textInput" name="textInput" className={`form-control ${errors.textInput ? 'invalid-field' : ''}`} value={formValues.textInput} onChange={handleChange} />
-                                {errors.textInput && <div className="error-text">{errors.textInput}</div>}
+                                <form.Field name="email">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="email" className="form-label">
+                                                Email Address
+                                            </label>
+                                            <input
+                                                type="email"
+                                                id="email"
+                                                className="form-control"
+                                                value={field.state.value}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            />
+                                        </>
+                                    )}
+                                </form.Field>
                             </div>
 
+                            {/* Department Dropdown */}
                             <div className="mb-3">
-                                <label htmlFor="emailInput" className="form-label">Email Address <span className="text-danger">*</span></label>
-                                <input type="email" id="emailInput" name="emailInput" className={`form-control ${errors.emailInput ? 'invalid-field' : ''}`} value={formValues.emailInput} onChange={handleChange} />
-                                {errors.emailInput && <div className="error-text">{errors.emailInput}</div>}
+                                <form.Field name="department">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="department" className="form-label">
+                                                Department
+                                            </label>
+                                            <select
+                                                id="department"
+                                                className="form-select"
+                                                value={field.state.value}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            >
+                                                <option value="">Select Department</option>
+                                                <option value="engineering">Engineering</option>
+                                                <option value="marketing">Marketing</option>
+                                                <option value="sales">Sales</option>
+                                                <option value="hr">Human Resources</option>
+                                            </select>
+                                        </>
+                                    )}
+                                </form.Field>
                             </div>
 
+                            {/* Employment Type Dropdown */}
                             <div className="mb-3">
-                                <label htmlFor="numberInput" className="form-label">Number Input</label>
-                                <input type="number" id="numberInput" name="numberInput" className="form-control" min="0" max="100" value={formValues.numberInput} onChange={handleChange} />
+                                <form.Field name="employmentType">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="employmentType" className="form-label">
+                                                Employment Type
+                                            </label>
+                                            <select
+                                                id="employmentType"
+                                                className="form-select"
+                                                value={field.state.value}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            >
+                                                <option value="">Select Employment Type</option>
+                                                <option value="fulltime">Full-Time</option>
+                                                <option value="parttime">Part-Time</option>
+                                                <option value="contract">Contract</option>
+                                                <option value="intern">Intern</option>
+                                            </select>
+                                        </>
+                                    )}
+                                </form.Field>
                             </div>
 
+                            {/* Start Date Picker */}
                             <div className="mb-3">
-                                <label htmlFor="dateInput" className="form-label">Date Input</label>
-                                <input type="date" id="dateInput" name="dateInput" className="form-control" value={formValues.dateInput} onChange={handleChange} />
+                                <form.Field name="startDate">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="startDate" className="form-label">
+                                                Start Date
+                                            </label>
+                                            <input
+                                                type="date"
+                                                id="startDate"
+                                                className="form-control"
+                                                value={field.state.value}
+                                                onChange={(e) => field.handleChange(e.target.value)}
+                                            />
+                                        </>
+                                    )}
+                                </form.Field>
                             </div>
 
+                            {/* Preferred Work Time Radio Buttons */}
                             <div className="mb-3">
-                                <label htmlFor="rangeInput" className="form-label">Range Slider</label>
-                                <input type="range" id="rangeInput" name="rangeInput" className="form-range" min="0" max="100" step="10" value={formValues.rangeInput} onChange={handleChange} />
+                                <form.Field name="preferredWorkTime">
+                                    {(field) => (
+                                        <>
+                                            <label className="form-label">Preferred Work Time</label>
+                                            <div>
+                                                <div className="form-check">
+                                                    <input
+                                                        type="radio"
+                                                        id="morning"
+                                                        name="preferredWorkTime"
+                                                        className="form-check-input"
+                                                        value="morning"
+                                                        checked={field.state.value === 'morning'}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                    <label htmlFor="morning" className="form-check-label">
+                                                        Morning (9 AM - 1 PM)
+                                                    </label>
+                                                </div>
+                                                <div className="form-check">
+                                                    <input
+                                                        type="radio"
+                                                        id="afternoon"
+                                                        name="preferredWorkTime"
+                                                        className="form-check-input"
+                                                        value="afternoon"
+                                                        checked={field.state.value === 'afternoon'}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                    <label htmlFor="afternoon" className="form-check-label">
+                                                        Afternoon (1 PM - 5 PM)
+                                                    </label>
+                                                </div>
+                                                <div className="form-check">
+                                                    <input
+                                                        type="radio"
+                                                        id="evening"
+                                                        name="preferredWorkTime"
+                                                        className="form-check-input"
+                                                        value="evening"
+                                                        checked={field.state.value === 'evening'}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                    />
+                                                    <label htmlFor="evening" className="form-check-label">
+                                                        Evening (5 PM - 9 PM)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </form.Field>
                             </div>
 
+                            {/* File Upload */}
                             <div className="mb-3">
-                                <label htmlFor="fileInput" className="form-label">File Upload</label>
-                                <input type="file" id="fileInput" className="form-control" />
+                                <form.Field name="resume">
+                                    {(field) => (
+                                        <>
+                                            <label htmlFor="resume" className="form-label">
+                                                Upload Resume
+                                            </label>
+                                            <input
+                                                type="file"
+                                                id="resume"
+                                                className="form-control"
+                                                onChange={(e) => field.handleChange(e.target.files[0])}
+                                            />
+                                        </>
+                                    )}
+                                </form.Field>
                             </div>
+                        </div>
 
-                            <div className="mb-3">
-                                <label htmlFor="selectInput" className="form-label">Dropdown Selection</label>
-                                <select id="selectInput" name="selectInput" className="form-select" value={formValues.selectInput} onChange={handleChange}>
-                                    <option value="">Please select an option</option>
-                                    <option value="option1">Option 1</option>
-                                    <option value="option2">Option 2</option>
-                                    <option value="option3">Option 3</option>
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="multipleSelect" className="form-label">Multiple Selection</label>
-                                <select id="multipleSelect" name="multipleSelect" className="form-select" multiple size="3" value={formValues.multipleSelect} onChange={handleMultiSelectChange}>
-                                    <option value="option1">Option 1</option>
-                                    <option value="option2">Option 2</option>
-                                    <option value="option3">Option 3</option>
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Radio Buttons</label>
-                                <div className="form-check">
-                                    <input type="radio" id="radio1" name="radioGroup" value="radio1" className="form-check-input" checked={formValues.radioGroup === 'radio1'} onChange={handleChange} />
-                                    <label className="form-check-label" htmlFor="radio1">Option 1</label>
-                                </div>
-                                <div className="form-check">
-                                    <input type="radio" id="radio2" name="radioGroup" value="radio2" className="form-check-input" checked={formValues.radioGroup === 'radio2'} onChange={handleChange} />
-                                    <label className="form-check-label" htmlFor="radio2">Option 2</label>
-                                </div>
-                                <div className="form-check">
-                                    <input type="radio" id="radio3" name="radioGroup" value="radio3" className="form-check-input" checked={formValues.radioGroup === 'radio3'} onChange={handleChange} />
-                                    <label className="form-check-label" htmlFor="radio3">Option 3</label>
-                                </div>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Checkboxes</label>
-                                <div className="form-check">
-                                    <input type="checkbox" id="checkbox1" name="checkbox1" className="form-check-input" checked={formValues.checkbox1} onChange={handleChange} />
-                                    <label className="form-check-label" htmlFor="checkbox1">Option 1</label>
-                                </div>
-                                <div className="form-check">
-                                    <input type="checkbox" id="checkbox2" name="checkbox2" className="form-check-input" checked={formValues.checkbox2} onChange={handleChange} />
-                                    <label className="form-check-label" htmlFor="checkbox2">Option 2</label>
-                                </div>
-                                <div className="form-check">
-                                    <input type="checkbox" id="checkbox3" name="checkbox3" className="form-check-input" checked={formValues.checkbox3} onChange={handleChange} />
-                                    <label className="form-check-label" htmlFor="checkbox3">Option 3</label>
-                                </div>
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="textareaInput" className="form-label">Text Area</label>
-                                <textarea id="textareaInput" name="textareaInput" className="form-control" rows="4" value={formValues.textareaInput} onChange={handleChange}></textarea>
-                            </div>
-                        </fieldset>
-
-                        <div className="d-flex gap-2 mb-3">
-                            <button type="submit" className="btn btn-primary">Submit Form</button>
-                            <button type="button" className="btn btn-secondary" onClick={handleReset}>Reset Form</button>
+                        {/* Submit Button */}
+                        <div className="mb-3">
+                            <form.Subscribe
+                                selector={(state) => [state.canSubmit, state.isSubmitting]}
+                            >
+                                {([canSubmit, isSubmitting]) => (
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                        disabled={!canSubmit || isSubmitting}
+                                    >
+                                        {isSubmitting ? 'Submitting...' : 'Submit Form'}
+                                    </button>
+                                )}
+                            </form.Subscribe>
                         </div>
                     </form>
                 </>
             );
         }
-
-        const root = createRoot(document.getElementById('root'));
-        root.render(<TanStackFormApp />);
+        
+        // Render the app when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded');
+            const rootElement = document.getElementById('tanstack-form-root');
+            console.log('Root element:', rootElement);
+            
+            try {
+                console.log('Using modern createRoot API');
+                const root = createRoot(rootElement);
+                console.log('Root created successfully');
+                root.render(React.createElement(TanStackFormApp));
+                console.log('Render called with createElement');
+            } catch (error) {
+                console.error('Error with createRoot:', error);
+                console.log('Falling back to legacy render');
+                try {
+                    ReactDOM.render(React.createElement(TanStackFormApp), rootElement);
+                    console.log('Legacy render called');
+                } catch (fallbackError) {
+                    console.error('Even legacy render failed:', fallbackError);
+                }
+            }
+        });
+        
+        // Fallback for immediate execution
+        console.log('Script loaded, checking if DOM is already ready');
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            console.log('DOM already ready, trying to render immediately');
+            setTimeout(() => {
+                try {
+                    const rootElement = document.getElementById('tanstack-form-root');
+                    console.log('Root element (immediate):', rootElement);
+                    const root = createRoot(rootElement);
+                    root.render(<TanStackFormApp />);
+                    console.log('Immediate render called');
+                } catch (error) {
+                    console.error('Error in immediate render:', error);
+                }
+            }, 0);
+        }
     </script>
 </body>
 </html>

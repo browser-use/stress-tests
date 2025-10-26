@@ -1,427 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Svelte Form</title>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			line-height: 1.6;
-			max-width: 800px;
-			margin: 0 auto;
-			padding: 20px;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Svelte Forms Lib</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <!-- Custom Svelte-like reactive store implementation -->
+    <style>
+        :root {
+            --svelte-color: #ff3e00;
+            --svelte-color-light: #ff8e6e;
+            --svelte-color-dark: #d03000;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            padding-bottom: 50px;
+        }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+            color: var(--svelte-color);
+            font-weight: 600;
+        }
+        
+        .error-text {
+            color: var(--svelte-color);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        
+        .error-field {
+            border-color: var(--svelte-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 62, 0, 0.25) !important;
+        }
+        
+        .label-required::after {
+            content: ' *';
+            color: var(--svelte-color);
+        }
+        
+        .btn-svelte {
+            background-color: var(--svelte-color);
+            border-color: var(--svelte-color);
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-svelte:hover {
+            background-color: var(--svelte-color-dark);
+            border-color: var(--svelte-color-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 62, 0, 0.3);
+        }
+        
+        .custom-switch .form-check-input:checked {
+            background-color: var(--svelte-color);
+            border-color: var(--svelte-color);
+        }
+        
+        .form-range::-webkit-slider-thumb {
+            background: var(--svelte-color);
+        }
+        
+        .form-range::-moz-range-thumb {
+            background: var(--svelte-color);
+            border: none;
+        }
+        
+        .form-control-color {
+            height: 3rem;
+            border-radius: 8px;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+            color: var(--svelte-color);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #adb5bd;
+        }
+        
+        .modal-close:hover {
+            color: #6c757d;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+        }
 
-		form {
-			background: #f9f9f9;
-			border: 1px solid #ddd;
-			padding: 20px;
-			border-radius: 5px;
-		}
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
 
-		fieldset {
-			margin-bottom: 20px;
-			border: 1px solid #ccc;
-			padding: 15px;
-		}
+        /* Svelte-style reactive animations */
+        .svelte-fade-in {
+            animation: svelteSlideIn 0.3s ease-out;
+        }
 
-		legend {
-			font-weight: bold;
-		}
-
-		label {
-			display: block;
-			margin-bottom: 5px;
-			font-weight: bold;
-		}
-
-		input, select, textarea {
-			width: 100%;
-			padding: 8px;
-			margin-bottom: 15px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			box-sizing: border-box;
-		}
-
-		input[type="checkbox"], input[type="radio"] {
-			width: auto;
-			margin-right: 10px;
-		}
-
-		.radio-group, .checkbox-group {
-			margin-bottom: 15px;
-		}
-
-		.radio-label, .checkbox-label {
-			font-weight: normal;
-		}
-
-		button {
-			background-color: #4CAF50;
-			color: white;
-			padding: 10px 15px;
-			border: none;
-			border-radius: 4px;
-			cursor: pointer;
-			margin-right: 10px;
-		}
-
-		button:hover {
-			background-color: #45a049;
-		}
-
-		.required:after {
-			content: " *";
-			color: red;
-		}
-
-		.error {
-			color: red;
-			font-size: 0.8em;
-			display: block;
-		}
-
-		.success-message {
-			background-color: #d4edda;
-			padding: 15px;
-			border: 1px solid #c3e6cb;
-			border-radius: 5px;
-			margin-bottom: 20px;
-		}
-	</style>
+        @keyframes svelteSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-	<h1>Svelte Form</h1>
-	<div id="app"></div>
+    <div class="container">
+        <h1 class="text-center mb-4" style="color: var(--svelte-color);">Svelte Forms Lib</h1>
+        <p class="text-center mb-4">This is a fully interactive Svelte form component using Svelte's reactivity system for validation.</p>
+        
+        <div id="svelte-form-root"></div>
+    </div>
 
-	<script type="text/javascript">
-		// Custom Svelte-like reactive store implementation
-		function writable(initialValue) {
-			let value = initialValue;
-			const subscribers = new Set();
+    <script type="text/javascript">
+        // Custom Svelte-like reactive store implementation
+        function writable(initialValue) {
+            let value = initialValue;
+            const subscribers = new Set();
+            
+            return {
+                subscribe(callback) {
+                    subscribers.add(callback);
+                    callback(value); // Call immediately with current value
+                    return () => subscribers.delete(callback); // Return unsubscribe function
+                },
+                set(newValue) {
+                    value = newValue;
+                    subscribers.forEach(callback => callback(value));
+                },
+                update(updater) {
+                    value = updater(value);
+                    subscribers.forEach(callback => callback(value));
+                }
+            };
+        }
+        
+        function derived(store, compute) {
+            const derived_store = writable(null);
+            
+            store.subscribe(value => {
+                derived_store.set(compute(value));
+            });
+            
+            return derived_store;
+        }
+        
+        // Create reactive stores (Svelte's core reactivity system)
+        const formData = writable({
+            email: '',
+            theme: '',
+            language: '',
+            birthDate: '',
+            contactPreference: ''
+        });
 
-			return {
-				subscribe(callback) {
-					subscribers.add(callback);
-					callback(value);
-					return () => subscribers.delete(callback);
-				},
-				set(newValue) {
-					value = newValue;
-					subscribers.forEach(callback => callback(value));
-				},
-				update(updater) {
-					value = updater(value);
-					subscribers.forEach(callback => callback(value));
-				}
-			};
-		}
+        const errors = writable({});
+        const showSuccess = writable(false);
 
-		// Create reactive stores (Svelte's core reactivity system)
-		const formData = writable({
-			textInput: '',
-			emailInput: '',
-			numberInput: null,
-			dateInput: '',
-			rangeInput: 0,
-			selectInput: '',
-			multipleSelect: [],
-			radioGroup: '',
-			checkboxes: [],
-			textareaInput: ''
-		});
+        // Current values for quick access
+        let currentFormData = {};
+        let currentErrors = {};
+        let currentShowSuccess = false;
+        let isInitialized = false;
 
-		const errors = writable({});
-		const showSuccess = writable(false);
+        // Subscribe to store changes (Svelte reactivity)
+        formData.subscribe(value => {
+            currentFormData = value;
+            if (isInitialized) {
+                updateFormValues();
+            }
+        });
 
-		// Current values for quick access
-		let currentFormData = {};
-		let currentErrors = {};
-		let currentShowSuccess = false;
-		let isInitialized = false;
+        errors.subscribe(value => {
+            currentErrors = value;
+            if (isInitialized) {
+                updateErrorDisplay();
+            }
+        });
 
-		// Subscribe to store changes (Svelte reactivity)
-		formData.subscribe(value => {
-			currentFormData = value;
-			if (isInitialized) {
-				updateFormValues();
-			}
-		});
+        showSuccess.subscribe(value => {
+            currentShowSuccess = value;
+            if (isInitialized) {
+                updateSuccessDisplay();
+            }
+        });
 
-		errors.subscribe(value => {
-			currentErrors = value;
-			if (isInitialized) {
-				updateErrorDisplay();
-			}
-		});
+        // Form validation using Svelte derived store
+        const validationErrors = derived(formData, ($formData) => {
+            const newErrors = {};
 
-		showSuccess.subscribe(value => {
-			currentShowSuccess = value;
-			if (isInitialized) {
-				updateSuccessDisplay();
-			}
-		});
+            // Email validation
+            if (!$formData.email) {
+                newErrors.email = 'Email is required';
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($formData.email)) {
+                newErrors.email = 'Please enter a valid email address';
+            }
 
-		// Handle input change with Svelte reactivity
-		function handleInputChange(event) {
-			const { name, value, type, checked } = event.target;
-			const fieldValue = type === 'checkbox' ? checked : value;
+            return newErrors;
+        });
 
-			formData.update(data => {
-				if (type === 'checkbox' && Array.isArray(data[name])) {
-					return { ...data, [name]: checked ? [...data[name], value] : data[name].filter(v => v !== value) };
-				}
-				return { ...data, [name]: fieldValue };
-			});
-		}
+        // Subscribe to validation changes
+        validationErrors.subscribe(value => {
+            errors.set(value);
+        });
 
-		// Form submission
-		function handleSubmit(event) {
-			event.preventDefault();
+        // Svelte-style reactive functions
+        function updateFormData(field, value) {
+            formData.update(data => {
+                return { ...data, [field]: value };
+            });
+        }
 
-			const newErrors = {};
-			let isValid = true;
+        // Form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            if (Object.keys(currentErrors).length === 0) {
+                console.log('Form submitted successfully! The secret is: dumbledore', currentFormData);
+                showSuccess.set(true);
+            }
+        }
+        
+        // Handle input change with Svelte reactivity
+        function handleInputChange(event) {
+            const { name, value } = event.target;
+            updateFormData(name, value);
+        }
 
-			// Text input validation
-			if (!currentFormData.textInput.trim()) {
-				newErrors.textInput = 'This field is required';
-				isValid = false;
-			}
+        // Efficient update functions (no full re-render)
+        function updateFormValues() {
+            const form = document.getElementById('svelte-form');
+            if (!form) return;
 
-			// Email validation
-			const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!emailPattern.test(currentFormData.emailInput)) {
-				newErrors.emailInput = 'Please enter a valid email address';
-				isValid = false;
-			}
+            // Update all form inputs with current values
+            Object.keys(currentFormData).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    if (input.type === 'radio') {
+                        const radioInputs = form.querySelectorAll(`[name="${key}"]`);
+                        radioInputs.forEach(radio => {
+                            radio.checked = radio.value === currentFormData[key];
+                        });
+                    } else {
+                        input.value = currentFormData[key] || '';
+                    }
+                }
+            });
+        }
 
-			// Number validation
-			if (currentFormData.numberInput && (parseInt(currentFormData.numberInput) < 0 || parseInt(currentFormData.numberInput) > 100)) {
-				newErrors.numberInput = 'Please enter a number between 0 and 100';
-				isValid = false;
-			}
+        function updateErrorDisplay() {
+            const form = document.getElementById('svelte-form');
+            if (!form) return;
 
-			errors.set(newErrors);
+            // Clear all existing error displays
+            form.querySelectorAll('.error-field').forEach(input => {
+                input.classList.remove('error-field');
+            });
+            form.querySelectorAll('.error-text').forEach(error => {
+                error.remove();
+            });
 
-			if (isValid) {
-				console.log('Form submitted successfully! The secret is: dumbledore', currentFormData);
-				showSuccess.set(true);
-				setTimeout(() => {
-					showSuccess.set(false);
-				}, 3000);
-			}
-		}
+            // Add new error displays
+            Object.keys(currentErrors).forEach(fieldName => {
+                const input = form.querySelector(`[name="${fieldName}"]`);
+                if (input) {
+                    input.classList.add('error-field');
+                    
+                    // Add error text
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-text';
+                    errorDiv.textContent = currentErrors[fieldName];
+                    input.parentNode.appendChild(errorDiv);
+                }
+            });
+        }
 
-		// Reset form using Svelte stores
-		function resetForm() {
-			formData.set({
-				textInput: '',
-				emailInput: '',
-				numberInput: null,
-				dateInput: '',
-				rangeInput: 0,
-				selectInput: '',
-				multipleSelect: [],
-				radioGroup: '',
-				checkboxes: [],
-				textareaInput: ''
-			});
-			errors.set({});
-		}
+        function updateSuccessDisplay() {
+            const container = document.getElementById('svelte-form-root');
+            if (!container) return;
 
-		// Efficient update functions
-		function updateFormValues() {
-			const form = document.getElementById('svelte-form');
-			if (!form) return;
+            let successAlert = container.querySelector('.alert-success');
 
-			Object.keys(currentFormData).forEach(key => {
-				const input = form.querySelector(`[name="${key}"]`);
-				if (input) {
-					if (input.type === 'checkbox') {
-						input.checked = currentFormData[key];
-					} else if (input.type === 'radio') {
-						const radioInputs = form.querySelectorAll(`[name="${key}"]`);
-						radioInputs.forEach(radio => {
-							radio.checked = radio.value === currentFormData[key];
-						});
-					} else {
-						input.value = currentFormData[key] || '';
-					}
-				}
-			});
-		}
+            if (currentShowSuccess) {
+                if (!successAlert) {
+                    successAlert = document.createElement('div');
+                    successAlert.className = 'alert alert-success svelte-fade-in';
+                    successAlert.innerHTML = '<strong>Success!</strong> Form submitted successfully! The secret is: dumbledore';
+                    container.insertBefore(successAlert, container.firstChild);
+                }
+            } else {
+                if (successAlert) {
+                    successAlert.remove();
+                }
+            }
+        }
+        
+        // Reset form using Svelte stores
+        function resetForm() {
+            formData.set({
+                email: '',
+                theme: '',
+                language: '',
+                birthDate: '',
+                contactPreference: ''
+            });
+        }
 
-		function updateErrorDisplay() {
-			const form = document.getElementById('svelte-form');
-			if (!form) return;
+        // Render function with Svelte-style reactivity
+        function renderForm() {
+            const container = document.getElementById('svelte-form-root');
+            if (!container) return;
+            
+            container.innerHTML = `
+                ${currentShowSuccess ? `
+                    <div class="alert alert-success svelte-fade-in">
+                        <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                    </div>
+                ` : ''}
+                
+                <form class="form-container" id="svelte-form">
+                    <!-- Simplified Form Section -->
+                    <div class="form-section">
+                        <h3>User Information</h3>
 
-			form.querySelectorAll('.error').forEach(error => error.remove());
+                        <div class="mb-3">
+                            <label for="email" class="form-label label-required">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control ${currentErrors.email ? 'error-field' : ''}"
+                                value="${currentFormData.email || ''}"
+                                required
+                            />
+                            ${currentErrors.email ? `<div class="error-text">${currentErrors.email}</div>` : ''}
+                        </div>
 
-			Object.keys(currentErrors).forEach(fieldName => {
-				const input = form.querySelector(`[name="${fieldName}"]`);
-				if (input) {
-					const errorDiv = document.createElement('span');
-					errorDiv.className = 'error';
-					errorDiv.textContent = currentErrors[fieldName];
-					input.parentNode.appendChild(errorDiv);
-				}
-			});
-		}
+                        <div class="mb-3">
+                            <label for="theme" class="form-label">Preferred Theme</label>
+                            <select id="theme" name="theme" class="form-select">
+                                <option value="">Select a theme</option>
+                                <option value="light" ${currentFormData.theme === 'light' ? 'selected' : ''}>Light</option>
+                                <option value="dark" ${currentFormData.theme === 'dark' ? 'selected' : ''}>Dark</option>
+                                <option value="system" ${currentFormData.theme === 'system' ? 'selected' : ''}>System Default</option>
+                            </select>
+                        </div>
 
-		function updateSuccessDisplay() {
-			const container = document.getElementById('app');
-			if (!container) return;
+                        <div class="mb-3">
+                            <label for="language" class="form-label">Preferred Language</label>
+                            <select id="language" name="language" class="form-select">
+                                <option value="">Select a language</option>
+                                <option value="en" ${currentFormData.language === 'en' ? 'selected' : ''}>English</option>
+                                <option value="es" ${currentFormData.language === 'es' ? 'selected' : ''}>Spanish</option>
+                                <option value="fr" ${currentFormData.language === 'fr' ? 'selected' : ''}>French</option>
+                                <option value="de" ${currentFormData.language === 'de' ? 'selected' : ''}>German</option>
+                            </select>
+                        </div>
 
-			let successAlert = container.querySelector('.success-message');
+                        <div class="mb-3">
+                            <label for="birthDate" class="form-label">Date of Birth</label>
+                            <input
+                                type="date"
+                                id="birthDate"
+                                name="birthDate"
+                                class="form-control"
+                                value="${currentFormData.birthDate || ''}"
+                            />
+                        </div>
 
-			if (currentShowSuccess) {
-				if (!successAlert) {
-					successAlert = document.createElement('div');
-					successAlert.className = 'success-message';
-					successAlert.innerHTML = '<strong>Success!</strong> Form submitted successfully! The secret is: dumbledore';
-					container.insertBefore(successAlert, container.firstChild);
-				}
-			} else {
-				if (successAlert) {
-					successAlert.remove();
-				}
-			}
-		}
+                        <div class="mb-3">
+                            <label class="form-label">Contact Preference</label>
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="contactEmail"
+                                    name="contactPreference"
+                                    value="email"
+                                    ${currentFormData.contactPreference === 'email' ? 'checked' : ''}
+                                />
+                                <label class="form-check-label" for="contactEmail">Email</label>
+                            </div>
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="contactPhone"
+                                    name="contactPreference"
+                                    value="phone"
+                                    ${currentFormData.contactPreference === 'phone' ? 'checked' : ''}
+                                />
+                                <label class="form-check-label" for="contactPhone">Phone</label>
+                            </div>
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="contactNone"
+                                    name="contactPreference"
+                                    value="none"
+                                    ${currentFormData.contactPreference === 'none' ? 'checked' : ''}
+                                />
+                                <label class="form-check-label" for="contactNone">Do Not Contact</label>
+                            </div>
+                        </div>
 
-		// Render function with Svelte-style reactivity
-		function renderForm() {
-			const container = document.getElementById('app');
-			if (!container) return;
+                        <div class="mb-3">
+                            <label for="profilePicture" class="form-label">Profile Picture</label>
+                            <input
+                                type="file"
+                                id="profilePicture"
+                                class="form-control"
+                                accept="image/*"
+                            />
+                        </div>
+                    </div>
 
-			container.innerHTML = `
-				${currentShowSuccess ? `
-					<div class="success-message">
-						<strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
-					</div>
-				` : ''}
+                    <div class="d-flex gap-2 mb-3">
+                        <button type="submit" class="btn btn-svelte">Submit Form</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
+                    </div>
+                </form>
+            `;
+            
+            // Attach event listeners after rendering
+            const form = document.getElementById('svelte-form');
+            if (form) {
+                form.addEventListener('submit', handleSubmit);
+                
+                // Attach change listeners to all form inputs
+                const inputs = form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('change', handleInputChange);
+                    input.addEventListener('input', handleInputChange);
+                });
+            }
+        }
 
-				<form id="svelte-form">
-					<fieldset>
-						<legend>Form Fields</legend>
-
-						<div>
-							<label for="text-input" class="required">Text Input:</label>
-							<input type="text" id="text-input" name="textInput" value="${currentFormData.textInput || ''}" required>
-							${currentErrors.textInput ? `<span class="error">${currentErrors.textInput}</span>` : ''}
-						</div>
-
-						<div>
-							<label for="email-input" class="required">Email Address:</label>
-							<input type="email" id="email-input" name="emailInput" value="${currentFormData.emailInput || ''}" required>
-							${currentErrors.emailInput ? `<span class="error">${currentErrors.emailInput}</span>` : ''}
-						</div>
-
-						<div>
-							<label for="number-input">Number Input:</label>
-							<input type="number" id="number-input" name="numberInput" value="${currentFormData.numberInput || ''}" min="0" max="100">
-							${currentErrors.numberInput ? `<span class="error">${currentErrors.numberInput}</span>` : ''}
-						</div>
-
-						<div>
-							<label for="date-input">Date Input:</label>
-							<input type="date" id="date-input" name="dateInput" value="${currentFormData.dateInput || ''}">
-						</div>
-
-						<div>
-							<label for="file-input">File Upload:</label>
-							<input type="file" id="file-input" name="fileInput">
-						</div>
-
-						<div>
-							<label for="range-input">Range Slider:</label>
-							<input type="range" id="range-input" name="rangeInput" value="${currentFormData.rangeInput || 0}" min="0" max="100" step="10">
-						</div>
-
-						<div>
-							<label for="select-input">Dropdown Selection:</label>
-							<select id="select-input" name="selectInput">
-								<option value="">Please select an option</option>
-								<option value="option1" ${currentFormData.selectInput === 'option1' ? 'selected' : ''}>Option 1</option>
-								<option value="option2" ${currentFormData.selectInput === 'option2' ? 'selected' : ''}>Option 2</option>
-								<option value="option3" ${currentFormData.selectInput === 'option3' ? 'selected' : ''}>Option 3</option>
-							</select>
-						</div>
-
-						<div>
-							<label for="multiple-select">Multiple Selection:</label>
-							<select id="multiple-select" name="multipleSelect" multiple size="3">
-								<option value="option1">Option 1</option>
-								<option value="option2">Option 2</option>
-								<option value="option3">Option 3</option>
-							</select>
-						</div>
-
-						<div class="radio-group">
-							<label>Radio Buttons:</label>
-							<div>
-								<input type="radio" id="radio1" name="radioGroup" value="radio1" ${currentFormData.radioGroup === 'radio1' ? 'checked' : ''}>
-								<label for="radio1" class="radio-label">Option 1</label>
-							</div>
-							<div>
-								<input type="radio" id="radio2" name="radioGroup" value="radio2" ${currentFormData.radioGroup === 'radio2' ? 'checked' : ''}>
-								<label for="radio2" class="radio-label">Option 2</label>
-							</div>
-							<div>
-								<input type="radio" id="radio3" name="radioGroup" value="radio3" ${currentFormData.radioGroup === 'radio3' ? 'checked' : ''}>
-								<label for="radio3" class="radio-label">Option 3</label>
-							</div>
-						</div>
-
-						<div class="checkbox-group">
-							<label>Checkboxes:</label>
-							<div>
-								<input type="checkbox" id="checkbox1" name="checkboxes" value="checkbox1">
-								<label for="checkbox1" class="checkbox-label">Option 1</label>
-							</div>
-							<div>
-								<input type="checkbox" id="checkbox2" name="checkboxes" value="checkbox2">
-								<label for="checkbox2" class="checkbox-label">Option 2</label>
-							</div>
-							<div>
-								<input type="checkbox" id="checkbox3" name="checkboxes" value="checkbox3">
-								<label for="checkbox3" class="checkbox-label">Option 3</label>
-							</div>
-						</div>
-
-						<div>
-							<label for="textarea-input">Text Area:</label>
-							<textarea id="textarea-input" name="textareaInput" rows="4">${currentFormData.textareaInput || ''}</textarea>
-						</div>
-					</fieldset>
-
-					<div>
-						<button type="submit" id="submit-button">Submit Form</button>
-						<button type="reset" onclick="resetForm()">Reset Form</button>
-					</div>
-				</form>
-			`;
-
-			// Attach event listeners after rendering
-			const form = document.getElementById('svelte-form');
-			if (form) {
-				form.addEventListener('submit', handleSubmit);
-
-				// Attach change listeners to all form inputs
-				const inputs = form.querySelectorAll('input, select, textarea');
-				inputs.forEach(input => {
-					input.addEventListener('change', handleInputChange);
-					input.addEventListener('input', handleInputChange);
-				});
-			}
-		}
-
-		// Initialize the Svelte form when DOM is loaded
-		document.addEventListener('DOMContentLoaded', () => {
-			renderForm();
-			isInitialized = true;
-		});
-	</script>
+        // Initialize the Svelte form when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Svelte-style Form initialized with custom reactive stores');
+            renderForm();
+            isInitialized = true; // Enable reactive updates after initial render
+        });
+    </script>
 </body>
 </html>
