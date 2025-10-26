@@ -441,23 +441,6 @@
                 flex: 1,
                 padding: 20,
             },
-            sectionContainer: {
-                marginBottom: 25,
-                padding: 15,
-                backgroundColor: '#f9fafb',
-                borderRadius: 8,
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-            },
-            sectionTitle: {
-                fontSize: 18,
-                fontWeight: 'bold',
-                marginBottom: 15,
-                paddingBottom: 10,
-                borderBottomWidth: 1,
-                borderBottomColor: '#e5e7eb',
-                color: '#2089dc',
-            },
             inputContainer: {
                 marginBottom: 15,
             },
@@ -465,14 +448,6 @@
                 marginBottom: 5,
                 fontWeight: '500',
                 color: '#374151',
-            },
-            requiredLabel: {
-                marginBottom: 5,
-                fontWeight: '500',
-                color: '#374151',
-            },
-            asterisk: {
-                color: '#e53e3e',
             },
             input: {
                 height: 45,
@@ -483,58 +458,39 @@
                 backgroundColor: 'white',
                 fontSize: 16,
             },
-            focusedInput: {
-                borderColor: '#2089dc',
-                borderWidth: 2,
-            },
-            invalidInput: {
-                borderColor: '#e53e3e',
-            },
             pickerContainer: {
                 borderWidth: 1,
                 borderColor: '#d1d5db',
                 borderRadius: 6,
                 backgroundColor: 'white',
-                marginBottom: 15,
             },
             picker: {
                 height: 45,
             },
-            helpText: {
-                fontSize: 12,
-                color: '#6b7280',
-                marginTop: 5,
-            },
-            errorText: {
-                fontSize: 12,
-                color: '#e53e3e',
-                marginTop: 5,
-            },
-            disabledInput: {
-                backgroundColor: '#f3f4f6',
-                color: '#9ca3af',
-            },
-            checkboxContainer: {
+            radioContainer: {
                 flexDirection: 'row',
-                alignItems: 'center',
                 marginBottom: 15,
             },
-            checkbox: {
-                marginRight: 10,
-            },
-            switchContainer: {
+            radioOption: {
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 15,
+                marginRight: 20,
             },
-            switchLabel: {
-                flex: 1,
+            radioCircle: {
+                width: 20,
+                height: 20,
+                borderWidth: 2,
+                borderColor: '#2089dc',
+                borderRadius: 10,
+                marginRight: 8,
+                justifyContent: 'center',
+                alignItems: 'center',
             },
-            buttonContainer: {
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 20,
+            radioDot: {
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                backgroundColor: '#2089dc',
             },
             button: {
                 backgroundColor: '#2089dc',
@@ -543,67 +499,12 @@
                 borderRadius: 6,
                 alignItems: 'center',
                 justifyContent: 'center',
+                marginTop: 20,
             },
             buttonText: {
                 color: 'white',
                 fontSize: 16,
                 fontWeight: '500',
-            },
-            dangerButton: {
-                backgroundColor: '#e53e3e',
-            },
-            disabledButton: {
-                backgroundColor: '#9ca3af',
-            },
-            row: {
-                flexDirection: 'row',
-                marginHorizontal: -5,
-            },
-            column: {
-                flex: 1,
-                paddingHorizontal: 5,
-            },
-            modalContainer: {
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            },
-            modalContent: {
-                backgroundColor: 'white',
-                borderRadius: 10,
-                padding: 20,
-                width: '80%',
-                maxWidth: 400,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
-            },
-            modalHeader: {
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 15,
-                paddingBottom: 10,
-                borderBottomWidth: 1,
-                borderBottomColor: '#e5e7eb',
-            },
-            modalTitle: {
-                fontSize: 18,
-                fontWeight: 'bold',
-                color: '#2089dc',
-            },
-            modalBody: {
-                marginBottom: 20,
-            },
-            modalFooter: {
-                alignItems: 'flex-end',
-            },
-            linkText: {
-                color: '#2089dc',
-                textDecorationLine: 'underline',
             }
         });
         
@@ -611,521 +512,176 @@
             constructor(props) {
                 super(props);
                 this.state = {
-                    firstName: '',
-                    lastName: '',
                     email: '',
-                    phone: '',
-                    street: '',
-                    city: '',
-                    state: '',
-                    zipCode: '',
+                    category: '',
+                    priority: '',
                     birthDate: '',
-                    preferredTime: '',
-                    occupation: '',
-                    salary: '',
-                    alphanumericOnly: '',
-                    receiveNotifications: false,
-                    termsAgreed: false,
-                    errors: {},
-                    focused: {},
-                    modalVisible: false,
-                    isSubmitting: false,
+                    contactMethod: 'email',
+                    file: null,
                 };
             }
-            
-            validateForm = () => {
-                const { firstName, lastName, email, street, city, state, zipCode, termsAgreed } = this.state;
-                let errors = {};
-                let isValid = true;
-                
-                // Required fields
-                if (!firstName.trim()) {
-                    errors.firstName = 'First name is required';
-                    isValid = false;
-                }
-                
-                if (!lastName.trim()) {
-                    errors.lastName = 'Last name is required';
-                    isValid = false;
-                }
-                
-                if (!email.trim()) {
-                    errors.email = 'Email is required';
-                    isValid = false;
-                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    errors.email = 'Please enter a valid email address';
-                    isValid = false;
-                }
-                
-                if (!street.trim()) {
-                    errors.street = 'Street address is required';
-                    isValid = false;
-                }
-                
-                if (!city.trim()) {
-                    errors.city = 'City is required';
-                    isValid = false;
-                }
-                
-                if (!state) {
-                    errors.state = 'State is required';
-                    isValid = false;
-                }
-                
-                if (!zipCode.trim()) {
-                    errors.zipCode = 'Zip code is required';
-                    isValid = false;
-                } else if (!/^\d{5}(-\d{4})?$/.test(zipCode)) {
-                    errors.zipCode = 'Please enter a valid zip code';
-                    isValid = false;
-                }
-                
-                if (!termsAgreed) {
-                    errors.termsAgreed = 'You must agree to the terms and conditions';
-                    isValid = false;
-                }
-                
-                this.setState({ errors });
-                return isValid;
-            }
-            
-            handleAlphanumericInput = (text) => {
-                // Only allow alphanumeric characters
-                const alphanumericOnly = text.replace(/[^a-zA-Z0-9]/g, '');
-                this.setState({ alphanumericOnly });
-            }
-            
+
             handleSubmit = () => {
-                if (this.validateForm()) {
-                    // Simulate form submission
-                    this.setState({ isSubmitting: true });
-                    
+                // Show success message
+                const successMessage = document.getElementById('success-message');
+                if (successMessage) {
+                    successMessage.style.display = 'block';
+
+                    // Hide after 3 seconds
                     setTimeout(() => {
-                        this.setState({ isSubmitting: false });
-                        
-                        // Show success message
-                        const successMessage = document.getElementById('success-message');
-                        if (successMessage) {
-                            successMessage.style.display = 'block';
-                            
-                            // Hide after 3 seconds
-                            setTimeout(() => {
-                                successMessage.style.display = 'none';
-                            }, 3000);
-                        }
-                        
-                        console.log('Form submitted successfully!', this.state);
-                    }, 1000);
+                        successMessage.style.display = 'none';
+                    }, 3000);
                 }
+
+                console.log('Form submitted successfully!', this.state);
             }
-            
-            openModal = () => {
-                this.setState({ modalVisible: true });
-            }
-            
-            closeModal = () => {
-                this.setState({ modalVisible: false });
-            }
-            
-            handleFocus = (field) => {
-                this.setState(prevState => ({
-                    focused: { ...prevState.focused, [field]: true }
-                }));
-            }
-            
-            handleBlur = (field) => {
-                this.setState(prevState => ({
-                    focused: { ...prevState.focused, [field]: false }
-                }));
-            }
-            
-            showTerms = (e) => {
-                e.preventDefault();
-                alert('Terms and Conditions would be displayed here.');
+
+            handleFileChange = (e) => {
+                const file = e.target.files[0];
+                this.setState({ file: file ? file.name : null });
             }
             
             render() {
-                const { errors, focused, isSubmitting, modalVisible } = this.state;
-                
                 return (
                     <ScrollView style={styles.container}>
-                        {/* Personal Information Section */}
-                        <View style={styles.sectionContainer}>
-                            <Text style={styles.sectionTitle}>Personal Information</Text>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.requiredLabel}>
-                                    First Name <Text style={styles.asterisk}>*</Text>
-                                </Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.firstName ? styles.focusedInput : null,
-                                        errors.firstName ? styles.invalidInput : null
-                                    )}
-                                    value={this.state.firstName}
-                                    onChangeText={(text) => this.setState({ firstName: text })}
-                                    onFocus={() => this.handleFocus('firstName')}
-                                    onBlur={() => this.handleBlur('firstName')}
-                                    placeholder="Enter your first name"
-                                    nativeID="firstName"
-                                    name="firstName"
-                                />
-                                {errors.firstName && (
-                                    <Text style={styles.errorText}>{errors.firstName}</Text>
-                                )}
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.requiredLabel}>
-                                    Last Name <Text style={styles.asterisk}>*</Text>
-                                </Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.lastName ? styles.focusedInput : null,
-                                        errors.lastName ? styles.invalidInput : null
-                                    )}
-                                    value={this.state.lastName}
-                                    onChangeText={(text) => this.setState({ lastName: text })}
-                                    onFocus={() => this.handleFocus('lastName')}
-                                    onBlur={() => this.handleBlur('lastName')}
-                                    placeholder="Enter your last name"
-                                    nativeID="lastName"
-                                    name="lastName"
-                                />
-                                {errors.lastName && (
-                                    <Text style={styles.errorText}>{errors.lastName}</Text>
-                                )}
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.requiredLabel}>
-                                    Email Address <Text style={styles.asterisk}>*</Text>
-                                </Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.email ? styles.focusedInput : null,
-                                        errors.email ? styles.invalidInput : null
-                                    )}
-                                    value={this.state.email}
-                                    onChangeText={(text) => this.setState({ email: text })}
-                                    onFocus={() => this.handleFocus('email')}
-                                    onBlur={() => this.handleBlur('email')}
-                                    placeholder="Enter your email address"
-                                    keyboardType="email-address"
-                                    autoCapitalize="none"
-                                    nativeID="email"
-                                    name="email"
-                                />
-                                {errors.email && (
-                                    <Text style={styles.errorText}>{errors.email}</Text>
-                                )}
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Phone Number</Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.phone ? styles.focusedInput : null
-                                    )}
-                                    value={this.state.phone}
-                                    onChangeText={(text) => this.setState({ phone: text })}
-                                    onFocus={() => this.handleFocus('phone')}
-                                    onBlur={() => this.handleBlur('phone')}
-                                    placeholder="123-456-7890"
-                                    keyboardType="phone-pad"
-                                    nativeID="phone"
-                                    name="phone"
-                                />
-                                <Text style={styles.helpText}>Format: 123-456-7890</Text>
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Birth Date</Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.birthDate ? styles.focusedInput : null
-                                    )}
-                                    value={this.state.birthDate}
-                                    onChangeText={(text) => this.setState({ birthDate: text })}
-                                    onFocus={() => this.handleFocus('birthDate')}
-                                    onBlur={() => this.handleBlur('birthDate')}
-                                    placeholder="MM/DD/YYYY"
-                                    nativeID="birthDate"
-                                    name="birthDate"
-                                />
-                            </View>
+                        {/* Email Field */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Email Address</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={this.state.email}
+                                onChangeText={(text) => this.setState({ email: text })}
+                                placeholder="Enter your email"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                nativeID="email"
+                                name="email"
+                            />
                         </View>
-                        
-                        {/* Address Information Section */}
-                        <View style={styles.sectionContainer}>
-                            <Text style={styles.sectionTitle}>Address Information</Text>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.requiredLabel}>
-                                    Street Address <Text style={styles.asterisk}>*</Text>
-                                </Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.street ? styles.focusedInput : null,
-                                        errors.street ? styles.invalidInput : null
-                                    )}
-                                    value={this.state.street}
-                                    onChangeText={(text) => this.setState({ street: text })}
-                                    onFocus={() => this.handleFocus('street')}
-                                    onBlur={() => this.handleBlur('street')}
-                                    placeholder="Enter your street address"
-                                    nativeID="street"
-                                    name="street"
-                                />
-                                {errors.street && (
-                                    <Text style={styles.errorText}>{errors.street}</Text>
-                                )}
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.requiredLabel}>
-                                    City <Text style={styles.asterisk}>*</Text>
-                                </Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.city ? styles.focusedInput : null,
-                                        errors.city ? styles.invalidInput : null
-                                    )}
-                                    value={this.state.city}
-                                    onChangeText={(text) => this.setState({ city: text })}
-                                    onFocus={() => this.handleFocus('city')}
-                                    onBlur={() => this.handleBlur('city')}
-                                    placeholder="Enter your city"
-                                    nativeID="city"
-                                    name="city"
-                                />
-                                {errors.city && (
-                                    <Text style={styles.errorText}>{errors.city}</Text>
-                                )}
-                            </View>
-                            
-                            <View style={styles.row}>
-                                <View style={styles.column}>
-                                    <Text style={styles.requiredLabel}>
-                                        State <Text style={styles.asterisk}>*</Text>
-                                    </Text>
-                                    <View style={styles.pickerContainer}>
-                                        <Picker
-                                            selectedValue={this.state.state}
-                                            style={styles.picker}
-                                            onValueChange={(itemValue) => this.setState({ state: itemValue })}
-                                            nativeID="state"
-                                            name="state"
-                                        >
-                                            <Picker.Item label="Select State" value="" />
-                                            <Picker.Item label="Alabama" value="AL" />
-                                            <Picker.Item label="Alaska" value="AK" />
-                                            <Picker.Item label="Arizona" value="AZ" />
-                                            <Picker.Item label="California" value="CA" />
-                                            <Picker.Item label="New York" value="NY" />
-                                            <Picker.Item label="Texas" value="TX" />
-                                            <Picker.Item label="Washington" value="WA" />
-                                        </Picker>
-                                    </View>
-                                    {errors.state && (
-                                        <Text style={styles.errorText}>{errors.state}</Text>
-                                    )}
-                                </View>
-                                
-                                <View style={styles.column}>
-                                    <Text style={styles.requiredLabel}>
-                                        Zip Code <Text style={styles.asterisk}>*</Text>
-                                    </Text>
-                                    <TextInput
-                                        style={StyleSheet.compose(
-                                            styles.input,
-                                            focused.zipCode ? styles.focusedInput : null,
-                                            errors.zipCode ? styles.invalidInput : null
-                                        )}
-                                        value={this.state.zipCode}
-                                        onChangeText={(text) => this.setState({ zipCode: text })}
-                                        onFocus={() => this.handleFocus('zipCode')}
-                                        onBlur={() => this.handleBlur('zipCode')}
-                                        placeholder="12345"
-                                        keyboardType="numeric"
-                                        nativeID="zipCode"
-                                        name="zipCode"
-                                    />
-                                    {errors.zipCode && (
-                                        <Text style={styles.errorText}>{errors.zipCode}</Text>
-                                    )}
-                                </View>
-                            </View>
-                        </View>
-                        
-                        {/* Additional Fields Section */}
-                        <View style={styles.sectionContainer}>
-                            <Text style={styles.sectionTitle}>Additional Information</Text>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Preferred Time</Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.preferredTime ? styles.focusedInput : null
-                                    )}
-                                    value={this.state.preferredTime}
-                                    onChangeText={(text) => this.setState({ preferredTime: text })}
-                                    onFocus={() => this.handleFocus('preferredTime')}
-                                    onBlur={() => this.handleBlur('preferredTime')}
-                                    placeholder="HH:MM AM/PM"
-                                    nativeID="preferredTime"
-                                    name="preferredTime"
-                                />
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Occupation</Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.occupation ? styles.focusedInput : null
-                                    )}
-                                    value={this.state.occupation}
-                                    onChangeText={(text) => this.setState({ occupation: text })}
-                                    onFocus={() => this.handleFocus('occupation')}
-                                    onBlur={() => this.handleBlur('occupation')}
-                                    placeholder="Enter your occupation"
-                                    nativeID="occupation"
-                                    name="occupation"
-                                />
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Alphanumeric Only</Text>
-                                <TextInput
-                                    style={StyleSheet.compose(
-                                        styles.input,
-                                        focused.alphanumericOnly ? styles.focusedInput : null
-                                    )}
-                                    value={this.state.alphanumericOnly}
-                                    onChangeText={this.handleAlphanumericInput}
-                                    onFocus={() => this.handleFocus('alphanumericOnly')}
-                                    onBlur={() => this.handleBlur('alphanumericOnly')}
-                                    placeholder="Enter alphanumeric characters only"
-                                    nativeID="alphanumericOnly"
-                                    name="alphanumericOnly"
-                                />
-                                <Text style={styles.helpText}>Only letters and numbers are allowed</Text>
-                            </View>
-                            
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Disabled Field</Text>
-                                <TextInput
-                                    style={StyleSheet.compose(styles.input, styles.disabledInput)}
-                                    value="This field is disabled"
-                                    editable={false}
-                                    nativeID="disabledInput"
-                                    name="disabledInput"
-                                />
-                            </View>
-                            
-                            <View style={styles.switchContainer}>
-                                <Text style={styles.switchLabel}>Receive Notifications</Text>
-                                <Switch
-                                    value={this.state.receiveNotifications}
-                                    onValueChange={(value) => this.setState({ receiveNotifications: value })}
-                                    trackColor={{ false: '#e5e7eb', true: '#a5b4fc' }}
-                                    thumbColor={this.state.receiveNotifications ? '#2089dc' : '#f4f3f4'}
-                                    nativeID="receiveNotifications"
-                                    name="receiveNotifications"
-                                />
-                            </View>
-                            
-                            <View style={styles.checkboxContainer}>
-                                <TouchableOpacity
-                                    style={styles.checkbox}
-                                    onPress={() => this.setState({ termsAgreed: !this.state.termsAgreed })}
+
+                        {/* Category Dropdown */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Category</Text>
+                            <View style={styles.pickerContainer}>
+                                <Picker
+                                    selectedValue={this.state.category}
+                                    style={styles.picker}
+                                    onValueChange={(itemValue) => this.setState({ category: itemValue })}
+                                    nativeID="category"
+                                    name="category"
                                 >
-                                    <View style={{
-                                        width: 20,
-                                        height: 20,
-                                        borderWidth: 1,
-                                        borderColor: errors.termsAgreed ? '#e53e3e' : '#d1d5db',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        backgroundColor: this.state.termsAgreed ? '#2089dc' : 'white',
-                                        borderRadius: 2
-                                    }}>
-                                        {this.state.termsAgreed && (
-                                            <Text style={{ color: 'white', fontSize: 14 }}>✓</Text>
+                                    <Picker.Item label="Select Category" value="" />
+                                    <Picker.Item label="General Inquiry" value="general" />
+                                    <Picker.Item label="Technical Support" value="support" />
+                                    <Picker.Item label="Sales" value="sales" />
+                                    <Picker.Item label="Feedback" value="feedback" />
+                                </Picker>
+                            </View>
+                        </View>
+
+                        {/* Priority Dropdown */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Priority</Text>
+                            <View style={styles.pickerContainer}>
+                                <Picker
+                                    selectedValue={this.state.priority}
+                                    style={styles.picker}
+                                    onValueChange={(itemValue) => this.setState({ priority: itemValue })}
+                                    nativeID="priority"
+                                    name="priority"
+                                >
+                                    <Picker.Item label="Select Priority" value="" />
+                                    <Picker.Item label="Low" value="low" />
+                                    <Picker.Item label="Medium" value="medium" />
+                                    <Picker.Item label="High" value="high" />
+                                    <Picker.Item label="Urgent" value="urgent" />
+                                </Picker>
+                            </View>
+                        </View>
+
+                        {/* Date Picker */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Preferred Date</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={this.state.birthDate}
+                                onChangeText={(text) => this.setState({ birthDate: text })}
+                                placeholder="MM/DD/YYYY"
+                                nativeID="birthDate"
+                                name="birthDate"
+                            />
+                        </View>
+
+                        {/* Radio Button Group */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Preferred Contact Method</Text>
+                            <View style={styles.radioContainer}>
+                                <TouchableOpacity
+                                    style={styles.radioOption}
+                                    onPress={() => this.setState({ contactMethod: 'email' })}
+                                >
+                                    <View style={styles.radioCircle}>
+                                        {this.state.contactMethod === 'email' && (
+                                            <View style={styles.radioDot} />
                                         )}
                                     </View>
+                                    <Text>Email</Text>
                                 </TouchableOpacity>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text>I agree to the </Text>
-                                    <TouchableOpacity onPress={this.showTerms}>
-                                        <Text style={styles.linkText}>Terms and Conditions</Text>
-                                    </TouchableOpacity>
-                                    <Text style={styles.asterisk}> *</Text>
-                                </View>
+
+                                <TouchableOpacity
+                                    style={styles.radioOption}
+                                    onPress={() => this.setState({ contactMethod: 'phone' })}
+                                >
+                                    <View style={styles.radioCircle}>
+                                        {this.state.contactMethod === 'phone' && (
+                                            <View style={styles.radioDot} />
+                                        )}
+                                    </View>
+                                    <Text>Phone</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={styles.radioOption}
+                                    onPress={() => this.setState({ contactMethod: 'text' })}
+                                >
+                                    <View style={styles.radioCircle}>
+                                        {this.state.contactMethod === 'text' && (
+                                            <View style={styles.radioDot} />
+                                        )}
+                                    </View>
+                                    <Text>Text</Text>
+                                </TouchableOpacity>
                             </View>
-                            {errors.termsAgreed && (
-                                <Text style={StyleSheet.compose(styles.errorText, { marginLeft: 30 })}>{errors.termsAgreed}</Text>
+                        </View>
+
+                        {/* File Upload */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Upload File</Text>
+                            <input
+                                type="file"
+                                onChange={this.handleFileChange}
+                                style={{
+                                    padding: '10px',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '6px',
+                                    backgroundColor: 'white',
+                                    fontSize: '16px'
+                                }}
+                            />
+                            {this.state.file && (
+                                <Text style={{ marginTop: 5, color: '#6b7280' }}>
+                                    Selected: {this.state.file}
+                                </Text>
                             )}
                         </View>
-                        
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity
-                                style={StyleSheet.compose(styles.button, isSubmitting ? styles.disabledButton : null)}
-                                onPress={this.handleSubmit}
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <ActivityIndicator color="white" size="small" />
-                                ) : (
-                                    <Text style={styles.buttonText}>Submit Form</Text>
-                                )}
-                            </TouchableOpacity>
-                            
-                            <TouchableOpacity
-                                style={StyleSheet.compose(styles.button, styles.dangerButton)}
-                                onPress={this.openModal}
-                            >
-                                <Text style={styles.buttonText}>Open Modal</Text>
-                            </TouchableOpacity>
-                        </View>
-                        
-                        <Modal
-                            animationType="fade"
-                            transparent={true}
-                            visible={modalVisible}
-                            onRequestClose={this.closeModal}
+
+                        {/* Submit Button */}
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={this.handleSubmit}
                         >
-                            <View style={styles.modalContainer}>
-                                <View style={styles.modalContent}>
-                                    <View style={styles.modalHeader}>
-                                        <Text style={styles.modalTitle}>Red Herring Modal</Text>
-                                        <TouchableOpacity onPress={this.closeModal}>
-                                            <Text style={{ fontSize: 24 }}>&times;</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.modalBody}>
-                                        <Text>This is a red herring modal instead of submitting the form.</Text>
-                                    </View>
-                                    <View style={styles.modalFooter}>
-                                        <TouchableOpacity
-                                            style={StyleSheet.compose(styles.button, { paddingVertical: 8, paddingHorizontal: 15 })}
-                                            onPress={this.closeModal}
-                                        >
-                                            <Text style={styles.buttonText}>Close</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        </Modal>
+                            <Text style={styles.buttonText}>Submit Form</Text>
+                        </TouchableOpacity>
                     </ScrollView>
                 );
             }
