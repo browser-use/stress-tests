@@ -96,24 +96,12 @@
 					<td><input type="text" class="form-control" name="name" required></td>
 				</tr>
 				<tr>
-					<td>Email Address</td>
-					<td><input type="email" class="form-control" name="email" required></td>
-				</tr>
-				<tr>
-					<td>Age</td>
-					<td><input type="number" class="form-control" name="age" min="0" max="150"></td>
-				</tr>
-				<tr>
 					<td>Birthdate</td>
 					<td><input type="date" class="form-control" name="birthdate"></td>
 				</tr>
 				<tr>
 					<td>Upload Resume</td>
 					<td><input type="file" class="form-control" name="resume"></td>
-				</tr>
-				<tr>
-					<td>Satisfaction: <span id="satisfactionValue">50</span></td>
-					<td><input type="range" class="form-control" name="satisfaction" min="0" max="100" value="50"></td>
 				</tr>
 				<tr>
 					<td>Country</td>
@@ -127,22 +115,10 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Interests</td>
-					<td>
-						<select class="form-control" name="interests" multiple size="3">
-							<option value="tech">Technology</option>
-							<option value="sports">Sports</option>
-							<option value="music">Music</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
 					<td>Gender</td>
 					<td>
 						<div>
 							<input type="radio" name="gender" value="male"> Male
-							<input type="radio" name="gender" value="female"> Female
-							<input type="radio" name="gender" value="other"> Other
 						</div>
 					</td>
 				</tr>
@@ -150,15 +126,9 @@
 					<td>Preferences</td>
 					<td>
 						<div>
-							<input type="checkbox" name="preferences" value="newsletter"> Newsletter<br>
-							<input type="checkbox" name="preferences" value="notifications"> Notifications<br>
-							<input type="checkbox" name="preferences" value="updates"> Updates
+							<input type="checkbox" name="preferences" value="newsletter"> Newsletter
 						</div>
 					</td>
-				</tr>
-				<tr>
-					<td>Comments</td>
-					<td><textarea class="form-control" name="comments" rows="3"></textarea></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="text-align: center; padding-top: 20px;">
@@ -170,10 +140,6 @@
 	</div>
 
 	<script>
-		document.querySelector('input[name="satisfaction"]').addEventListener('input', function(e) {
-			document.getElementById('satisfactionValue').textContent = e.target.value;
-		});
-
 		document.getElementById('tableForm').addEventListener('submit', function(e) {
 			e.preventDefault();
 			document.getElementById('successMessage').style.display = 'block';

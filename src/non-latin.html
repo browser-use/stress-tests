@@ -59,13 +59,7 @@
 	</style>
 </head>
 <body>
-	<!-- Number Input - Japanese -->
-			<div class="mb-3">
-				<label for="age" class="form-label">年齢 (Age)</label>
-				<input type="number" class="form-control" id="age" name="age" min="0" max="150">
-			</div>
-
-			<!-- Date Input - Russian -->
+				<!-- Date Input - Russian -->
 			<div class="mb-3">
 				<label for="birthdate" class="form-label">Дата рождения (Birthdate)</label>
 				<input type="date" class="form-control" id="birthdate" name="birthdate">
@@ -77,13 +71,7 @@
 				<input type="file" class="form-control" id="resume" name="resume">
 			</div>
 
-			<!-- Range Input - Hebrew -->
-			<div class="mb-3">
-				<label for="satisfaction" class="form-label">שביעות רצון (Satisfaction): <span id="satisfactionValue">50</span></label>
-				<input type="range" class="form-range" id="satisfaction" name="satisfaction" min="0" max="100" value="50">
-			</div>
-
-			<!-- Select Dropdown - Greek -->
+						<!-- Select Dropdown - Greek -->
 			<div class="mb-3">
 				<label for="country" class="form-label">Χώρα (Country)</label>
 				<select class="form-select" id="country" name="country">
@@ -94,30 +82,12 @@
 				</select>
 			</div>
 
-			<!-- Multi-Select - Thai -->
-			<div class="mb-3">
-				<label for="interests" class="form-label">ความสนใจ (Interests)</label>
-				<select class="form-select" id="interests" name="interests" multiple size="3">
-					<option value="tech">เทคโนโลยี</option>
-					<option value="sports">กีฬา</option>
-					<option value="music">ดนตรี</option>
-				</select>
-			</div>
-
-			<!-- Radio Buttons - Hindi -->
+						<!-- Radio Buttons - Hindi -->
 			<div class="mb-3">
 				<label class="form-label">लिंग (Gender)</label>
 				<div class="form-check">
 					<input class="form-check-input" type="radio" name="gender" id="male" value="male">
 					<label class="form-check-label" for="male">पुरुष</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" id="female" value="female">
-					<label class="form-check-label" for="female">महिला</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" id="other" value="other">
-					<label class="form-check-label" for="other">अन्य</label>
 				</div>
 			</div>
 
@@ -127,14 +97,6 @@
 				<div class="form-check">
 					<input class="form-check-input" type="checkbox" id="newsletter" name="preferences" value="newsletter">
 					<label class="form-check-label" for="newsletter">Bản tin</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" id="notifications" name="preferences" value="notifications">
-					<label class="form-check-label" for="notifications">Thông báo</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" id="updates" name="preferences" value="updates">
-					<label class="form-check-label" for="updates">Cập nhật</label>
 				</div>
 			</div>
 
@@ -152,11 +114,7 @@
 	</div>
 
 	<script>
-		document.getElementById('satisfaction').addEventListener('input', function(e) {
-			document.getElementById('satisfactionValue').textContent = e.target.value;
-		});
-
-		document.getElementById('nonLatinForm').addEventListener('submit', function(e) {
+				document.getElementById('nonLatinForm').addEventListener('submit', function(e) {
 			e.preventDefault();
 			document.getElementById('successMessage').style.display = 'block';
 			setTimeout(() => {

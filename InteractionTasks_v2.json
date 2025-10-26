@@ -4,7 +4,7 @@
         "name": "Radio Selection",
         "url": "https://browser-use.github.io/stress-tests/challenges/radio-selection.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and select one of the radio buttons to complete the challenge.",
+        "confirmed_task": "Go to the URL and select one of the radio buttons to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -12,7 +12,7 @@
         "name": "Checkbox Check",
         "url": "https://browser-use.github.io/stress-tests/challenges/checkbox-check.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and check all the required checkboxes to complete the challenge.",
+        "confirmed_task": "Go to the URL and check all the required checkboxes to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -20,7 +20,7 @@
         "name": "Search Input",
         "url": "https://browser-use.github.io/stress-tests/challenges/search-squash.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and type 'squash' into the search box and press enter to complete the task.",
+        "confirmed_task": "Go to the URL and type 'squash' into the search box and press enter to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -28,7 +28,7 @@
         "name": "Date Time Input",
         "url": "https://browser-use.github.io/stress-tests/challenges/date-time-input.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and fill out the date and time inputs to complete the challenge.",
+        "confirmed_task": "Go to the URL and fill out the date and time inputs to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -36,7 +36,7 @@
         "name": "Slider Drag",
         "url": "https://browser-use.github.io/stress-tests/challenges/slider-drag.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and drag the slider completely to the right to complete the task.",
+        "confirmed_task": "Go to the URL and drag the slider completely to the right to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -44,7 +44,7 @@
         "name": "Hover Element",
         "url": "https://browser-use.github.io/stress-tests/challenges/hover-element.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and hover over the element to complete the challenge.",
+        "confirmed_task": "Go to the URL and hover over the element to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -52,7 +52,7 @@
         "name": "Drag and Drop",
         "url": "https://browser-use.github.io/stress-tests/challenges/drag-drop.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and drag the element and drop it onto the target area to complete the task.",
+        "confirmed_task": "Go to the URL and drag the element and drop it onto the target area to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -60,7 +60,7 @@
         "name": "Multi-Select",
         "url": "https://browser-use.github.io/stress-tests/challenges/multi-select.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and select multiple options from the multi-select list to complete the challenge.",
+        "confirmed_task": "Go to the URL and select multiple options from the multi-select list to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -68,7 +68,7 @@
         "name": "Canvas CAPTCHA",
         "url": "https://browser-use.github.io/stress-tests/challenges/canvas-captcha.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and read the text from the canvas CAPTCHA and enter it to complete the task.",
+        "confirmed_task": "Go to the URL and read the text from the canvas CAPTCHA and enter it to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -76,7 +76,7 @@
         "name": "Iframe Slider",
         "url": "https://browser-use.github.io/stress-tests/challenges/iframe-slider.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and interact with the slider element inside the iframe to complete the challenge.",
+        "confirmed_task": "Go to the URL and interact with the slider element inside the iframe to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -84,7 +84,7 @@
         "name": "Shadow DOM Double Click",
         "url": "https://browser-use.github.io/stress-tests/challenges/shadow-dom-dblclick.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and double-click on the element within the shadow DOM to complete the task.",
+        "confirmed_task": "Go to the URL and double-click on the element within the shadow DOM to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -92,7 +92,7 @@
         "name": "Scroll and Accept",
         "url": "https://browser-use.github.io/stress-tests/challenges/scroll-accept.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and scroll to the bottom of the content and click the Accept button to complete the challenge.",
+        "confirmed_task": "Go to the URL and scroll to the bottom of the content and click the Accept button to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -100,7 +100,7 @@
         "name": "Arrow Key Navigation",
         "url": "https://browser-use.github.io/stress-tests/challenges/arrow-key-presses.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and use the arrow keys to navigate to complete the task.",
+        "confirmed_task": "Go to the URL and use the arrow keys to navigate to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -108,7 +108,7 @@
         "name": "File Upload",
         "url": "https://browser-use.github.io/stress-tests/challenges/file-upload.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and upload a file using the file input element to complete the challenge.",
+        "confirmed_task": "Go to the URL and upload a file using the file input element to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -116,7 +116,7 @@
         "name": "Phone Input",
         "url": "https://browser-use.github.io/stress-tests/challenges/phone-input.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and enter a phone number into the input field to complete the task.",
+        "confirmed_task": "Go to the URL and enter a phone number into the input field to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -124,7 +124,7 @@
         "name": "Expand Details",
         "url": "https://browser-use.github.io/stress-tests/challenges/expand-details.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and click to expand the HTML details element to complete the challenge.",
+        "confirmed_task": "Go to the URL and click to expand the HTML details element to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -132,7 +132,7 @@
         "name": "Dropdown Selections",
         "url": "https://browser-use.github.io/stress-tests/challenges/dropdown-selections.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and select options from the dropdown menus to complete the task.",
+        "confirmed_task": "Go to the URL and select options from the dropdown menus to complete the task.",
         "ground_truth": "successfully"
     },
     {
@@ -140,7 +140,7 @@
         "name": "Contenteditable Div",
         "url": "https://browser-use.github.io/stress-tests/challenges/contenteditable-div.html",
         "category": "CORE_INTERACTION",
-        "task": "Go to the URL and type text into the contenteditable div element to complete the challenge.",
+        "confirmed_task": "Go to the URL and type text into the contenteditable div element to complete the challenge.",
         "ground_truth": "successfully"
     },
     {
@@ -148,7 +148,7 @@
         "name": "Vanilla Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/vanilla-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the vanilla HTML form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the vanilla HTML form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -156,7 +156,7 @@
         "name": "jQuery Bootstrap Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/jquery-bootstrap-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the jQuery Bootstrap form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the jQuery Bootstrap form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -164,7 +164,7 @@
         "name": "AngularJS Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/angularjs-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the AngularJS form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the AngularJS form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -172,7 +172,7 @@
         "name": "Angular Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/angular-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Angular form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Angular form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -180,7 +180,7 @@
         "name": "React Hook Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/react-hook-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the React Hook Form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the React Hook Form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -188,7 +188,7 @@
         "name": "TanStack Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/tanstack-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the TanStack form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the TanStack form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -196,7 +196,7 @@
         "name": "Formik Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/formik-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Formik form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Formik form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -204,7 +204,7 @@
         "name": "React Final Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/react-final-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the React Final Form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the React Final Form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -212,7 +212,7 @@
         "name": "Svelte Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/svelte-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Svelte form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Svelte form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -220,7 +220,7 @@
         "name": "Ember Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/ember-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Ember form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Ember form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -228,7 +228,7 @@
         "name": "Vue Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/vue-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Vue form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Vue form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -236,7 +236,7 @@
         "name": "Material UI Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/material-ui-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Material-UI form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Material-UI form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -244,7 +244,7 @@
         "name": "Wufoo Style Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/wufoo-style-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Wufoo-style form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Wufoo-style form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -252,7 +252,7 @@
         "name": "Shadow DOM Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/shadow-dom-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Shadow DOM form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Shadow DOM form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -260,7 +260,7 @@
         "name": "Dynamic Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/dynamic-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the dynamic form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the dynamic form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -268,7 +268,7 @@
         "name": "Web Components Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/web-components-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the Web Components form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the Web Components form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -276,7 +276,7 @@
         "name": "Progressive Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/progressive-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the progressive multi-step form by filling in all required fields through multiple steps.",
+        "confirmed_task": "Go to the URL and complete the progressive multi-step form by filling in all required fields through multiple steps.",
         "ground_truth": "dumbledore"
     },
     {
@@ -284,7 +284,7 @@
         "name": "React Native Web Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/react-native-web-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the React Native Web form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the React Native Web form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -292,7 +292,7 @@
         "name": "Iframe Inception Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/iframe-inception-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the form within the nested iframe structure by filling in all required fields.",
+        "confirmed_task": "Go to the URL and complete the form within the nested iframe structure by filling in all required fields.",
         "ground_truth": "dumbledore"
     },
     {
@@ -300,7 +300,7 @@
         "name": "Hidden Labels Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/hidden-labels-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the form with hidden labels by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the form with hidden labels by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -308,7 +308,7 @@
         "name": "Non-Latin Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/non-latin-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the form with non-Latin characters by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the form with non-Latin characters by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -316,7 +316,7 @@
         "name": "Contenteditable Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/contenteditable-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the contenteditable form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the contenteditable form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -324,7 +324,7 @@
         "name": "Rich Text Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/rich-text-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the rich text form by filling in all required fields including the rich text editor.",
+        "confirmed_task": "Go to the URL and complete the rich text form by filling in all required fields including the rich text editor.",
         "ground_truth": "dumbledore"
     },
     {
@@ -332,7 +332,7 @@
         "name": "GraphQL Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/graphql-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the GraphQL form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the GraphQL form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -340,7 +340,7 @@
         "name": "Table Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/table-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the table-based form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the table-based form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -348,7 +348,7 @@
         "name": "Animated Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/animated-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the animated form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the animated form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -356,7 +356,7 @@
         "name": "Internationalization Form",
         "url": "https://browser-use.github.io/stress-tests/challenges/i18n-form.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the internationalization form by filling in all required fields and submitting.",
+        "confirmed_task": "Go to the URL and complete the internationalization form by filling in all required fields and submitting.",
         "ground_truth": "dumbledore"
     },
     {
@@ -364,7 +364,7 @@
         "name": "Iframe Inception Level 1",
         "url": "https://browser-use.github.io/stress-tests/challenges/iframe-inception-level1.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the iframe inception challenge level 1.",
+        "confirmed_task": "Go to the URL and complete the iframe inception challenge level 1.",
         "ground_truth": "successfully"
     },
     {
@@ -372,7 +372,7 @@
         "name": "Iframe Inception Level 2",
         "url": "https://browser-use.github.io/stress-tests/challenges/iframe-inception-level2.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the iframe inception challenge level 2.",
+        "confirmed_task": "Go to the URL and complete the iframe inception challenge level 2.",
         "ground_truth": "successfully"
     },
     {
@@ -380,7 +380,7 @@
         "name": "Iframe Inception Level 3",
         "url": "https://browser-use.github.io/stress-tests/challenges/iframe-inception-level3.html",
         "category": "FRAMEWORK_FORM",
-        "task": "Go to the URL and complete the iframe inception challenge level 3.",
+        "confirmed_task": "Go to the URL and complete the iframe inception challenge level 3.",
         "ground_truth": "successfully"
     }
 ]
