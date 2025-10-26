@@ -82,18 +82,13 @@
 	<h5>Level 3 iframe - Actual Form</h5>
 	<form id=innerForm onsubmit=event.preventDefault();parent.parent.parent.document.getElementById(\'successMessage\').style.display=\'block\';setTimeout(()=>parent.parent.parent.document.getElementById(\'successMessage\').style.display=\'none\',3000)>
 		<label class=form-label>Name</label><input type=text class=form-control required>
-		<label class=form-label>Email</label><input type=email class=form-control required>
-		<label class=form-label>Age</label><input type=number class=form-control>
 		<label class=form-label>Birthdate</label><input type=date class=form-control>
 		<label class=form-label>Resume</label><input type=file class=form-control>
-		<label class=form-label>Satisfaction: <span id=satVal>50</span></label><input type=range id=satisfaction min=0 max=100 value=50 oninput=document.getElementById(\'satVal\').textContent=this.value>
 		<label class=form-label>Country</label><select class=form-control><option value=''>Select</option><option>USA</option><option>Canada</option><option>UK</option></select>
-		<label class=form-label>Interests</label><select class=form-control multiple size=3><option>Tech</option><option>Sports</option><option>Music</option></select>
 		<label class=form-label>Gender</label>
-		<div><input type=radio name=gender value=male>Male <input type=radio name=gender value=female>Female <input type=radio name=gender value=other>Other</div>
+		<div><input type=radio name=gender value=male>Male</div>
 		<label class=form-label>Preferences</label>
-		<div><input type=checkbox value=newsletter>Newsletter <input type=checkbox value=notifications>Notifications <input type=checkbox value=updates>Updates</div>
-		<label class=form-label>Comments</label><textarea class=form-control rows=3></textarea>
+		<div><input type=checkbox value=newsletter>Newsletter</div>
 		<button type=submit class=btn-primary>Submit</button>
 	</form>
 </body>
