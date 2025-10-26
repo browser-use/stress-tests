@@ -392,152 +392,32 @@
             </div>
         </form>
     </div>
-    
-    <!-- Modal -->
-    <div class="modal" id="red-herring-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Red Herring Modal</h3>
-                <button type="button" class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>This is a red herring modal instead of submitting the form.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="modal-close-btn">Close</button>
-            </div>
-        </div>
-    </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get form elements
             const form = document.getElementById('hidden-labels-form');
             const successMessage = document.getElementById('success-message');
-            
-            // Alphanumeric validation
-            const alphanumericInput = document.getElementById('alphanumericOnly');
-            if (alphanumericInput) {
-                alphanumericInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-            }
-            
-            // Form validation
+
             if (form) {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
-                    // Reset error messages
-                    const errorMessages = document.querySelectorAll('.error-message');
-                    errorMessages.forEach(error => error.style.display = 'none');
-                    
-                    // Reset invalid inputs
-                    const formInputs = form.querySelectorAll('.form-input, .form-select');
-                    formInputs.forEach(input => input.classList.remove('invalid-input'));
-                    
-                    // Validate required fields
-                    let isValid = true;
-                    const requiredFields = form.querySelectorAll('[required]');
-                    
-                    requiredFields.forEach(field => {
-                        if (field.type === 'checkbox' && !field.checked) {
-                            isValid = false;
-                            document.getElementById('terms-error').style.display = 'block';
-                        } else if (!field.value.trim()) {
-                            isValid = false;
-                            field.classList.add('invalid-input');
-                            const errorElement = document.getElementById(`${field.id}-error`);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                        }
-                    });
-                    
-                    // Email validation
+
+                    // Basic validation for required fields
                     const emailField = document.getElementById('email');
-                    if (emailField && emailField.value) {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(emailField.value)) {
-                            isValid = false;
-                            emailField.classList.add('invalid-input');
-                            document.getElementById('email-error').style.display = 'block';
-                        }
+                    const stateField = document.getElementById('state');
+
+                    if (!emailField.value || !stateField.value) {
+                        return;
                     }
-                    
-                    // Phone validation
-                    const phoneField = document.getElementById('phone');
-                    if (phoneField && phoneField.value) {
-                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                        if (!phonePattern.test(phoneField.value)) {
-                            isValid = false;
-                            phoneField.classList.add('invalid-input');
-                            document.getElementById('phone-error').style.display = 'block';
-                        }
-                    }
-                    
-                    // Zip code validation
-                    const zipField = document.getElementById('zipCode');
-                    if (zipField && zipField.value) {
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(zipField.value)) {
-                            isValid = false;
-                            zipField.classList.add('invalid-input');
-                            document.getElementById('zipCode-error').style.display = 'block';
-                        }
-                    }
-                    
-                    if (isValid) {
-                        console.log('Form submitted successfully! The secret is: dumbledore');
-                        successMessage.style.display = 'block';
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(function() {
-                            successMessage.style.display = 'none';
-                        }, 3000);
-                    }
-                });
-            }
-            
-            // Modal functionality
-            const modalButton = document.getElementById('modal-button');
-            const modal = document.getElementById('red-herring-modal');
-            const modalClose = document.querySelector('.modal-close');
-            const modalCloseBtn = document.getElementById('modal-close-btn');
-            
-            if (modalButton && modal) {
-                modalButton.addEventListener('click', function() {
-                    modal.style.display = 'flex';
-                });
-            }
-            
-            if (modalClose && modal) {
-                modalClose.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            if (modalCloseBtn && modal) {
-                modalCloseBtn.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            // Close modal when clicking outside
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Terms link handler
-            const termsLink = document.getElementById('terms-link');
-            if (termsLink) {
-                termsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('Terms and Conditions would be displayed here.');
+
+                    // Show success message
+                    console.log('Form submitted successfully! The secret is: dumbledore');
+                    successMessage.style.display = 'block';
+
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 3000);
                 });
             }
         });
