@@ -205,132 +205,19 @@
     
     <script type="text/x-handlebars" data-template-name="application">
         <form class="form-container" id="ember-form" {{action "submitForm" on="submit"}}>
-            <!-- Personal Details Section -->
             <div class="form-section">
-                <h3>Personal Details</h3>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="firstName" class="form-label label-required">First Name</label>
-                        {{input type="text" id="firstName" value=changeset.firstName class="form-control" required=true}}
-                        {{#if changeset.error.firstName}}
-                            <div class="error-text">
-                                {{changeset.error.firstName.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="lastName" class="form-label label-required">Last Name</label>
-                        {{input type="text" id="lastName" value=changeset.lastName class="form-control" required=true}}
-                        {{#if changeset.error.lastName}}
-                            <div class="error-text">
-                                {{changeset.error.lastName.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="email" class="form-label label-required">Email Address</label>
-                        {{input type="email" id="email" value=changeset.email class="form-control" required=true}}
-                        {{#if changeset.error.email}}
-                            <div class="error-text">
-                                {{changeset.error.email.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        {{input type="tel" id="phone" value=changeset.phone class="form-control" placeholder="123-456-7890"}}
-                        {{#if changeset.error.phone}}
-                            <div class="error-text">
-                                {{changeset.error.phone.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="birthDate" class="form-label">Date of Birth</label>
-                        {{input type="date" id="birthDate" value=changeset.birthDate class="form-control"}}
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="gender" class="form-label">Gender</label>
-                        <select id="gender" {{action "updateGender" on="change"}} class="form-select">
-                            <option value="">Select gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="non-binary">Non-binary</option>
-                            <option value="other">Other</option>
-                            <option value="prefer-not-to-say">Prefer not to say</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Address Section -->
-            <div class="form-section">
-                <h3>Address</h3>
-                
+                <h3>Simple Form</h3>
+
                 <div class="mb-3">
-                    <label for="streetAddress" class="form-label label-required">Street Address</label>
-                    {{input type="text" id="streetAddress" value=changeset.address.street class="form-control" required=true}}
-                    {{#if changeset.error.address.street}}
+                    <label for="email" class="form-label label-required">Email Address</label>
+                    {{input type="email" id="email" value=changeset.email class="form-control" required=true}}
+                    {{#if changeset.error.email}}
                         <div class="error-text">
-                            {{changeset.error.address.street.validation}}
+                            {{changeset.error.email.validation}}
                         </div>
                     {{/if}}
                 </div>
-                
-                <div class="mb-3">
-                    <label for="addressLine2" class="form-label">Address Line 2</label>
-                    {{input type="text" id="addressLine2" value=changeset.address.line2 class="form-control" placeholder="Apartment, suite, unit, etc."}}
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="city" class="form-label label-required">City</label>
-                        {{input type="text" id="city" value=changeset.address.city class="form-control" required=true}}
-                        {{#if changeset.error.address.city}}
-                            <div class="error-text">
-                                {{changeset.error.address.city.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="state" class="form-label label-required">State</label>
-                        <select id="state" {{action "updateState" on="change"}} class="form-select" required>
-                            <option value="">Select state</option>
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <!-- More states would be listed here -->
-                            <option value="WY">Wyoming</option>
-                        </select>
-                        {{#if changeset.error.address.state}}
-                            <div class="error-text">
-                                {{changeset.error.address.state.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="zipCode" class="form-label label-required">Zip Code</label>
-                        {{input type="text" id="zipCode" value=changeset.address.zipCode class="form-control" required=true}}
-                        {{#if changeset.error.address.zipCode}}
-                            <div class="error-text">
-                                {{changeset.error.address.zipCode.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                </div>
-                
+
                 <div class="mb-3">
                     <label for="country" class="form-label label-required">Country</label>
                     <select id="country" {{action "updateCountry" on="change"}} class="form-select" required>
@@ -340,86 +227,29 @@
                         <option value="UK">United Kingdom</option>
                         <option value="AU">Australia</option>
                     </select>
-                    {{#if changeset.error.address.country}}
+                    {{#if changeset.error.country}}
                         <div class="error-text">
-                            {{changeset.error.address.country.validation}}
+                            {{changeset.error.country.validation}}
                         </div>
                     {{/if}}
                 </div>
-            </div>
-            
-            <!-- Employment Information Section -->
-            <div class="form-section">
-                <h3>Employment Information</h3>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="occupation" class="form-label label-required">Occupation</label>
-                        {{input type="text" id="occupation" value=changeset.employment.occupation class="form-control" required=true}}
-                        {{#if changeset.error.employment.occupation}}
-                            <div class="error-text">
-                                {{changeset.error.employment.occupation.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="employer" class="form-label">Employer</label>
-                        {{input type="text" id="employer" value=changeset.employment.employer class="form-control"}}
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="workEmail" class="form-label">Work Email</label>
-                        {{input type="email" id="workEmail" value=changeset.employment.workEmail class="form-control"}}
-                        {{#if changeset.error.employment.workEmail}}
-                            <div class="error-text">
-                                {{changeset.error.employment.workEmail.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="workPhone" class="form-label">Work Phone</label>
-                        {{input type="tel" id="workPhone" value=changeset.employment.workPhone class="form-control"}}
-                        {{#if changeset.error.employment.workPhone}}
-                            <div class="error-text">
-                                {{changeset.error.employment.workPhone.validation}}
-                            </div>
-                        {{/if}}
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="startDate" class="form-label">Start Date</label>
-                        {{input type="date" id="startDate" value=changeset.employment.startDate class="form-control"}}
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label for="employmentType" class="form-label">Employment Type</label>
-                        <select id="employmentType" {{action "updateEmploymentType" on="change"}} class="form-select">
-                            <option value="">Select employment type</option>
-                            <option value="full-time">Full-time</option>
-                            <option value="part-time">Part-time</option>
-                            <option value="contract">Contract</option>
-                            <option value="freelance">Freelance</option>
-                            <option value="self-employed">Self-employed</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Preferences Section -->
-            <div class="form-section">
-                <h3>Preferences</h3>
-                
+
                 <div class="mb-3">
-                    <label for="preferredContactTime" class="form-label">Preferred Contact Time</label>
-                    {{input type="time" id="preferredContactTime" value=changeset.preferences.contactTime class="form-control"}}
+                    <label for="favoriteColor" class="form-label">Favorite Color</label>
+                    <select id="favoriteColor" {{action "updateFavoriteColor" on="change"}} class="form-select">
+                        <option value="">Select a color</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="yellow">Yellow</option>
+                    </select>
                 </div>
-                
+
+                <div class="mb-3">
+                    <label for="birthDate" class="form-label">Date of Birth</label>
+                    {{input type="date" id="birthDate" value=changeset.birthDate class="form-control"}}
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">Preferred Contact Method</label>
                     <div class="form-check">
@@ -435,123 +265,15 @@
                         <label class="form-check-label" for="contactMail">Mail</label>
                     </div>
                 </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Notification Preferences</label>
-                    <div class="form-check">
-                        {{input type="checkbox" class="form-check-input" id="marketingEmails" checked=changeset.preferences.marketing change="toggleMarketing"}}
-                        <label class="form-check-label" for="marketingEmails">Receive marketing emails</label>
-                    </div>
-                    <div class="form-check">
-                        {{input type="checkbox" class="form-check-input" id="newsletterEmails" checked=changeset.preferences.newsletter change="toggleNewsletter"}}
-                        <label class="form-check-label" for="newsletterEmails">Subscribe to newsletter</label>
-                    </div>
-                    <div class="form-check">
-                        {{input type="checkbox" class="form-check-input" id="eventNotifications" checked=changeset.preferences.events change="toggleEvents"}}
-                        <label class="form-check-label" for="eventNotifications">Receive event notifications</label>
-                    </div>
-                </div>
-                
-                <div class="toggle-container">
-                    <label class="ember-toggle">
-                        {{input type="checkbox" id="darkModeToggle" checked=changeset.preferences.darkMode change="toggleDarkMode"}}
-                        <span class="ember-toggle-slider"></span>
-                    </label>
-                    <span class="toggle-label">Enable Dark Mode</span>
-                </div>
-            </div>
-            
-            <!-- Additional Fields Section -->
-            <div class="form-section">
-                <h3>Additional Fields</h3>
-                
-                <div class="mb-3">
-                    <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
-                    {{input type="text" id="alphanumericOnly" value=changeset.alphanumericOnly class="form-control"}}
-                    {{#if changeset.error.alphanumericOnly}}
-                        <div class="error-text">
-                            {{changeset.error.alphanumericOnly.validation}}
-                        </div>
-                    {{/if}}
-                </div>
-                
-                <div class="mb-3">
-                    <label for="disabledInput" class="form-label">Disabled Input</label>
-                    {{input type="text" id="disabledInput" value="This field is disabled" class="form-control" disabled=true}}
-                </div>
-                
-                <div class="mb-3">
-                    <label for="favoriteColor" class="form-label">Favorite Color</label>
-                    <select id="favoriteColor" {{action "updateFavoriteColor" on="change"}} class="form-select">
-                        <option value="">Select a color</option>
-                        <option value="red">Red</option>
-                        <option value="orange">Orange</option>
-                        <option value="yellow">Yellow</option>
-                        <option value="green">Green</option>
-                        <option value="blue">Blue</option>
-                        <option value="purple">Purple</option>
-                        <option value="pink">Pink</option>
-                        <option value="black">Black</option>
-                        <option value="white">White</option>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="satisfactionLevel" class="form-label">Satisfaction Level</label>
-                    {{input type="range" id="satisfactionLevel" value=changeset.satisfactionLevel class="form-range" min="0" max="100" step="1"}}
-                    <div class="d-flex justify-content-between">
-                        <small>Not Satisfied</small>
-                        <small>Very Satisfied ({{changeset.satisfactionLevel}})</small>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="comments" class="form-label">Additional Comments</label>
-                    {{textarea id="comments" value=changeset.comments class="form-control" rows=3}}
-                </div>
-                
+
                 <div class="mb-3">
                     <label for="fileUpload" class="form-label">File Upload</label>
                     {{input type="file" id="fileUpload" class="form-control"}}
                 </div>
-                
-                <div class="form-check mb-3">
-                    {{input type="checkbox" class="form-check-input" id="termsAgreement" checked=changeset.termsAgreement required=true}}
-                    <label class="form-check-label" for="termsAgreement">
-                        I agree to the <a href="#" {{action "showTerms"}}>Terms and Conditions</a> <span class="text-danger">*</span>
-                    </label>
-                    {{#if changeset.error.termsAgreement}}
-                        <div class="error-text">
-                            {{changeset.error.termsAgreement.validation}}
-                        </div>
-                    {{/if}}
-                </div>
             </div>
-            
-            <div class="d-flex gap-2 mb-3">
-                <button type="submit" class="btn btn-ember">Submit Form</button>
-                <button type="button" class="btn btn-danger" {{action "showModal"}}>Open Modal</button>
-                <button type="button" class="btn btn-secondary" {{action "resetForm"}}>Reset Form</button>
-            </div>
+
+            <button type="submit" class="btn btn-ember">Submit Form</button>
         </form>
-        
-        {{#if showRedHerringModal}}
-            <div class="modal-overlay">
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <h4>Red Herring Modal</h4>
-                        <button type="button" class="modal-close" {{action "closeModal"}}>&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <p>This is a red herring modal instead of submitting the form.</p>
-                        <p>In a real application, this might contain additional options or information.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" {{action "closeModal"}}>Close</button>
-                    </div>
-                </div>
-            </div>
-        {{/if}}
     </script>
 
     <script>
@@ -610,196 +332,74 @@
                 // Create Application Controller
                 App.ApplicationController = Ember.Controller.extend({
                 isEmailChecked: function() {
-                    return this.get('changeset.preferences.contactMethod') === 'email';
-                }.property('changeset.preferences.contactMethod'),
-                
+                    return this.get('changeset.contactMethod') === 'email';
+                }.property('changeset.contactMethod'),
+
                 isPhoneChecked: function() {
-                    return this.get('changeset.preferences.contactMethod') === 'phone';
-                }.property('changeset.preferences.contactMethod'),
-                
+                    return this.get('changeset.contactMethod') === 'phone';
+                }.property('changeset.contactMethod'),
+
                 isMailChecked: function() {
-                    return this.get('changeset.preferences.contactMethod') === 'mail';
-                }.property('changeset.preferences.contactMethod'),
-                
+                    return this.get('changeset.contactMethod') === 'mail';
+                }.property('changeset.contactMethod'),
+
                 init: function() {
                     this._super();
                     // Create model
                     const model = {
-                        firstName: '',
-                        lastName: '',
                         email: '',
-                        phone: '',
-                        birthDate: '',
-                        gender: '',
-                        address: {
-                            street: '',
-                            line2: '',
-                            city: '',
-                            state: '',
-                            zipCode: '',
-                            country: ''
-                        },
-                        employment: {
-                            occupation: '',
-                            employer: '',
-                            workEmail: '',
-                            workPhone: '',
-                            startDate: '',
-                            type: ''
-                        },
-                        preferences: {
-                            contactTime: '',
-                            contactMethod: '',
-                            marketing: false,
-                            newsletter: false,
-                            events: false,
-                            darkMode: false
-                        },
-                        alphanumericOnly: '',
+                        country: '',
                         favoriteColor: '',
-                        satisfactionLevel: 50,
-                        comments: '',
-                        termsAgreement: false
+                        birthDate: '',
+                        contactMethod: ''
                     };
-                    
+
                     // Instead of using changeset, we'll directly use the model
                     this.set('model', model);
                     // For compatibility with the template, we'll alias model as changeset
                     this.set('changeset', model);
-                    this.set('showRedHerringModal', false);
                     this.set('errors', {});
                 },
-                
+
                 validate: function() {
                     const model = this.get('model');
                     const errors = {};
-                    
+
                     // Basic validation
-                    if (!model.firstName) {
-                        errors.firstName = { validation: 'First name is required' };
-                    }
-                    
-                    if (!model.lastName) {
-                        errors.lastName = { validation: 'Last name is required' };
-                    }
-                    
                     if (!model.email) {
                         errors.email = { validation: 'Email is required' };
                     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(model.email)) {
                         errors.email = { validation: 'Please enter a valid email address' };
                     }
-                    
-                    if (model.phone && !/^\d{3}-\d{3}-\d{4}$/.test(model.phone)) {
-                        errors.phone = { validation: 'Please enter a valid phone number (e.g. 123-456-7890)' };
+
+                    if (!model.country) {
+                        errors.country = { validation: 'Country is required' };
                     }
-                    
-                    if (!model.address.street) {
-                        errors['address'] = errors['address'] || {};
-                        errors['address']['street'] = { validation: 'Street address is required' };
-                    }
-                    
-                    if (!model.address.city) {
-                        errors['address'] = errors['address'] || {};
-                        errors['address']['city'] = { validation: 'City is required' };
-                    }
-                    
-                    if (!model.address.state) {
-                        errors['address'] = errors['address'] || {};
-                        errors['address']['state'] = { validation: 'State is required' };
-                    }
-                    
-                    if (!model.address.zipCode) {
-                        errors['address'] = errors['address'] || {};
-                        errors['address']['zipCode'] = { validation: 'Zip code is required' };
-                    } else if (!/^\d{5}(-\d{4})?$/.test(model.address.zipCode)) {
-                        errors['address'] = errors['address'] || {};
-                        errors['address']['zipCode'] = { validation: 'Please enter a valid zip code' };
-                    }
-                    
-                    if (!model.address.country) {
-                        errors['address'] = errors['address'] || {};
-                        errors['address']['country'] = { validation: 'Country is required' };
-                    }
-                    
-                    if (!model.employment.occupation) {
-                        errors['employment'] = errors['employment'] || {};
-                        errors['employment']['occupation'] = { validation: 'Occupation is required' };
-                    }
-                    
-                    if (model.employment.workEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(model.employment.workEmail)) {
-                        errors['employment'] = errors['employment'] || {};
-                        errors['employment']['workEmail'] = { validation: 'Please enter a valid email address' };
-                    }
-                    
-                    if (model.employment.workPhone && !/^\d{3}-\d{3}-\d{4}$/.test(model.employment.workPhone)) {
-                        errors['employment'] = errors['employment'] || {};
-                        errors['employment']['workPhone'] = { validation: 'Please enter a valid phone number' };
-                    }
-                    
-                    if (model.alphanumericOnly && !/^[a-zA-Z0-9]*$/.test(model.alphanumericOnly)) {
-                        errors.alphanumericOnly = { validation: 'Only letters and numbers are allowed' };
-                    }
-                    
-                    if (!model.termsAgreement) {
-                        errors.termsAgreement = { validation: 'You must agree to the terms and conditions' };
-                    }
-                    
+
                     this.set('changeset.error', errors);
                     return Object.keys(errors).length === 0;
                 },
 
                 actions: {
-                    updateGender: function(event) {
-                        this.set('model.gender', event.target.value);
-                    },
-                    updateState: function(event) {
-                        this.set('model.address.state', event.target.value);
-                    },
                     updateCountry: function(event) {
-                        this.set('model.address.country', event.target.value);
-                    },
-                    updateEmploymentType: function(event) {
-                        this.set('model.employment.type', event.target.value);
+                        this.set('model.country', event.target.value);
                     },
                     updateContactMethod: function(value) {
-                        this.set('model.preferences.contactMethod', value);
-                    },
-                    toggleMarketing: function(event) {
-                        this.set('model.preferences.marketing', event.target.checked);
-                    },
-                    toggleNewsletter: function(event) {
-                        this.set('model.preferences.newsletter', event.target.checked);
-                    },
-                    toggleEvents: function(event) {
-                        this.set('model.preferences.events', event.target.checked);
-                    },
-                    toggleDarkMode: function(event) {
-                        this.set('model.preferences.darkMode', event.target.checked);
-                        if (event.target.checked) {
-                            document.body.style.backgroundColor = '#343a40';
-                            document.body.style.color = '#f8f9fa';
-                        } else {
-                            document.body.style.backgroundColor = '#f8f9fa';
-                            document.body.style.color = 'initial';
-                        }
+                        this.set('model.contactMethod', value);
                     },
                     updateFavoriteColor: function(event) {
                         this.set('model.favoriteColor', event.target.value);
                     },
-                    showTerms: function(event) {
-                        event.preventDefault();
-                        alert('Terms and Conditions would be displayed here.');
-                    },
                     submitForm: function(event) {
                         event.preventDefault();
-                        
+
                         // Validate all fields
                         if (this.validate()) {
                             console.log('Form submitted successfully!', this.get('model'));
-                            
+
                             const successMessage = document.getElementById('success-message');
                             successMessage.style.display = 'block';
-                            
+
                             // Hide success message after 3 seconds
                             setTimeout(function() {
                                 successMessage.style.display = 'none';
@@ -807,20 +407,10 @@
                         } else {
                             console.log('Form has errors', this.get('changeset.error'));
                         }
-                    },
-                    resetForm: function() {
-                        // Reset the form
-                        this.init();
-                    },
-                    showModal: function() {
-                        this.set('showRedHerringModal', true);
-                    },
-                    closeModal: function() {
-                        this.set('showRedHerringModal', false);
                     }
                 }
             });
-            
+
             console.log('Application Controller created successfully');
             } catch (error) {
                 console.error('Error creating Application Controller:', error);
@@ -845,14 +435,6 @@
             }
         });
 
-        // Alphanumeric input validation
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.addEventListener('input', function(e) {
-                if (e.target.id === 'alphanumericOnly') {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                }
-            });
-        });
     </script>
 </body>
 </html>

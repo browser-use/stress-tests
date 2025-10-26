@@ -165,70 +165,21 @@
         
         function MaterialForm() {
             const [formData, setFormData] = React.useState({
-                firstName: '',
-                lastName: '',
                 email: '',
-                phone: '',
-                birthDate: '',
-                gender: '',
-                address: '',
-                addressLine2: '',
-                city: '',
-                state: '',
-                zipCode: '',
                 country: '',
-                username: '',
-                password: '',
-                confirmPassword: '',
-                contactPreference: 'email',
-                interests: [],
-                preferredTime: '',
-                preferredDate: '',
-                newsletter: false,
-                darkMode: false,
-                alphanumericOnly: '',
-                satisfactionLevel: 50,
-                comments: '',
-                termsAgreement: false
+                department: '',
+                birthDate: '',
+                contactPreference: 'email'
             });
-            
-            const [errors, setErrors] = React.useState({});
-            const [showDialog, setShowDialog] = React.useState(false);
+
             const [showSuccess, setShowSuccess] = React.useState(false);
             const [fileName, setFileName] = React.useState('No file selected');
-            
+
             const handleChange = (e) => {
-                const { name, value, type, checked } = e.target;
-                
-                if (type === 'checkbox' && name === 'interests') {
-                    const updatedInterests = [...formData.interests];
-                    if (checked) {
-                        updatedInterests.push(value);
-                    } else {
-                        const index = updatedInterests.indexOf(value);
-                        if (index > -1) {
-                            updatedInterests.splice(index, 1);
-                        }
-                    }
-                    setFormData({ ...formData, interests: updatedInterests });
-                } else if (type === 'checkbox') {
-                    setFormData({ ...formData, [name]: checked });
-                } else {
-                    setFormData({ ...formData, [name]: value });
-                }
-                
-                // Clear error when field is changed
-                if (errors[name]) {
-                    setErrors({ ...errors, [name]: null });
-                }
-                
-                // Special handling for alphanumeric field
-                if (name === 'alphanumericOnly') {
-                    const alphanumericValue = value.replace(/[^a-zA-Z0-9]/g, '');
-                    setFormData({ ...formData, [name]: alphanumericValue });
-                }
+                const { name, value } = e.target;
+                setFormData({ ...formData, [name]: value });
             };
-            
+
             const handleFileChange = (e) => {
                 if (e.target.files.length > 0) {
                     setFileName(e.target.files[0].name);
@@ -236,90 +187,14 @@
                     setFileName('No file selected');
                 }
             };
-            
-            const validateForm = () => {
-                const newErrors = {};
-                
-                // Required fields
-                if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-                if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-                if (!formData.address.trim()) newErrors.address = 'Street address is required';
-                if (!formData.city.trim()) newErrors.city = 'City is required';
-                if (!formData.state) newErrors.state = 'State is required';
-                if (!formData.zipCode.trim()) newErrors.zipCode = 'Zip code is required';
-                if (!formData.country) newErrors.country = 'Country is required';
-                if (!formData.username.trim()) newErrors.username = 'Username is required';
-                if (!formData.password.trim()) newErrors.password = 'Password is required';
-                if (!formData.confirmPassword.trim()) newErrors.confirmPassword = 'Please confirm your password';
-                if (!formData.termsAgreement) newErrors.termsAgreement = 'You must agree to the terms and conditions';
-                
-                // Email validation
-                if (formData.email) {
-                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailPattern.test(formData.email)) {
-                        newErrors.email = 'Please enter a valid email address';
-                    }
-                } else {
-                    newErrors.email = 'Email is required';
-                }
-                
-                // Phone validation (if provided)
-                if (formData.phone) {
-                    const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                    if (!phonePattern.test(formData.phone)) {
-                        newErrors.phone = 'Please enter a valid phone number (format: 123-456-7890)';
-                    }
-                }
-                
-                // Zip code validation
-                if (formData.zipCode) {
-                    const zipPattern = /^\d{5}(-\d{4})?$/;
-                    if (!zipPattern.test(formData.zipCode)) {
-                        newErrors.zipCode = 'Please enter a valid zip code';
-                    }
-                }
-                
-                // Username length validation
-                if (formData.username && formData.username.length < 4) {
-                    newErrors.username = 'Username must be at least 4 characters';
-                }
-                
-                // Password length validation
-                if (formData.password && formData.password.length < 8) {
-                    newErrors.password = 'Password must be at least 8 characters';
-                }
-                
-                // Password match validation
-                if (formData.password !== formData.confirmPassword) {
-                    newErrors.confirmPassword = 'Passwords must match';
-                }
-                
-                setErrors(newErrors);
-                return Object.keys(newErrors).length === 0;
-            };
-            
+
             const handleSubmit = (e) => {
                 e.preventDefault();
-                if (validateForm()) {
-                    console.log('Form submitted successfully!', formData);
-                    setShowSuccess(true);
-                    setTimeout(() => {
-                        setShowSuccess(false);
-                    }, 3000);
-                }
-            };
-            
-            const handleOpenDialog = () => {
-                setShowDialog(true);
-            };
-            
-            const handleCloseDialog = () => {
-                setShowDialog(false);
-            };
-            
-            const handleTermsClick = (e) => {
-                e.preventDefault();
-                alert('Terms and Conditions would be displayed here.');
+                console.log('Form submitted successfully!', formData);
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setShowSuccess(false);
+                }, 3000);
             };
             
             return (
