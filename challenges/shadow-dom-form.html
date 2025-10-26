@@ -1,795 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow DOM Form</title>
-    <style>
-        :root {
-            --primary-color: #4a90e2;
-            --error-color: #e74c3c;
-            --success-color: #2ecc71;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-top: 0;
-        }
-        
-        p {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .alert {
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .alert-success {
-            background-color: rgba(46, 204, 113, 0.2);
-            border: 1px solid var(--success-color);
-            color: #27ae60;
-        }
-        
-        /* Default styles for our custom elements */
-        custom-form-section {
-            display: block;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #f5f7fa;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-        
-        custom-form-field {
-            display: block;
-            margin-bottom: 20px;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Shadow DOM Form</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f5f7fa;
+			padding: 40px 20px;
+		}
+
+		.container {
+			max-width: 700px;
+			margin: 0 auto;
+			background: white;
+			padding: 40px;
+			border-radius: 12px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		}
+
+		h1 {
+			color: #2c3e50;
+			margin-bottom: 10px;
+		}
+
+		.subtitle {
+			color: #6c757d;
+			margin-bottom: 30px;
+		}
+	</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Shadow DOM Form</h1>
-        <p>This form uses Shadow DOM to encapsulate form elements, which might make autofill challenging.</p>
-        
-        <div class="alert alert-success" id="success-message">
-            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
-        </div>
-        
-        <div id="shadow-form-container">
-            <!-- Our custom elements will be rendered here -->
-        </div>
-    </div>
-    
-    <template id="form-template">
-        <style>
-            .shadow-form {
-                padding: 20px;
-            }
-            
-            .form-title {
-                color: var(--primary-color);
-                border-bottom: 1px solid #eee;
-                padding-bottom: 10px;
-                margin-top: 0;
-            }
-            
-            .form-buttons {
-                margin-top: 30px;
-                text-align: center;
-            }
-            
-            .btn {
-                display: inline-block;
-                padding: 10px 20px;
-                border-radius: 4px;
-                font-weight: bold;
-                cursor: pointer;
-                transition: all 0.3s;
-                border: none;
-                margin: 0 5px;
-            }
-            
-            .btn-primary {
-                background-color: var(--primary-color);
-                color: white;
-            }
-            
-            .btn-primary:hover {
-                background-color: #3a7bc8;
-            }
-            
-            .btn-danger {
-                background-color: var(--error-color);
-                color: white;
-            }
-            
-            .btn-danger:hover {
-                background-color: #c0392b;
-            }
-            
-            .btn-secondary {
-                background-color: #95a5a6;
-                color: white;
-            }
-            
-            .btn-secondary:hover {
-                background-color: #7f8c8d;
-            }
-        </style>
-        <form class="shadow-form">
-            <slot></slot>
-            
-            <div class="form-buttons">
-                <button type="submit" class="btn btn-primary">Submit Form</button>
-                <button type="button" class="btn btn-danger" id="modal-button">Open Modal</button>
-                <button type="reset" class="btn btn-secondary">Reset Form</button>
-            </div>
-        </form>
-    </template>
-    
-    <template id="form-section-template">
-        <style>
-            .section-title {
-                color: var(--primary-color);
-                border-bottom: 1px solid #eee;
-                padding-bottom: 10px;
-                margin-top: 0;
-            }
-        </style>
-        <div class="form-section">
-            <h3 class="section-title"><slot name="title"></slot></h3>
-            <div class="section-content">
-                <slot></slot>
-            </div>
-        </div>
-    </template>
-    
-    <template id="form-field-template">
-        <style>
-            .form-field {
-                margin-bottom: 15px;
-            }
-            
-            .form-label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-            
-            .form-label.required::after {
-                content: " *";
-                color: var(--error-color);
-            }
-            
-            .form-input, 
-            .form-select,
-            .form-textarea {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 16px;
-                transition: border-color 0.3s;
-                box-sizing: border-box;
-            }
-            
-            .form-input:focus, 
-            .form-select:focus,
-            .form-textarea:focus {
-                border-color: var(--primary-color);
-                outline: none;
-            }
-            
-            .form-error {
-                color: var(--error-color);
-                font-size: 14px;
-                margin-top: 5px;
-                display: none;
-            }
-            
-            .form-help {
-                color: #7f8c8d;
-                font-size: 14px;
-                margin-top: 5px;
-            }
-            
-            .checkbox-field,
-            .radio-field {
-                display: flex;
-                align-items: center;
-                margin-bottom: 10px;
-            }
-            
-            .checkbox-input,
-            .radio-input {
-                margin-right: 10px;
-            }
-        </style>
-        <div class="form-field">
-            <label id="field-label" class="form-label">
-                <slot name="label"></slot>
-            </label>
-            <div class="field-input-container">
-                <slot name="input"></slot>
-            </div>
-            <div class="form-error">
-                <slot name="error"></slot>
-            </div>
-            <div class="form-help">
-                <slot name="help"></slot>
-            </div>
-        </div>
-    </template>
-    
-    <template id="modal-template">
-        <style>
-            .modal-backdrop {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
-            }
-            
-            .modal-container {
-                background-color: white;
-                border-radius: 8px;
-                max-width: 500px;
-                width: 90%;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            }
-            
-            .modal-header {
-                padding: 15px 20px;
-                border-bottom: 1px solid #eee;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            
-            .modal-title {
-                margin: 0;
-                font-size: 18px;
-            }
-            
-            .modal-close {
-                background: none;
-                border: none;
-                font-size: 22px;
-                cursor: pointer;
-                color: #95a5a6;
-            }
-            
-            .modal-body {
-                padding: 20px;
-            }
-            
-            .modal-footer {
-                padding: 15px 20px;
-                border-top: 1px solid #eee;
-                text-align: right;
-            }
-        </style>
-        <div class="modal-backdrop">
-            <div class="modal-container">
-                <div class="modal-header">
-                    <h3 class="modal-title">Red Herring Modal</h3>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>This is a red herring modal instead of submitting the form.</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary">Close</button>
-                </div>
-            </div>
-        </div>
-    </template>
-    
-    <script>
-        class CustomForm extends HTMLElement {
-            constructor() {
-                super();
-                
-                // Create shadow DOM
-                this.attachShadow({ mode: 'open' });
-                
-                // Get the template
-                const template = document.getElementById('form-template');
-                const templateContent = template.content.cloneNode(true);
-                
-                // Add event listeners
-                this.shadowRoot.appendChild(templateContent);
-                
-                const form = this.shadowRoot.querySelector('form');
-                form.addEventListener('submit', this.handleSubmit.bind(this));
-                
-                const modalButton = this.shadowRoot.querySelector('#modal-button');
-                modalButton.addEventListener('click', this.openModal.bind(this));
-            }
-            
-            handleSubmit(event) {
-                event.preventDefault();
-                
-                // Validate form
-                const formFields = document.querySelectorAll('custom-form-field');
-                let isValid = true;
-                
-                formFields.forEach(field => {
-                    const isRequired = field.hasAttribute('required');
-                    const inputElement = field.shadowRoot.querySelector('.field-input-container').querySelector('input, select, textarea');
-                    const errorElement = field.shadowRoot.querySelector('.form-error');
-                    
-                    if (isRequired && !inputElement.value.trim()) {
-                        errorElement.style.display = 'block';
-                        isValid = false;
-                    } else {
-                        errorElement.style.display = 'none';
-                    }
-                    
-                    // Check email format
-                    if (inputElement.type === 'email' && inputElement.value) {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(inputElement.value)) {
-                            errorElement.style.display = 'block';
-                            isValid = false;
-                        }
-                    }
-                });
-                
-                if (isValid) {
-                    console.log('Form submitted successfully!');
-                    document.getElementById('success-message').style.display = 'block';
-                    
-                    // Hide success message after 3 seconds
-                    setTimeout(function() {
-                        document.getElementById('success-message').style.display = 'none';
-                    }, 3000);
-                }
-            }
-            
-            openModal() {
-                const modalTemplate = document.getElementById('modal-template');
-                const modalContent = modalTemplate.content.cloneNode(true);
-                
-                // Append modal to document body
-                document.body.appendChild(modalContent);
-                
-                // Add event listener to close button
-                const closeButton = document.querySelector('.modal-close');
-                const closeModalButton = document.querySelector('.modal-footer .btn');
-                const modalBackdrop = document.querySelector('.modal-backdrop');
-                
-                const closeModal = () => {
-                    document.body.removeChild(modalBackdrop);
-                };
-                
-                closeButton.addEventListener('click', closeModal);
-                closeModalButton.addEventListener('click', closeModal);
-                modalBackdrop.addEventListener('click', (event) => {
-                    if (event.target === modalBackdrop) {
-                        closeModal();
-                    }
-                });
-            }
-        }
-        
-        class FormSection extends HTMLElement {
-            constructor() {
-                super();
-                
-                // Create shadow DOM
-                this.attachShadow({ mode: 'open' });
-                
-                // Get the template
-                const template = document.getElementById('form-section-template');
-                const templateContent = template.content.cloneNode(true);
-                
-                // Add to shadow DOM
-                this.shadowRoot.appendChild(templateContent);
-            }
-        }
-        
-        class FormField extends HTMLElement {
-            constructor() {
-                super();
-                
-                // Create shadow DOM
-                this.attachShadow({ mode: 'open' });
-                
-                // Get the template
-                const template = document.getElementById('form-field-template');
-                const templateContent = template.content.cloneNode(true);
-                
-                // Add to shadow DOM
-                this.shadowRoot.appendChild(templateContent);
-                
-                // Add required class if needed
-                if (this.hasAttribute('required')) {
-                    const label = this.shadowRoot.querySelector('.form-label');
-                    label.classList.add('required');
-                }
-            }
-        }
-        
-        // Define the custom elements
-        customElements.define('custom-form', CustomForm);
-        customElements.define('custom-form-section', FormSection);
-        customElements.define('custom-form-field', FormField);
-        
-        // After DOM is loaded, create the form
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('shadow-form-container');
-            
-            // Create custom form
-            const form = document.createElement('custom-form');
-            
-            // Personal Information Section
-            const personalSection = document.createElement('custom-form-section');
-            const personalTitle = document.createElement('span');
-            personalTitle.slot = 'title';
-            personalTitle.textContent = 'Personal Information';
-            personalSection.appendChild(personalTitle);
-            
-            // First Name Field
-            const firstNameField = document.createElement('custom-form-field');
-            firstNameField.setAttribute('required', '');
-            
-            const firstNameLabel = document.createElement('span');
-            firstNameLabel.slot = 'label';
-            firstNameLabel.textContent = 'First Name';
-            
-            const firstNameInput = document.createElement('input');
-            firstNameInput.type = 'text';
-            firstNameInput.name = 'firstName';
-            firstNameInput.id = 'firstName';
-            firstNameInput.className = 'form-input';
-            firstNameInput.slot = 'input';
-            
-            const firstNameError = document.createElement('span');
-            firstNameError.slot = 'error';
-            firstNameError.textContent = 'First name is required';
-            
-            firstNameField.appendChild(firstNameLabel);
-            firstNameField.appendChild(firstNameInput);
-            firstNameField.appendChild(firstNameError);
-            
-            // Last Name Field
-            const lastNameField = document.createElement('custom-form-field');
-            lastNameField.setAttribute('required', '');
-            
-            const lastNameLabel = document.createElement('span');
-            lastNameLabel.slot = 'label';
-            lastNameLabel.textContent = 'Last Name';
-            
-            const lastNameInput = document.createElement('input');
-            lastNameInput.type = 'text';
-            lastNameInput.name = 'lastName';
-            lastNameInput.id = 'lastName';
-            lastNameInput.className = 'form-input';
-            lastNameInput.slot = 'input';
-            
-            const lastNameError = document.createElement('span');
-            lastNameError.slot = 'error';
-            lastNameError.textContent = 'Last name is required';
-            
-            lastNameField.appendChild(lastNameLabel);
-            lastNameField.appendChild(lastNameInput);
-            lastNameField.appendChild(lastNameError);
-            
-            // Email Field
-            const emailField = document.createElement('custom-form-field');
-            emailField.setAttribute('required', '');
-            
-            const emailLabel = document.createElement('span');
-            emailLabel.slot = 'label';
-            emailLabel.textContent = 'Email Address';
-            
-            const emailInput = document.createElement('input');
-            emailInput.type = 'email';
-            emailInput.name = 'email';
-            emailInput.id = 'email';
-            emailInput.className = 'form-input';
-            emailInput.slot = 'input';
-            
-            const emailError = document.createElement('span');
-            emailError.slot = 'error';
-            emailError.textContent = 'Please enter a valid email address';
-            
-            emailField.appendChild(emailLabel);
-            emailField.appendChild(emailInput);
-            emailField.appendChild(emailError);
-            
-            // Phone Field
-            const phoneField = document.createElement('custom-form-field');
-            
-            const phoneLabel = document.createElement('span');
-            phoneLabel.slot = 'label';
-            phoneLabel.textContent = 'Phone Number';
-            
-            const phoneInput = document.createElement('input');
-            phoneInput.type = 'tel';
-            phoneInput.name = 'phone';
-            phoneInput.id = 'phone';
-            phoneInput.className = 'form-input';
-            phoneInput.placeholder = '123-456-7890';
-            phoneInput.slot = 'input';
-            
-            const phoneHelp = document.createElement('span');
-            phoneHelp.slot = 'help';
-            phoneHelp.textContent = 'Format: 123-456-7890';
-            
-            phoneField.appendChild(phoneLabel);
-            phoneField.appendChild(phoneInput);
-            phoneField.appendChild(phoneHelp);
-            
-            // Add fields to personal section
-            personalSection.appendChild(firstNameField);
-            personalSection.appendChild(lastNameField);
-            personalSection.appendChild(emailField);
-            personalSection.appendChild(phoneField);
-            
-            // Address Section
-            const addressSection = document.createElement('custom-form-section');
-            const addressTitle = document.createElement('span');
-            addressTitle.slot = 'title';
-            addressTitle.textContent = 'Address Information';
-            addressSection.appendChild(addressTitle);
-            
-            // Street Address Field
-            const streetField = document.createElement('custom-form-field');
-            streetField.setAttribute('required', '');
-            
-            const streetLabel = document.createElement('span');
-            streetLabel.slot = 'label';
-            streetLabel.textContent = 'Street Address';
-            
-            const streetInput = document.createElement('input');
-            streetInput.type = 'text';
-            streetInput.name = 'street';
-            streetInput.id = 'street';
-            streetInput.className = 'form-input';
-            streetInput.slot = 'input';
-            
-            const streetError = document.createElement('span');
-            streetError.slot = 'error';
-            streetError.textContent = 'Street address is required';
-            
-            streetField.appendChild(streetLabel);
-            streetField.appendChild(streetInput);
-            streetField.appendChild(streetError);
-            
-            // City Field
-            const cityField = document.createElement('custom-form-field');
-            cityField.setAttribute('required', '');
-            
-            const cityLabel = document.createElement('span');
-            cityLabel.slot = 'label';
-            cityLabel.textContent = 'City';
-            
-            const cityInput = document.createElement('input');
-            cityInput.type = 'text';
-            cityInput.name = 'city';
-            cityInput.id = 'city';
-            cityInput.className = 'form-input';
-            cityInput.slot = 'input';
-            
-            const cityError = document.createElement('span');
-            cityError.slot = 'error';
-            cityError.textContent = 'City is required';
-            
-            cityField.appendChild(cityLabel);
-            cityField.appendChild(cityInput);
-            cityField.appendChild(cityError);
-            
-            // State Field
-            const stateField = document.createElement('custom-form-field');
-            stateField.setAttribute('required', '');
-            
-            const stateLabel = document.createElement('span');
-            stateLabel.slot = 'label';
-            stateLabel.textContent = 'State';
-            
-            const stateSelect = document.createElement('select');
-            stateSelect.name = 'state';
-            stateSelect.id = 'state';
-            stateSelect.className = 'form-select';
-            stateSelect.slot = 'input';
-            
-            // Add options to state select
-            const stateOptions = [
-                { value: '', text: 'Select State' },
-                { value: 'AL', text: 'Alabama' },
-                { value: 'AK', text: 'Alaska' },
-                { value: 'AZ', text: 'Arizona' },
-                { value: 'CA', text: 'California' },
-                { value: 'CO', text: 'Colorado' },
-                { value: 'CT', text: 'Connecticut' },
-                { value: 'FL', text: 'Florida' },
-                { value: 'GA', text: 'Georgia' },
-                { value: 'HI', text: 'Hawaii' },
-                { value: 'ID', text: 'Idaho' },
-                { value: 'NY', text: 'New York' },
-                { value: 'TX', text: 'Texas' },
-                { value: 'WA', text: 'Washington' }
-            ];
-            
-            stateOptions.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.text;
-                stateSelect.appendChild(optionElement);
-            });
-            
-            const stateError = document.createElement('span');
-            stateError.slot = 'error';
-            stateError.textContent = 'Please select a state';
-            
-            stateField.appendChild(stateLabel);
-            stateField.appendChild(stateSelect);
-            stateField.appendChild(stateError);
-            
-            // Zip Code Field
-            const zipField = document.createElement('custom-form-field');
-            zipField.setAttribute('required', '');
-            
-            const zipLabel = document.createElement('span');
-            zipLabel.slot = 'label';
-            zipLabel.textContent = 'Zip Code';
-            
-            const zipInput = document.createElement('input');
-            zipInput.type = 'text';
-            zipInput.name = 'zipCode';
-            zipInput.id = 'zipCode';
-            zipInput.className = 'form-input';
-            zipInput.slot = 'input';
-            
-            const zipError = document.createElement('span');
-            zipError.slot = 'error';
-            zipError.textContent = 'Please enter a valid zip code';
-            
-            zipField.appendChild(zipLabel);
-            zipField.appendChild(zipInput);
-            zipField.appendChild(zipError);
-            
-            // Add fields to address section
-            addressSection.appendChild(streetField);
-            addressSection.appendChild(cityField);
-            addressSection.appendChild(stateField);
-            addressSection.appendChild(zipField);
-            
-            // Additional Fields Section
-            const additionalSection = document.createElement('custom-form-section');
-            const additionalTitle = document.createElement('span');
-            additionalTitle.slot = 'title';
-            additionalTitle.textContent = 'Additional Fields';
-            additionalSection.appendChild(additionalTitle);
-            
-            // Date Field
-            const dateField = document.createElement('custom-form-field');
-            
-            const dateLabel = document.createElement('span');
-            dateLabel.slot = 'label';
-            dateLabel.textContent = 'Date of Birth';
-            
-            const dateInput = document.createElement('input');
-            dateInput.type = 'date';
-            dateInput.name = 'dob';
-            dateInput.id = 'dob';
-            dateInput.className = 'form-input';
-            dateInput.slot = 'input';
-            
-            dateField.appendChild(dateLabel);
-            dateField.appendChild(dateInput);
-            
-            // Time Field
-            const timeField = document.createElement('custom-form-field');
-            
-            const timeLabel = document.createElement('span');
-            timeLabel.slot = 'label';
-            timeLabel.textContent = 'Preferred Time';
-            
-            const timeInput = document.createElement('input');
-            timeInput.type = 'time';
-            timeInput.name = 'preferredTime';
-            timeInput.id = 'preferredTime';
-            timeInput.className = 'form-input';
-            timeInput.slot = 'input';
-            
-            timeField.appendChild(timeLabel);
-            timeField.appendChild(timeInput);
-            
-            // Alphanumeric Field
-            const alphanumericField = document.createElement('custom-form-field');
-            
-            const alphanumericLabel = document.createElement('span');
-            alphanumericLabel.slot = 'label';
-            alphanumericLabel.textContent = 'Alphanumeric Only';
-            
-            const alphanumericInput = document.createElement('input');
-            alphanumericInput.type = 'text';
-            alphanumericInput.name = 'alphanumeric';
-            alphanumericInput.id = 'alphanumeric';
-            alphanumericInput.className = 'form-input';
-            alphanumericInput.slot = 'input';
-            
-            const alphanumericHelp = document.createElement('span');
-            alphanumericHelp.slot = 'help';
-            alphanumericHelp.textContent = 'Only letters and numbers are allowed';
-            
-            alphanumericField.appendChild(alphanumericLabel);
-            alphanumericField.appendChild(alphanumericInput);
-            alphanumericField.appendChild(alphanumericHelp);
-            
-            // Disabled Field
-            const disabledField = document.createElement('custom-form-field');
-            
-            const disabledLabel = document.createElement('span');
-            disabledLabel.slot = 'label';
-            disabledLabel.textContent = 'Disabled Field';
-            
-            const disabledInput = document.createElement('input');
-            disabledInput.type = 'text';
-            disabledInput.name = 'disabled';
-            disabledInput.id = 'disabled';
-            disabledInput.className = 'form-input';
-            disabledInput.value = 'This field is disabled';
-            disabledInput.disabled = true;
-            disabledInput.slot = 'input';
-            
-            disabledField.appendChild(disabledLabel);
-            disabledField.appendChild(disabledInput);
-            
-            // Add fields to additional section
-            additionalSection.appendChild(dateField);
-            additionalSection.appendChild(timeField);
-            additionalSection.appendChild(alphanumericField);
-            additionalSection.appendChild(disabledField);
-            
-            // Add sections to form
-            form.appendChild(personalSection);
-            form.appendChild(addressSection);
-            form.appendChild(additionalSection);
-            
-            // Add form to container
-            container.appendChild(form);
-            
-            // Handle alphanumeric field input
-            const alphanumericInputField = document.getElementById('alphanumeric');
-            if (alphanumericInputField) {
-                alphanumericInputField.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-            }
-        });
-    </script>
+	<div class="container">
+		<h1 class="text-center">Shadow DOM Form</h1>
+		<p class="text-center subtitle">Form fields are encapsulated within Shadow DOM</p>
+
+		<div class="alert alert-success" id="successMessage" style="display: none;">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<custom-form id="shadowForm"></custom-form>
+	</div>
+
+	<script>
+		class CustomForm extends HTMLElement {
+			constructor() {
+				super();
+				this.attachShadow({ mode: 'open' });
+
+				const style = document.createElement('style');
+				style.textContent = `
+					:host {
+						display: block;
+					}
+					.form-label {
+						font-weight: 600;
+						color: #34495e;
+						margin-bottom: 8px;
+						display: block;
+					}
+					.form-control, select {
+						width: 100%;
+						padding: 10px;
+						border: 2px solid #e0e0e0;
+						border-radius: 6px;
+						font-size: 14px;
+						margin-bottom: 15px;
+						box-sizing: border-box;
+					}
+					.form-control:focus, select:focus {
+						outline: none;
+						border-color: #3498db;
+					}
+					.form-check {
+						margin: 8px 0;
+					}
+					.btn-primary {
+						background-color: #3498db;
+						color: white;
+						border: none;
+						padding: 12px 40px;
+						font-weight: 600;
+						border-radius: 6px;
+						cursor: pointer;
+					}
+					.btn-primary:hover {
+						background-color: #2980b9;
+					}
+					.text-center {
+						text-align: center;
+					}
+				`;
+
+				const form = document.createElement('form');
+				form.innerHTML = `
+					<label class="form-label">Full Name</label>
+					<input type="text" class="form-control" name="name" required>
+
+					<label class="form-label">Email Address</label>
+					<input type="email" class="form-control" name="email" required>
+
+					<label class="form-label">Age</label>
+					<input type="number" class="form-control" name="age" min="0" max="150">
+
+					<label class="form-label">Birthdate</label>
+					<input type="date" class="form-control" name="birthdate">
+
+					<label class="form-label">Upload Resume</label>
+					<input type="file" class="form-control" name="resume">
+
+					<label class="form-label">Satisfaction: <span id="satisfactionValue">50</span></label>
+					<input type="range" class="form-control" name="satisfaction" min="0" max="100" value="50">
+
+					<label class="form-label">Country</label>
+					<select class="form-control" name="country">
+						<option value="">Select a country</option>
+						<option value="usa">United States</option>
+						<option value="canada">Canada</option>
+						<option value="uk">United Kingdom</option>
+					</select>
+
+					<label class="form-label">Interests (hold Ctrl to select multiple)</label>
+					<select class="form-control" name="interests" multiple size="3">
+						<option value="tech">Technology</option>
+						<option value="sports">Sports</option>
+						<option value="music">Music</option>
+					</select>
+
+					<label class="form-label">Gender</label>
+					<div class="form-check">
+						<input type="radio" name="gender" value="male"> Male
+					</div>
+					<div class="form-check">
+						<input type="radio" name="gender" value="female"> Female
+					</div>
+					<div class="form-check">
+						<input type="radio" name="gender" value="other"> Other
+					</div>
+
+					<label class="form-label">Preferences</label>
+					<div class="form-check">
+						<input type="checkbox" name="preferences" value="newsletter"> Newsletter
+					</div>
+					<div class="form-check">
+						<input type="checkbox" name="preferences" value="notifications"> Notifications
+					</div>
+					<div class="form-check">
+						<input type="checkbox" name="preferences" value="updates"> Updates
+					</div>
+
+					<label class="form-label">Comments</label>
+					<textarea class="form-control" name="comments" rows="3"></textarea>
+
+					<div class="text-center">
+						<button type="submit" class="btn-primary">Submit Form</button>
+					</div>
+				`;
+
+				this.shadowRoot.appendChild(style);
+				this.shadowRoot.appendChild(form);
+
+				// Range value update
+				const rangeInput = this.shadowRoot.querySelector('input[name="satisfaction"]');
+				const rangeValue = this.shadowRoot.querySelector('#satisfactionValue');
+				rangeInput.addEventListener('input', (e) => {
+					rangeValue.textContent = e.target.value;
+				});
+
+				// Form submission
+				form.addEventListener('submit', (e) => {
+					e.preventDefault();
+					document.getElementById('successMessage').style.display = 'block';
+					setTimeout(() => {
+						document.getElementById('successMessage').style.display = 'none';
+					}, 3000);
+				});
+			}
+		}
+
+		customElements.define('custom-form', CustomForm);
+	</script>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

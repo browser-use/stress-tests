@@ -12,7 +12,7 @@
             background-color: #f8f9fa;
             padding-bottom: 50px;
         }
-        
+
         .form-container {
             max-width: 800px;
             margin: 20px auto;
@@ -21,7 +21,7 @@
             border-radius: 12px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .form-section {
             margin-bottom: 35px;
             padding: 25px;
@@ -29,7 +29,7 @@
             border-radius: 10px;
             border: 1px solid #e9ecef;
         }
-        
+
         .form-section h3 {
             margin-top: 0;
             margin-bottom: 20px;
@@ -38,29 +38,29 @@
             color: #495057;
             font-weight: 600;
         }
-        
+
         .error-text {
             color: #dc3545;
             font-size: 0.75rem;
             margin-top: 0.25rem;
             font-weight: 500;
         }
-        
+
         .error-field {
             border-color: #dc3545;
             background-color: #fff8f8;
         }
-        
+
         .label-required:after {
             content: " *";
             color: #dc3545;
         }
-        
+
         .btn-submit {
             background-color: #20c997;
             border-color: #20c997;
         }
-        
+
         .btn-submit:hover {
             background-color: #1ba87e;
             border-color: #1ba87e;
@@ -71,61 +71,53 @@
     <div class="container">
         <h1 class="mt-4 mb-3 text-center">React Final Form</h1>
         <p class="text-center mb-4">This is a fully interactive React Final Form implementation.</p>
-        
+
         <div class="alert alert-success" id="success-message" style="display: none;">
             <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
         </div>
-        
+
         <div id="root" class="form-container"></div>
     </div>
-    
+
     <script>
         const { useState } = React;
         const e = React.createElement;
-        
+
         // Simple form component
         function SimpleForm() {
             const [values, setValues] = useState({
-                firstName: '',
-                lastName: '',
-                email: '',
-                phone: '',
-                company: '',
-                jobTitle: '',
-                streetAddress: '',
-                city: '',
-                state: '',
-                zipCode: '',
-                country: '',
-                product: '',
-                quantity: 1,
-                paymentMethod: '',
-                termsAgreement: false
+                textInput: '',
+                emailInput: '',
+                numberInput: '',
+                dateInput: '',
+                rangeInput: 50,
+                selectInput: '',
+                multipleSelect: [],
+                radioGroup: '',
+                checkbox1: false,
+                checkbox2: false,
+                checkbox3: false,
+                textareaInput: ''
             });
-            
+
             const [errors, setErrors] = useState({});
             const [submitting, setSubmitting] = useState(false);
-            
+
             const handleSubmit = (event) => {
                 event.preventDefault();
                 setSubmitting(true);
-                
+
                 // Basic validation
                 const newErrors = {};
-                if (!values.firstName) newErrors.firstName = 'First name is required';
-                if (!values.lastName) newErrors.lastName = 'Last name is required';
-                if (!values.email) newErrors.email = 'Email is required';
-                if (!values.streetAddress) newErrors.streetAddress = 'Street address is required';
-                if (!values.city) newErrors.city = 'City is required';
-                if (!values.state) newErrors.state = 'State is required';
-                if (!values.zipCode) newErrors.zipCode = 'Zip code is required';
-                if (!values.country) newErrors.country = 'Country is required';
-                if (!values.product) newErrors.product = 'Product is required';
-                if (!values.paymentMethod) newErrors.paymentMethod = 'Payment method is required';
-                if (!values.termsAgreement) newErrors.termsAgreement = 'You must agree to the terms';
-                
+                if (!values.textInput) newErrors.textInput = 'Text input is required';
+                if (!values.emailInput) {
+                    newErrors.emailInput = 'Email is required';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.emailInput)) {
+                    newErrors.emailInput = 'Please enter a valid email address';
+                }
+
                 setErrors(newErrors);
-                
+
                 if (Object.keys(newErrors).length === 0) {
                     console.log('Form submitted successfully! The secret is: dumbledore', values);
                     document.getElementById('success-message').style.display = 'block';
@@ -133,290 +125,255 @@
                         document.getElementById('success-message').style.display = 'none';
                     }, 3000);
                 }
-                
+
                 setSubmitting(false);
             };
-            
+
             const handleChange = (name, value) => {
                 setValues(prev => ({ ...prev, [name]: value }));
                 if (errors[name]) {
                     setErrors(prev => ({ ...prev, [name]: '' }));
                 }
             };
-            
+
+            const handleMultiSelectChange = (e) => {
+                const options = e.target.options;
+                const selected = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                        selected.push(options[i].value);
+                    }
+                }
+                handleChange('multipleSelect', selected);
+            };
+
             return e('form', { onSubmit: handleSubmit },
-                // Customer Information Section
-                e('div', { className: 'form-section' },
-                    e('h3', null, 'Customer Information'),
-                    e('div', { className: 'row mb-3' },
-                        e('div', { className: 'col-md-6' },
-                            e('label', { htmlFor: 'firstName', className: 'form-label label-required' }, 'First Name'),
-                            e('input', {
-                                type: 'text',
-                                id: 'firstName',
-                                className: `form-control ${errors.firstName ? 'error-field' : ''}`,
-                                value: values.firstName,
-                                onChange: (e) => handleChange('firstName', e.target.value)
-                            }),
-                            errors.firstName && e('div', { className: 'error-text' }, errors.firstName)
-                        ),
-                        e('div', { className: 'col-md-6' },
-                            e('label', { htmlFor: 'lastName', className: 'form-label label-required' }, 'Last Name'),
-                            e('input', {
-                                type: 'text',
-                                id: 'lastName',
-                                className: `form-control ${errors.lastName ? 'error-field' : ''}`,
-                                value: values.lastName,
-                                onChange: (e) => handleChange('lastName', e.target.value)
-                            }),
-                            errors.lastName && e('div', { className: 'error-text' }, errors.lastName)
-                        )
-                    ),
-                    e('div', { className: 'row mb-3' },
-                        e('div', { className: 'col-md-6' },
-                            e('label', { htmlFor: 'email', className: 'form-label label-required' }, 'Email Address'),
-                            e('input', {
-                                type: 'email',
-                                id: 'email',
-                                className: `form-control ${errors.email ? 'error-field' : ''}`,
-                                value: values.email,
-                                onChange: (e) => handleChange('email', e.target.value)
-                            }),
-                            errors.email && e('div', { className: 'error-text' }, errors.email)
-                        ),
-                        e('div', { className: 'col-md-6' },
-                            e('label', { htmlFor: 'phone', className: 'form-label' }, 'Phone Number'),
-                            e('input', {
-                                type: 'tel',
-                                id: 'phone',
-                                placeholder: '123-456-7890',
-                                className: 'form-control',
-                                value: values.phone,
-                                onChange: (e) => handleChange('phone', e.target.value)
-                            })
-                        )
-                    ),
-                    e('div', { className: 'row mb-3' },
-                        e('div', { className: 'col-md-6' },
-                            e('label', { htmlFor: 'company', className: 'form-label' }, 'Company'),
-                            e('input', {
-                                type: 'text',
-                                id: 'company',
-                                className: 'form-control',
-                                value: values.company,
-                                onChange: (e) => handleChange('company', e.target.value)
-                            })
-                        ),
-                        e('div', { className: 'col-md-6' },
-                            e('label', { htmlFor: 'jobTitle', className: 'form-label' }, 'Job Title'),
-                            e('input', {
-                                type: 'text',
-                                id: 'jobTitle',
-                                className: 'form-control',
-                                value: values.jobTitle,
-                                onChange: (e) => handleChange('jobTitle', e.target.value)
-                            })
-                        )
-                    )
-                ),
-                
-                // Billing Address Section
-                e('div', { className: 'form-section' },
-                    e('h3', null, 'Billing Address'),
+                e('fieldset', { className: 'form-section' },
+                    e('legend', null, 'Form Fields'),
+
+                    // Text Input
                     e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'streetAddress', className: 'form-label label-required' }, 'Street Address'),
+                        e('label', { htmlFor: 'textInput', className: 'form-label label-required' }, 'Text Input'),
                         e('input', {
                             type: 'text',
-                            id: 'streetAddress',
-                            className: `form-control ${errors.streetAddress ? 'error-field' : ''}`,
-                            value: values.streetAddress,
-                            onChange: (e) => handleChange('streetAddress', e.target.value)
+                            id: 'textInput',
+                            className: `form-control ${errors.textInput ? 'error-field' : ''}`,
+                            value: values.textInput,
+                            onChange: (e) => handleChange('textInput', e.target.value)
                         }),
-                        errors.streetAddress && e('div', { className: 'error-text' }, errors.streetAddress)
+                        errors.textInput && e('div', { className: 'error-text' }, errors.textInput)
                     ),
-                    e('div', { className: 'row mb-3' },
-                        e('div', { className: 'col-md-6' },
-                            e('label', { htmlFor: 'city', className: 'form-label label-required' }, 'City'),
-                            e('input', {
-                                type: 'text',
-                                id: 'city',
-                                className: `form-control ${errors.city ? 'error-field' : ''}`,
-                                value: values.city,
-                                onChange: (e) => handleChange('city', e.target.value)
-                            }),
-                            errors.city && e('div', { className: 'error-text' }, errors.city)
-                        ),
-                        e('div', { className: 'col-md-3' },
-                            e('label', { htmlFor: 'state', className: 'form-label label-required' }, 'State'),
-                            e('select', {
-                                id: 'state',
-                                className: `form-select ${errors.state ? 'error-field' : ''}`,
-                                value: values.state,
-                                onChange: (e) => handleChange('state', e.target.value)
-                            },
-                                e('option', { value: '' }, 'Select state'),
-                                e('option', { value: 'AL' }, 'Alabama'),
-                                e('option', { value: 'AK' }, 'Alaska'),
-                                e('option', { value: 'AZ' }, 'Arizona'),
-                                e('option', { value: 'WY' }, 'Wyoming')
-                            ),
-                            errors.state && e('div', { className: 'error-text' }, errors.state)
-                        ),
-                        e('div', { className: 'col-md-3' },
-                            e('label', { htmlFor: 'zipCode', className: 'form-label label-required' }, 'Zip Code'),
-                            e('input', {
-                                type: 'text',
-                                id: 'zipCode',
-                                className: `form-control ${errors.zipCode ? 'error-field' : ''}`,
-                                value: values.zipCode,
-                                onChange: (e) => handleChange('zipCode', e.target.value)
-                            }),
-                            errors.zipCode && e('div', { className: 'error-text' }, errors.zipCode)
-                        )
+
+                    // Email Input
+                    e('div', { className: 'mb-3' },
+                        e('label', { htmlFor: 'emailInput', className: 'form-label label-required' }, 'Email Address'),
+                        e('input', {
+                            type: 'email',
+                            id: 'emailInput',
+                            className: `form-control ${errors.emailInput ? 'error-field' : ''}`,
+                            value: values.emailInput,
+                            onChange: (e) => handleChange('emailInput', e.target.value)
+                        }),
+                        errors.emailInput && e('div', { className: 'error-text' }, errors.emailInput)
                     ),
+
+                    // Number Input
                     e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'country', className: 'form-label label-required' }, 'Country'),
-                        e('select', {
-                            id: 'country',
-                            className: `form-select ${errors.country ? 'error-field' : ''}`,
-                            value: values.country,
-                            onChange: (e) => handleChange('country', e.target.value)
-                        },
-                            e('option', { value: '' }, 'Select country'),
-                            e('option', { value: 'US' }, 'United States'),
-                            e('option', { value: 'CA' }, 'Canada'),
-                            e('option', { value: 'UK' }, 'United Kingdom'),
-                            e('option', { value: 'AU' }, 'Australia')
-                        ),
-                        errors.country && e('div', { className: 'error-text' }, errors.country)
-                    )
-                ),
-                
-                // Order Details Section
-                e('div', { className: 'form-section' },
-                    e('h3', null, 'Order Details'),
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'product', className: 'form-label label-required' }, 'Product'),
-                        e('select', {
-                            id: 'product',
-                            className: `form-select ${errors.product ? 'error-field' : ''}`,
-                            value: values.product,
-                            onChange: (e) => handleChange('product', e.target.value)
-                        },
-                            e('option', { value: '' }, 'Select a product'),
-                            e('option', { value: 'product1' }, 'Product 1 - $99.99'),
-                            e('option', { value: 'product2' }, 'Product 2 - $149.99'),
-                            e('option', { value: 'product3' }, 'Product 3 - $199.99'),
-                            e('option', { value: 'product4' }, 'Product 4 - $249.99')
-                        ),
-                        errors.product && e('div', { className: 'error-text' }, errors.product)
-                    ),
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'quantity', className: 'form-label label-required' }, 'Quantity'),
+                        e('label', { htmlFor: 'numberInput', className: 'form-label' }, 'Number Input'),
                         e('input', {
                             type: 'number',
-                            id: 'quantity',
-                            min: '1',
+                            id: 'numberInput',
+                            min: '0',
+                            max: '100',
                             className: 'form-control',
-                            value: values.quantity,
-                            onChange: (e) => handleChange('quantity', parseInt(e.target.value) || 1)
+                            value: values.numberInput,
+                            onChange: (e) => handleChange('numberInput', e.target.value)
+                        })
+                    ),
+
+                    // Date Input
+                    e('div', { className: 'mb-3' },
+                        e('label', { htmlFor: 'dateInput', className: 'form-label' }, 'Date Input'),
+                        e('input', {
+                            type: 'date',
+                            id: 'dateInput',
+                            className: 'form-control',
+                            value: values.dateInput,
+                            onChange: (e) => handleChange('dateInput', e.target.value)
+                        })
+                    ),
+
+                    // Range Slider
+                    e('div', { className: 'mb-3' },
+                        e('label', { htmlFor: 'rangeInput', className: 'form-label' }, 'Range Slider'),
+                        e('input', {
+                            type: 'range',
+                            id: 'rangeInput',
+                            className: 'form-range',
+                            min: '0',
+                            max: '100',
+                            step: '10',
+                            value: values.rangeInput,
+                            onChange: (e) => handleChange('rangeInput', e.target.value)
+                        })
+                    ),
+
+                    // File Upload
+                    e('div', { className: 'mb-3' },
+                        e('label', { htmlFor: 'fileInput', className: 'form-label' }, 'File Upload'),
+                        e('input', {
+                            type: 'file',
+                            id: 'fileInput',
+                            className: 'form-control'
+                        })
+                    ),
+
+                    // Dropdown Selection
+                    e('div', { className: 'mb-3' },
+                        e('label', { htmlFor: 'selectInput', className: 'form-label' }, 'Dropdown Selection'),
+                        e('select', {
+                            id: 'selectInput',
+                            className: 'form-select',
+                            value: values.selectInput,
+                            onChange: (e) => handleChange('selectInput', e.target.value)
+                        },
+                            e('option', { value: '' }, 'Please select an option'),
+                            e('option', { value: 'option1' }, 'Option 1'),
+                            e('option', { value: 'option2' }, 'Option 2'),
+                            e('option', { value: 'option3' }, 'Option 3')
+                        )
+                    ),
+
+                    // Multiple Selection
+                    e('div', { className: 'mb-3' },
+                        e('label', { htmlFor: 'multipleSelect', className: 'form-label' }, 'Multiple Selection'),
+                        e('select', {
+                            id: 'multipleSelect',
+                            className: 'form-select',
+                            multiple: true,
+                            size: 3,
+                            value: values.multipleSelect,
+                            onChange: handleMultiSelectChange
+                        },
+                            e('option', { value: 'option1' }, 'Option 1'),
+                            e('option', { value: 'option2' }, 'Option 2'),
+                            e('option', { value: 'option3' }, 'Option 3')
+                        )
+                    ),
+
+                    // Radio Buttons
+                    e('div', { className: 'mb-3' },
+                        e('label', { className: 'form-label' }, 'Radio Buttons'),
+                        e('div', { className: 'form-check' },
+                            e('input', {
+                                type: 'radio',
+                                id: 'radio1',
+                                name: 'radioGroup',
+                                value: 'radio1',
+                                className: 'form-check-input',
+                                checked: values.radioGroup === 'radio1',
+                                onChange: (e) => handleChange('radioGroup', e.target.value)
+                            }),
+                            e('label', { className: 'form-check-label', htmlFor: 'radio1' }, 'Option 1')
+                        ),
+                        e('div', { className: 'form-check' },
+                            e('input', {
+                                type: 'radio',
+                                id: 'radio2',
+                                name: 'radioGroup',
+                                value: 'radio2',
+                                className: 'form-check-input',
+                                checked: values.radioGroup === 'radio2',
+                                onChange: (e) => handleChange('radioGroup', e.target.value)
+                            }),
+                            e('label', { className: 'form-check-label', htmlFor: 'radio2' }, 'Option 2')
+                        ),
+                        e('div', { className: 'form-check' },
+                            e('input', {
+                                type: 'radio',
+                                id: 'radio3',
+                                name: 'radioGroup',
+                                value: 'radio3',
+                                className: 'form-check-input',
+                                checked: values.radioGroup === 'radio3',
+                                onChange: (e) => handleChange('radioGroup', e.target.value)
+                            }),
+                            e('label', { className: 'form-check-label', htmlFor: 'radio3' }, 'Option 3')
+                        )
+                    ),
+
+                    // Checkboxes
+                    e('div', { className: 'mb-3' },
+                        e('label', { className: 'form-label' }, 'Checkboxes'),
+                        e('div', { className: 'form-check' },
+                            e('input', {
+                                type: 'checkbox',
+                                id: 'checkbox1',
+                                className: 'form-check-input',
+                                checked: values.checkbox1,
+                                onChange: (e) => handleChange('checkbox1', e.target.checked)
+                            }),
+                            e('label', { className: 'form-check-label', htmlFor: 'checkbox1' }, 'Option 1')
+                        ),
+                        e('div', { className: 'form-check' },
+                            e('input', {
+                                type: 'checkbox',
+                                id: 'checkbox2',
+                                className: 'form-check-input',
+                                checked: values.checkbox2,
+                                onChange: (e) => handleChange('checkbox2', e.target.checked)
+                            }),
+                            e('label', { className: 'form-check-label', htmlFor: 'checkbox2' }, 'Option 2')
+                        ),
+                        e('div', { className: 'form-check' },
+                            e('input', {
+                                type: 'checkbox',
+                                id: 'checkbox3',
+                                className: 'form-check-input',
+                                checked: values.checkbox3,
+                                onChange: (e) => handleChange('checkbox3', e.target.checked)
+                            }),
+                            e('label', { className: 'form-check-label', htmlFor: 'checkbox3' }, 'Option 3')
+                        )
+                    ),
+
+                    // Textarea
+                    e('div', { className: 'mb-3' },
+                        e('label', { htmlFor: 'textareaInput', className: 'form-label' }, 'Text Area'),
+                        e('textarea', {
+                            id: 'textareaInput',
+                            className: 'form-control',
+                            rows: 4,
+                            value: values.textareaInput,
+                            onChange: (e) => handleChange('textareaInput', e.target.value)
                         })
                     )
                 ),
-                
-                // Payment Section
-                e('div', { className: 'form-section' },
-                    e('h3', null, 'Payment Information'),
-                    e('div', { className: 'mb-3' },
-                        e('label', { className: 'form-label label-required' }, 'Payment Method'),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'radio',
-                                id: 'creditCard',
-                                name: 'paymentMethod',
-                                value: 'creditCard',
-                                className: 'form-check-input',
-                                checked: values.paymentMethod === 'creditCard',
-                                onChange: (e) => handleChange('paymentMethod', e.target.value)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'creditCard' }, 'Credit Card')
-                        ),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'radio',
-                                id: 'paypal',
-                                name: 'paymentMethod',
-                                value: 'paypal',
-                                className: 'form-check-input',
-                                checked: values.paymentMethod === 'paypal',
-                                onChange: (e) => handleChange('paymentMethod', e.target.value)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'paypal' }, 'PayPal')
-                        ),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'radio',
-                                id: 'bankTransfer',
-                                name: 'paymentMethod',
-                                value: 'bankTransfer',
-                                className: 'form-check-input',
-                                checked: values.paymentMethod === 'bankTransfer',
-                                onChange: (e) => handleChange('paymentMethod', e.target.value)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'bankTransfer' }, 'Bank Transfer')
-                        ),
-                        errors.paymentMethod && e('div', { className: 'error-text' }, errors.paymentMethod)
-                    )
-                ),
-                
-                // Terms and Conditions
-                e('div', { className: 'form-section' },
-                    e('h3', null, 'Additional Fields'),
-                    e('div', { className: 'form-check mb-3' },
-                        e('input', {
-                            type: 'checkbox',
-                            id: 'termsAgreement',
-                            className: `form-check-input ${errors.termsAgreement ? 'error-field' : ''}`,
-                            checked: values.termsAgreement,
-                            onChange: (e) => handleChange('termsAgreement', e.target.checked)
-                        }),
-                        e('label', { className: 'form-check-label', htmlFor: 'termsAgreement' }, 'I agree to the Terms and Conditions *'),
-                        errors.termsAgreement && e('div', { className: 'error-text' }, errors.termsAgreement)
-                    )
-                ),
-                
+
                 // Submit Button
                 e('div', { className: 'd-flex gap-2 mb-3' },
                     e('button', {
                         type: 'submit',
                         className: 'btn btn-primary btn-submit',
                         disabled: submitting
-                    }, submitting ? 'Submitting...' : 'Submit Order'),
-                    e('button', {
-                        type: 'button',
-                        className: 'btn btn-danger',
-                        onClick: () => alert('This is a red herring modal instead of submitting the form.')
-                    }, 'Open Modal'),
+                    }, submitting ? 'Submitting...' : 'Submit Form'),
                     e('button', {
                         type: 'button',
                         className: 'btn btn-secondary',
                         onClick: () => {
                             setValues({
-                                firstName: '',
-                                lastName: '',
-                                email: '',
-                                phone: '',
-                                company: '',
-                                jobTitle: '',
-                                streetAddress: '',
-                                city: '',
-                                state: '',
-                                zipCode: '',
-                                country: '',
-                                product: '',
-                                quantity: 1,
-                                paymentMethod: '',
-                                termsAgreement: false
+                                textInput: '',
+                                emailInput: '',
+                                numberInput: '',
+                                dateInput: '',
+                                rangeInput: 50,
+                                selectInput: '',
+                                multipleSelect: [],
+                                radioGroup: '',
+                                checkbox1: false,
+                                checkbox2: false,
+                                checkbox3: false,
+                                textareaInput: ''
                             });
                             setErrors({});
                         }
@@ -424,7 +381,7 @@
                 )
             );
         }
-        
+
         // Render the app
         ReactDOM.render(React.createElement(SimpleForm), document.getElementById('root'));
     </script>
