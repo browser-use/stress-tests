@@ -218,14 +218,6 @@
 								name="checkboxes">
 							</wc-checkbox-group>
 
-							<wc-textarea
-								label="Text Area"
-								name="textareaInput"
-								.value="${this.formData.textareaInput}"
-								@input="${this._handleInput}">
-							</wc-textarea>
-						</fieldset>
-
 						<div>
 							<button type="submit" id="submit-button">Submit Form</button>
 							<button type="reset" @click="${() => this.formData = {
@@ -511,12 +503,7 @@
 			render() {
 				return html`
 					<label>${this.label}:</label>
-					<textarea
-						name="${this.name}"
-						.value="${this.value}"
-						rows="4"
-					></textarea>
-				`;
+					`;
 			}
 		}
 

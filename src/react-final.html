@@ -164,33 +164,6 @@
                         errors.textInput && e('div', { className: 'error-text' }, errors.textInput)
                     ),
 
-                    // Email Input
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'emailInput', className: 'form-label label-required' }, 'Email Address'),
-                        e('input', {
-                            type: 'email',
-                            id: 'emailInput',
-                            className: `form-control ${errors.emailInput ? 'error-field' : ''}`,
-                            value: values.emailInput,
-                            onChange: (e) => handleChange('emailInput', e.target.value)
-                        }),
-                        errors.emailInput && e('div', { className: 'error-text' }, errors.emailInput)
-                    ),
-
-                    // Number Input
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'numberInput', className: 'form-label' }, 'Number Input'),
-                        e('input', {
-                            type: 'number',
-                            id: 'numberInput',
-                            min: '0',
-                            max: '100',
-                            className: 'form-control',
-                            value: values.numberInput,
-                            onChange: (e) => handleChange('numberInput', e.target.value)
-                        })
-                    ),
-
                     // Date Input
                     e('div', { className: 'mb-3' },
                         e('label', { htmlFor: 'dateInput', className: 'form-label' }, 'Date Input'),
@@ -200,21 +173,6 @@
                             className: 'form-control',
                             value: values.dateInput,
                             onChange: (e) => handleChange('dateInput', e.target.value)
-                        })
-                    ),
-
-                    // Range Slider
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'rangeInput', className: 'form-label' }, 'Range Slider'),
-                        e('input', {
-                            type: 'range',
-                            id: 'rangeInput',
-                            className: 'form-range',
-                            min: '0',
-                            max: '100',
-                            step: '10',
-                            value: values.rangeInput,
-                            onChange: (e) => handleChange('rangeInput', e.target.value)
                         })
                     ),
 
@@ -238,23 +196,6 @@
                             onChange: (e) => handleChange('selectInput', e.target.value)
                         },
                             e('option', { value: '' }, 'Please select an option'),
-                            e('option', { value: 'option1' }, 'Option 1'),
-                            e('option', { value: 'option2' }, 'Option 2'),
-                            e('option', { value: 'option3' }, 'Option 3')
-                        )
-                    ),
-
-                    // Multiple Selection
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'multipleSelect', className: 'form-label' }, 'Multiple Selection'),
-                        e('select', {
-                            id: 'multipleSelect',
-                            className: 'form-select',
-                            multiple: true,
-                            size: 3,
-                            value: values.multipleSelect,
-                            onChange: handleMultiSelectChange
-                        },
                             e('option', { value: 'option1' }, 'Option 1'),
                             e('option', { value: 'option2' }, 'Option 2'),
                             e('option', { value: 'option3' }, 'Option 3')
@@ -336,18 +277,6 @@
                             e('label', { className: 'form-check-label', htmlFor: 'checkbox3' }, 'Option 3')
                         )
                     ),
-
-                    // Textarea
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'textareaInput', className: 'form-label' }, 'Text Area'),
-                        e('textarea', {
-                            id: 'textareaInput',
-                            className: 'form-control',
-                            rows: 4,
-                            value: values.textareaInput,
-                            onChange: (e) => handleChange('textareaInput', e.target.value)
-                        })
-                    )
                 ),
 
                 // Submit Button
