@@ -137,10 +137,280 @@
     </style>
 </head>
 <body>
-    }
+    <div class="container">
+        <h1>React Native Web Form</h1>
+        <p>This form uses React Native Web components, which have unusual DOM structures.</p>
+
+        <div class="alert-success" id="success-message">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+
+        <div id="root"></div>
+    </div>
+
+    <script type="text/babel">
+        class ReactNativeWebForm extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    textInput: '',
+                    emailInput: '',
+                    numberInput: '',
+                    dateInput: '',
+                    rangeInput: 50,
+                    selectInput: '',
+                    multipleSelect: [],
+                    radioGroup: '',
+                    checkbox1: false,
+                    checkbox2: false,
+                    checkbox3: false,
+                    textareaInput: '',
+                    errors: {}
+                };
+            }
+
+            validateForm = () => {
+                const { textInput, emailInput } = this.state;
+                let errors = {};
+                let isValid = true;
+
+                if (!textInput.trim()) {
+                    errors.textInput = 'Text input is required';
+                    isValid = false;
+                }
+
+                if (!emailInput.trim()) {
+                    errors.emailInput = 'Email is required';
+                    isValid = false;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
+                    errors.emailInput = 'Please enter a valid email address';
+                    isValid = false;
+                }
+
+                this.setState({ errors });
+                return isValid;
+            }
+
+            handleSubmit = (e) => {
+                e.preventDefault();
+
+                if (this.validateForm()) {
+                    console.log('Form submitted successfully! The secret is: dumbledore', this.state);
+
+                    const successMessage = document.getElementById('success-message');
+                    if (successMessage) {
+                        successMessage.style.display = 'block';
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+                    }
+                }
+            }
+
+            handleChange = (name, value) => {
+                this.setState({ [name]: value });
+            }
+
+            handleMultiSelectChange = (e) => {
+                const options = e.target.options;
+                const selected = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                        selected.push(options[i].value);
+                    }
+                }
+                this.setState({ multipleSelect: selected });
+            }
+
+            handleReset = () => {
+                this.setState({
+                    textInput: '',
+                    emailInput: '',
+                    numberInput: '',
+                    dateInput: '',
+                    rangeInput: 50,
+                    selectInput: '',
+                    multipleSelect: [],
+                    radioGroup: '',
+                    checkbox1: false,
+                    checkbox2: false,
+                    checkbox3: false,
+                    textareaInput: '',
+                    errors: {}
+                });
+            }
+
+            render() {
+                const { errors } = this.state;
+
+                return (
+                    <form onSubmit={this.handleSubmit}>
+                        <div className="form-section">
+                            <div className="form-section-title">Form Fields</div>
+
+                            <div className="form-field">
+                                <label className="required">Text Input</label>
+                                <input
+                                    type="text"
+                                    className={errors.textInput ? 'invalid-field' : ''}
+                                    value={this.state.textInput}
+                                    onChange={(e) => this.handleChange('textInput', e.target.value)}
+                                />
+                                {errors.textInput && <div className="error-text">{errors.textInput}</div>}
                             </div>
 
+                            <div className="form-field">
+                                <label className="required">Email Address</label>
+                                <input
+                                    type="email"
+                                    className={errors.emailInput ? 'invalid-field' : ''}
+                                    value={this.state.emailInput}
+                                    onChange={(e) => this.handleChange('emailInput', e.target.value)}
+                                />
+                                {errors.emailInput && <div className="error-text">{errors.emailInput}</div>}
                             </div>
+
+                            <div className="form-field">
+                                <label>Number Input</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={this.state.numberInput}
+                                    onChange={(e) => this.handleChange('numberInput', e.target.value)}
+                                />
+                            </div>
+
+                            <div className="form-field">
+                                <label>Date Input</label>
+                                <input
+                                    type="date"
+                                    value={this.state.dateInput}
+                                    onChange={(e) => this.handleChange('dateInput', e.target.value)}
+                                />
+                            </div>
+
+                            <div className="form-field">
+                                <label>Range Slider</label>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    step="10"
+                                    value={this.state.rangeInput}
+                                    onChange={(e) => this.handleChange('rangeInput', e.target.value)}
+                                />
+                            </div>
+
+                            <div className="form-field">
+                                <label>File Upload</label>
+                                <input type="file" />
+                            </div>
+
+                            <div className="form-field">
+                                <label>Dropdown Selection</label>
+                                <select
+                                    value={this.state.selectInput}
+                                    onChange={(e) => this.handleChange('selectInput', e.target.value)}
+                                >
+                                    <option value="">Please select an option</option>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="form-field">
+                                <label>Multiple Selection</label>
+                                <select
+                                    multiple
+                                    size="3"
+                                    value={this.state.multipleSelect}
+                                    onChange={this.handleMultiSelectChange}
+                                >
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="form-field">
+                                <label>Radio Buttons</label>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}>
+                                        <input
+                                            type="radio"
+                                            name="radioGroup"
+                                            value="radio1"
+                                            checked={this.state.radioGroup === 'radio1'}
+                                            onChange={(e) => this.handleChange('radioGroup', e.target.value)}
+                                        /> Option 1
+                                    </label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}>
+                                        <input
+                                            type="radio"
+                                            name="radioGroup"
+                                            value="radio2"
+                                            checked={this.state.radioGroup === 'radio2'}
+                                            onChange={(e) => this.handleChange('radioGroup', e.target.value)}
+                                        /> Option 2
+                                    </label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}>
+                                        <input
+                                            type="radio"
+                                            name="radioGroup"
+                                            value="radio3"
+                                            checked={this.state.radioGroup === 'radio3'}
+                                            onChange={(e) => this.handleChange('radioGroup', e.target.value)}
+                                        /> Option 3
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="form-field">
+                                <label>Checkboxes</label>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={this.state.checkbox1}
+                                            onChange={(e) => this.handleChange('checkbox1', e.target.checked)}
+                                        /> Option 1
+                                    </label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={this.state.checkbox2}
+                                            onChange={(e) => this.handleChange('checkbox2', e.target.checked)}
+                                        /> Option 2
+                                    </label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={this.state.checkbox3}
+                                            onChange={(e) => this.handleChange('checkbox3', e.target.checked)}
+                                        /> Option 3
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="form-field">
+                                <label>Text Area</label>
+                                <textarea
+                                    rows="4"
+                                    value={this.state.textareaInput}
+                                    onChange={(e) => this.handleChange('textareaInput', e.target.value)}
+                                ></textarea>
+                            </div>
+                        </div>
 
                         <div>
                             <button type="submit" className="button">Submit Form</button>

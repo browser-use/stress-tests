@@ -59,7 +59,28 @@
 	</style>
 </head>
 <body>
-	<!-- Number Input - Japanese -->
+	<div class="container">
+		<h1 class="text-center">نموذج بلغات متعددة</h1>
+		<p class="text-center text-muted mb-4">多言語フォーム - Многоязычная форма - 多语言表单</p>
+
+		<div class="alert alert-success mb-3" id="successMessage">
+			<strong>النجاح!</strong> السر هو: dumbledore
+		</div>
+
+		<form id="nonLatinForm">
+			<!-- Text Input - Arabic -->
+			<div class="mb-3">
+				<label for="name" class="form-label">الاسم الكامل (Full Name)</label>
+				<input type="text" class="form-control" id="name" name="name" required>
+			</div>
+
+			<!-- Email Input - Chinese -->
+			<div class="mb-3">
+				<label for="email" class="form-label">电子邮件地址 (Email)</label>
+				<input type="email" class="form-control" id="email" name="email" required>
+			</div>
+
+			<!-- Number Input - Japanese -->
 			<div class="mb-3">
 				<label for="age" class="form-label">年齢 (Age)</label>
 				<input type="number" class="form-control" id="age" name="age" min="0" max="150">

@@ -150,7 +150,64 @@
 	</style>
 </head>
 <body>
-	<div class="form-group mb-3">
+	<div class="form-container">
+		<h1 class="text-center mb-4">Animated Form</h1>
+
+		<div class="alert alert-success animate__animated" id="successMessage">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<form id="animatedForm">
+			<div class="form-group mb-3">
+				<label for="name" class="form-label">Full Name</label>
+				<input type="text" class="form-control" id="name" name="name" required>
+			</div>
+
+			<div class="form-group mb-3">
+				<label for="email" class="form-label">Email Address</label>
+				<input type="email" class="form-control" id="email" name="email" required>
+			</div>
+
+			<div class="form-group mb-3">
+				<label for="age" class="form-label">Age</label>
+				<input type="number" class="form-control" id="age" name="age" min="0" max="150">
+			</div>
+
+			<div class="form-group mb-3">
+				<label for="birthdate" class="form-label">Birthdate</label>
+				<input type="date" class="form-control" id="birthdate" name="birthdate">
+			</div>
+
+			<div class="form-group mb-3">
+				<label for="resume" class="form-label">Upload Resume</label>
+				<input type="file" class="form-control" id="resume" name="resume">
+			</div>
+
+			<div class="form-group mb-3">
+				<label for="satisfaction" class="form-label">Satisfaction: <span id="satisfactionValue">50</span></label>
+				<input type="range" class="form-range" id="satisfaction" name="satisfaction" min="0" max="100" value="50">
+			</div>
+
+			<div class="form-group mb-3">
+				<label for="country" class="form-label">Country</label>
+				<select class="form-select" id="country" name="country">
+					<option value="">Select a country</option>
+					<option value="usa">United States</option>
+					<option value="canada">Canada</option>
+					<option value="uk">United Kingdom</option>
+				</select>
+			</div>
+
+			<div class="form-group mb-3">
+				<label for="interests" class="form-label">Interests (multiple)</label>
+				<select class="form-select" id="interests" name="interests" multiple size="3">
+					<option value="tech">Technology</option>
+					<option value="sports">Sports</option>
+					<option value="music">Music</option>
+				</select>
+			</div>
+
+			<div class="form-group mb-3">
 				<label class="form-label">Gender</label>
 				<div class="form-check">
 					<input class="form-check-input" type="radio" name="gender" id="male" value="male">

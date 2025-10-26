@@ -102,7 +102,55 @@
 	</style>
 </head>
 <body>
-	<div class="form-check">
+	<div class="container">
+		<h1 class="text-center">Hidden Labels Form</h1>
+		<p class="text-center subtitle">Labels are visually hidden but accessible to screen readers</p>
+
+		<div class="alert" id="successMessage">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<form id="hiddenLabelsForm">
+			<label for="name" class="sr-only">Full Name</label>
+			<input type="text" class="form-control" id="name" name="name" placeholder="Full Name" required>
+
+			<label for="email" class="sr-only">Email Address</label>
+			<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required>
+
+			<label for="age" class="sr-only">Age</label>
+			<input type="number" class="form-control" id="age" name="age" placeholder="Age" min="0" max="150">
+
+			<label for="birthdate" class="sr-only">Birthdate</label>
+			<input type="date" class="form-control" id="birthdate" name="birthdate">
+
+			<label for="resume" class="sr-only">Upload Resume</label>
+			<input type="file" class="form-control" id="resume" name="resume">
+
+			<label for="satisfaction" class="range-label">Satisfaction: <span id="satisfactionValue">50</span></label>
+			<input type="range" class="form-control" id="satisfaction" name="satisfaction" min="0" max="100" value="50">
+
+			<label for="country" class="sr-only">Country</label>
+			<select class="form-select" id="country" name="country">
+				<option value="">Select a country</option>
+				<option value="usa">United States</option>
+				<option value="canada">Canada</option>
+				<option value="uk">United Kingdom</option>
+			</select>
+
+			<label for="interests" class="sr-only">Interests</label>
+			<select class="form-select" id="interests" name="interests" multiple size="3">
+				<option value="tech">Technology</option>
+				<option value="sports">Sports</option>
+				<option value="music">Music</option>
+			</select>
+
+			<fieldset style="border: none; padding: 0; margin-bottom: 15px;">
+				<legend class="sr-only">Gender</legend>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="gender" id="male" value="male">
+					<label class="form-check-label" for="male">Male</label>
+				</div>
+				<div class="form-check">
 					<input class="form-check-input" type="radio" name="gender" id="female" value="female">
 					<label class="form-check-label" for="female">Female</label>
 				</div>

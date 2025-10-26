@@ -86,7 +86,73 @@
 	</style>
 </head>
 <body>
-	<!-- Standard Radio Buttons -->
+	<div class="container">
+		<h1 class="text-center">ContentEditable Form</h1>
+		<p class="text-center text-muted mb-4">This form uses contenteditable divs instead of standard inputs</p>
+
+		<div class="alert alert-success" id="successMessage">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<form id="contenteditableForm">
+			<!-- ContentEditable Text Input -->
+			<div class="mb-3">
+				<label class="form-label">Full Name</label>
+				<div contenteditable="true" id="name" data-placeholder="Enter your full name" data-field="text"></div>
+			</div>
+
+			<!-- ContentEditable Email Input -->
+			<div class="mb-3">
+				<label class="form-label">Email Address</label>
+				<div contenteditable="true" id="email" data-placeholder="Enter your email" data-field="email"></div>
+			</div>
+
+			<!-- ContentEditable Number Input -->
+			<div class="mb-3">
+				<label class="form-label">Age</label>
+				<div contenteditable="true" id="age" data-placeholder="Enter your age" data-field="number"></div>
+			</div>
+
+			<!-- Standard Date Input (contenteditable doesn't work well for dates) -->
+			<div class="mb-3">
+				<label for="birthdate" class="form-label">Birthdate</label>
+				<input type="date" class="form-control" id="birthdate" name="birthdate">
+			</div>
+
+			<!-- Standard File Input -->
+			<div class="mb-3">
+				<label for="resume" class="form-label">Upload Resume</label>
+				<input type="file" class="form-control" id="resume" name="resume">
+			</div>
+
+			<!-- Standard Range Input -->
+			<div class="mb-3">
+				<label for="satisfaction" class="form-label">Satisfaction: <span id="satisfactionValue" class="range-value">50</span></label>
+				<input type="range" class="form-range" id="satisfaction" name="satisfaction" min="0" max="100" value="50">
+			</div>
+
+			<!-- Standard Select Dropdown -->
+			<div class="mb-3">
+				<label for="country" class="form-label">Country</label>
+				<select class="form-select" id="country" name="country">
+					<option value="">Select a country</option>
+					<option value="usa">United States</option>
+					<option value="canada">Canada</option>
+					<option value="uk">United Kingdom</option>
+				</select>
+			</div>
+
+			<!-- Standard Multi-Select -->
+			<div class="mb-3">
+				<label for="interests" class="form-label">Interests (multiple)</label>
+				<select class="form-select" id="interests" name="interests" multiple size="3">
+					<option value="tech">Technology</option>
+					<option value="sports">Sports</option>
+					<option value="music">Music</option>
+				</select>
+			</div>
+
+			<!-- Standard Radio Buttons -->
 			<div class="mb-3">
 				<label class="form-label">Gender</label>
 				<div class="form-check">

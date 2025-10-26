@@ -76,7 +76,71 @@
 	</style>
 </head>
 <body>
-	<div class="mb-3">
+	<div class="container">
+		<div class="language-selector">
+			<button onclick="setLanguage('en')" class="active" id="btn-en">English</button>
+			<button onclick="setLanguage('es')" id="btn-es">Español</button>
+			<button onclick="setLanguage('fr')" id="btn-fr">Français</button>
+			<button onclick="setLanguage('de')" id="btn-de">Deutsch</button>
+		</div>
+
+		<h1 class="text-center mb-4" data-i18n="title">Registration Form</h1>
+
+		<div class="alert alert-success mb-3" id="successMessage">
+			<strong data-i18n="success">Success!</strong> <span data-i18n="secret">The secret is: dumbledore</span>
+		</div>
+
+		<form id="i18nForm">
+			<div class="mb-3">
+				<label for="name" class="form-label" data-i18n="name">Full Name</label>
+				<input type="text" class="form-control" id="name" name="name" data-i18n-placeholder="name" required>
+			</div>
+
+			<div class="mb-3">
+				<label for="email" class="form-label" data-i18n="email">Email Address</label>
+				<input type="email" class="form-control" id="email" name="email" data-i18n-placeholder="email" required>
+			</div>
+
+			<div class="mb-3">
+				<label for="age" class="form-label" data-i18n="age">Age</label>
+				<input type="number" class="form-control" id="age" name="age" min="0" max="150">
+			</div>
+
+			<div class="mb-3">
+				<label for="birthdate" class="form-label" data-i18n="birthdate">Birthdate</label>
+				<input type="date" class="form-control" id="birthdate" name="birthdate">
+			</div>
+
+			<div class="mb-3">
+				<label for="resume" class="form-label" data-i18n="resume">Upload Resume</label>
+				<input type="file" class="form-control" id="resume" name="resume">
+			</div>
+
+			<div class="mb-3">
+				<label for="satisfaction" class="form-label" data-i18n="satisfaction">Satisfaction: <span id="satisfactionValue">50</span></label>
+				<input type="range" class="form-range" id="satisfaction" name="satisfaction" min="0" max="100" value="50">
+			</div>
+
+			<div class="mb-3">
+				<label for="country" class="form-label" data-i18n="country">Country</label>
+				<select class="form-select" id="country" name="country">
+					<option value="" data-i18n="select-country">Select a country</option>
+					<option value="usa" data-i18n="usa">United States</option>
+					<option value="canada" data-i18n="canada">Canada</option>
+					<option value="uk" data-i18n="uk">United Kingdom</option>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label for="interests" class="form-label" data-i18n="interests">Interests (multiple)</label>
+				<select class="form-select" id="interests" name="interests" multiple size="3">
+					<option value="tech" data-i18n="tech">Technology</option>
+					<option value="sports" data-i18n="sports">Sports</option>
+					<option value="music" data-i18n="music">Music</option>
+				</select>
+			</div>
+
+			<div class="mb-3">
 				<label class="form-label" data-i18n="gender">Gender</label>
 				<div class="form-check">
 					<input class="form-check-input" type="radio" name="gender" id="male" value="male">

@@ -85,7 +85,72 @@
 	</style>
 </head>
 <body>
-	<!-- Number Input -->
+	<div class="wufoo-container">
+		<h1 class="text-center">Wufoo-Style Form</h1>
+		<p class="text-center subtitle">Unusual field naming patterns that challenge autofill</p>
+
+		<div class="alert" id="successMessage">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<form id="wufooForm">
+			<!-- Text Input - Unusual naming -->
+			<div class="wufoo-field">
+				<label for="Field1" class="wufoo-label">Full Name</label>
+				<input type="text" class="wufoo-input" id="Field1" name="Field1" required>
+			</div>
+
+			<!-- Email Input -->
+			<div class="wufoo-field">
+				<label for="Field2" class="wufoo-label">Email Address</label>
+				<input type="email" class="wufoo-input" id="Field2" name="Field2" required>
+			</div>
+
+			<!-- Number Input -->
+			<div class="wufoo-field">
+				<label for="Field3" class="wufoo-label">Age</label>
+				<input type="number" class="wufoo-input" id="Field3" name="Field3" min="0" max="150">
+			</div>
+
+			<!-- Date Input -->
+			<div class="wufoo-field">
+				<label for="Field4" class="wufoo-label">Birthdate</label>
+				<input type="date" class="wufoo-input" id="Field4" name="Field4">
+			</div>
+
+			<!-- File Input -->
+			<div class="wufoo-field">
+				<label for="Field5" class="wufoo-label">Upload Resume</label>
+				<input type="file" class="wufoo-input" id="Field5" name="Field5">
+			</div>
+
+			<!-- Range Input -->
+			<div class="wufoo-field">
+				<label for="Field6" class="wufoo-label">Satisfaction: <span id="satisfactionValue">50</span></label>
+				<input type="range" class="wufoo-input" id="Field6" name="Field6" min="0" max="100" value="50">
+			</div>
+
+			<!-- Select Dropdown -->
+			<div class="wufoo-field">
+				<label for="Field7" class="wufoo-label">Country</label>
+				<select class="wufoo-select" id="Field7" name="Field7">
+					<option value="">Select a country</option>
+					<option value="usa">United States</option>
+					<option value="canada">Canada</option>
+					<option value="uk">United Kingdom</option>
+				</select>
+			</div>
+
+			<!-- Multi-Select -->
+			<div class="wufoo-field">
+				<label for="Field8" class="wufoo-label">Interests (hold Ctrl to select multiple)</label>
+				<select class="wufoo-select" id="Field8" name="Field8" multiple size="3">
+					<option value="tech">Technology</option>
+					<option value="sports">Sports</option>
+					<option value="music">Music</option>
+				</select>
+			</div>
+
 			<!-- Radio Buttons -->
 			<div class="wufoo-field">
 				<label class="wufoo-label">Gender</label>
@@ -93,7 +158,11 @@
 					<input type="radio" name="Field9" id="Field9_1" value="male"> Male
 				</div>
 				<div class="wufoo-radio">
+					<input type="radio" name="Field9" id="Field9_2" value="female"> Female
+				</div>
 				<div class="wufoo-radio">
+					<input type="radio" name="Field9" id="Field9_3" value="other"> Other
+				</div>
 			</div>
 
 			<!-- Checkboxes -->
@@ -103,7 +172,11 @@
 					<input type="checkbox" name="Field10" id="Field10_1" value="newsletter"> Newsletter
 				</div>
 				<div class="wufoo-checkbox">
+					<input type="checkbox" name="Field10" id="Field10_2" value="notifications"> Notifications
+				</div>
 				<div class="wufoo-checkbox">
+					<input type="checkbox" name="Field10" id="Field10_3" value="updates"> Updates
+				</div>
 			</div>
 
 			<!-- Textarea -->

@@ -87,7 +87,88 @@
 <body>
 	<h1>Vue.js Form</h1>
 
-	</fieldset>
+	<div id="app">
+		<div v-if="formSubmitted" style="background-color: #d4edda; padding: 15px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 20px;">
+			<strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+		</div>
+
+		<form @submit.prevent="submitForm">
+			<fieldset>
+				<legend>Form Fields</legend>
+
+				<div>
+					<label for="text-input" class="required">Text Input:</label>
+					<input type="text" id="text-input" v-model="formData.textInput" required>
+					<span class="error" v-if="errors.textInput">{{ errors.textInput }}</span>
+				</div>
+
+				<div>
+					<label for="email-input" class="required">Email Address:</label>
+					<input type="email" id="email-input" v-model="formData.emailInput" required>
+					<span class="error" v-if="errors.emailInput">{{ errors.emailInput }}</span>
+				</div>
+
+				<div>
+					<label for="number-input">Number Input:</label>
+					<input type="number" id="number-input" v-model="formData.numberInput" min="0" max="100">
+					<span class="error" v-if="errors.numberInput">{{ errors.numberInput }}</span>
+				</div>
+
+				<div>
+					<label for="date-input">Date Input:</label>
+					<input type="date" id="date-input" v-model="formData.dateInput">
+				</div>
+
+				<div>
+					<label for="file-input">File Upload:</label>
+					<input type="file" id="file-input">
+				</div>
+
+				<div>
+					<label for="range-input">Range Slider:</label>
+					<input type="range" id="range-input" v-model="formData.rangeInput" min="0" max="100" step="10">
+				</div>
+
+				<div>
+					<label for="select-input">Dropdown Selection:</label>
+					<select id="select-input" v-model="formData.selectInput">
+						<option value="">Please select an option</option>
+						<option value="option1">Option 1</option>
+						<option value="option2">Option 2</option>
+						<option value="option3">Option 3</option>
+					</select>
+				</div>
+
+				<div>
+					<label for="multiple-select">Multiple Selection:</label>
+					<select id="multiple-select" v-model="formData.multipleSelect" multiple size="3">
+						<option value="option1">Option 1</option>
+						<option value="option2">Option 2</option>
+						<option value="option3">Option 3</option>
+					</select>
+				</div>
+
+				<div class="radio-group">
+					<label>Radio Buttons:</label>
+					<div v-for="(option, index) in radioOptions" :key="index">
+						<input type="radio" :id="'radio' + (index + 1)" v-model="formData.radioGroup" :value="option.value">
+						<label :for="'radio' + (index + 1)" class="radio-label">{{ option.label }}</label>
+					</div>
+				</div>
+
+				<div class="checkbox-group">
+					<label>Checkboxes:</label>
+					<div v-for="(option, index) in checkboxOptions" :key="index">
+						<input type="checkbox" :id="'checkbox' + (index + 1)" v-model="formData.checkboxes" :value="option.value">
+						<label :for="'checkbox' + (index + 1)" class="checkbox-label">{{ option.label }}</label>
+					</div>
+				</div>
+
+				<div>
+					<label for="textarea-input">Text Area:</label>
+					<textarea id="textarea-input" v-model="formData.textareaInput" rows="4"></textarea>
+				</div>
+			</fieldset>
 
 			<div>
 				<button type="submit" id="submit-button">Submit Form</button>

@@ -96,7 +96,93 @@
 <body ng-controller="FormController as formCtrl">
 	<h1>AngularJS Form</h1>
 
-	</fieldset>
+	<div class="success-message" ng-if="formCtrl.messageSent">
+		<strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+	</div>
+
+	<form name="userForm" ng-submit="formCtrl.submitForm(userForm.$valid)" novalidate>
+		<fieldset>
+			<legend>Form Fields</legend>
+
+			<div>
+				<label for="text-input" class="required">Text Input:</label>
+				<input type="text" id="text-input" name="textInput" ng-model="formCtrl.formData.textInput" required>
+				<span class="error" ng-show="userForm.textInput.$invalid && userForm.textInput.$touched">
+					This field is required
+				</span>
+			</div>
+
+			<div>
+				<label for="email-input" class="required">Email Address:</label>
+				<input type="email" id="email-input" name="emailInput" ng-model="formCtrl.formData.emailInput" required>
+				<span class="error" ng-show="userForm.emailInput.$invalid && userForm.emailInput.$touched">
+					Please enter a valid email address
+				</span>
+			</div>
+
+			<div>
+				<label for="number-input">Number Input:</label>
+				<input type="number" id="number-input" name="numberInput" ng-model="formCtrl.formData.numberInput" min="0" max="100">
+				<span class="error" ng-show="userForm.numberInput.$invalid && userForm.numberInput.$touched">
+					Please enter a number between 0 and 100
+				</span>
+			</div>
+
+			<div>
+				<label for="date-input">Date Input:</label>
+				<input type="date" id="date-input" name="dateInput" ng-model="formCtrl.formData.dateInput">
+			</div>
+
+			<div>
+				<label for="file-input">File Upload:</label>
+				<input type="file" id="file-input" name="fileInput">
+			</div>
+
+			<div>
+				<label for="range-input">Range Slider:</label>
+				<input type="range" id="range-input" name="rangeInput" ng-model="formCtrl.formData.rangeInput" min="0" max="100" step="10">
+			</div>
+
+			<div>
+				<label for="select-input">Dropdown Selection:</label>
+				<select id="select-input" name="selectInput" ng-model="formCtrl.formData.selectInput">
+					<option value="">Please select an option</option>
+					<option value="option1">Option 1</option>
+					<option value="option2">Option 2</option>
+					<option value="option3">Option 3</option>
+				</select>
+			</div>
+
+			<div>
+				<label for="multiple-select">Multiple Selection:</label>
+				<select id="multiple-select" name="multipleSelect" ng-model="formCtrl.formData.multipleSelect" multiple size="3">
+					<option value="option1">Option 1</option>
+					<option value="option2">Option 2</option>
+					<option value="option3">Option 3</option>
+				</select>
+			</div>
+
+			<div class="radio-group">
+				<label>Radio Buttons:</label>
+				<div ng-repeat="option in formCtrl.radioOptions">
+					<input type="radio" id="radio{{$index + 1}}" name="radioGroup" ng-model="formCtrl.formData.radioGroup" value="{{option.value}}">
+					<label for="radio{{$index + 1}}" class="radio-label">{{option.label}}</label>
+				</div>
+			</div>
+
+			<div class="checkbox-group">
+				<label>Checkboxes:</label>
+				<div ng-repeat="option in formCtrl.checkboxOptions">
+					<input type="checkbox" id="checkbox{{$index + 1}}" name="checkbox{{$index + 1}}" ng-model="formCtrl.formData.checkboxes[option.value]">
+					<label for="checkbox{{$index + 1}}" class="checkbox-label">{{option.label}}</label>
+				</div>
+			</div>
+
+			<div>
+				<label for="textarea-input">Text Area:</label>
+				<textarea id="textarea-input" name="textareaInput" ng-model="formCtrl.formData.textareaInput" rows="4"></textarea>
+			</div>
+		</fieldset>
 
 		<div>
 			<button type="submit" id="submit-button">Submit Form</button>

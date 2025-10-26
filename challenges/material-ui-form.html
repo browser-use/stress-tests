@@ -124,7 +124,207 @@
     </style>
 </head>
 <body>
-    </fieldset>
+    <div class="container">
+        <h1>Material UI Form</h1>
+        <p class="description">This Material UI Form example demonstrates a fully interactive React-based form.</p>
+
+        <div id="root"></div>
+    </div>
+
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        function MaterialForm() {
+            const [formData, setFormData] = React.useState({
+                textInput: '',
+                emailInput: '',
+                numberInput: '',
+                dateInput: '',
+                rangeInput: 50,
+                selectInput: '',
+                multipleSelect: [],
+                radioGroup: '',
+                checkbox1: false,
+                checkbox2: false,
+                checkbox3: false,
+                textareaInput: ''
+            });
+
+            const [errors, setErrors] = React.useState({});
+            const [showSuccess, setShowSuccess] = React.useState(false);
+
+            const handleChange = (e) => {
+                const { name, value, type, checked } = e.target;
+
+                if (type === 'checkbox') {
+                    setFormData({ ...formData, [name]: checked });
+                } else {
+                    setFormData({ ...formData, [name]: value });
+                }
+
+                // Clear error when field is changed
+                if (errors[name]) {
+                    setErrors({ ...errors, [name]: null });
+                }
+            };
+
+            const handleMultiSelectChange = (e) => {
+                const options = e.target.options;
+                const selected = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                        selected.push(options[i].value);
+                    }
+                }
+                setFormData({ ...formData, multipleSelect: selected });
+            };
+
+            const validateForm = () => {
+                const newErrors = {};
+
+                if (!formData.textInput.trim()) newErrors.textInput = 'Text input is required';
+
+                if (formData.emailInput) {
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(formData.emailInput)) {
+                        newErrors.emailInput = 'Please enter a valid email address';
+                    }
+                } else {
+                    newErrors.emailInput = 'Email is required';
+                }
+
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (validateForm()) {
+                    console.log('Form submitted successfully! The secret is: dumbledore', formData);
+                    setShowSuccess(true);
+                    setTimeout(() => {
+                        setShowSuccess(false);
+                    }, 3000);
+                }
+            };
+
+            const handleReset = () => {
+                setFormData({
+                    textInput: '',
+                    emailInput: '',
+                    numberInput: '',
+                    dateInput: '',
+                    rangeInput: 50,
+                    selectInput: '',
+                    multipleSelect: [],
+                    radioGroup: '',
+                    checkbox1: false,
+                    checkbox2: false,
+                    checkbox3: false,
+                    textareaInput: ''
+                });
+                setErrors({});
+            };
+
+            return (
+                <div>
+                    {showSuccess && (
+                        <div className="alert-success">
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
+
+                    <form className="form-container" onSubmit={handleSubmit}>
+                        <fieldset className="form-section">
+                            <legend className="form-section-title">Form Fields</legend>
+
+                            <div className="form-field">
+                                <label htmlFor="textInput">Text Input <span style={{ color: '#f44336' }}>*</span></label>
+                                <input type="text" id="textInput" name="textInput" className={errors.textInput ? 'invalid-field' : ''} value={formData.textInput} onChange={handleChange} />
+                                {errors.textInput && <div className="error-text">{errors.textInput}</div>}
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="emailInput">Email Address <span style={{ color: '#f44336' }}>*</span></label>
+                                <input type="email" id="emailInput" name="emailInput" className={errors.emailInput ? 'invalid-field' : ''} value={formData.emailInput} onChange={handleChange} />
+                                {errors.emailInput && <div className="error-text">{errors.emailInput}</div>}
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="numberInput">Number Input</label>
+                                <input type="number" id="numberInput" name="numberInput" min="0" max="100" value={formData.numberInput} onChange={handleChange} />
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="dateInput">Date Input</label>
+                                <input type="date" id="dateInput" name="dateInput" value={formData.dateInput} onChange={handleChange} />
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="rangeInput">Range Slider</label>
+                                <input type="range" id="rangeInput" name="rangeInput" min="0" max="100" step="10" value={formData.rangeInput} onChange={handleChange} />
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="fileInput">File Upload</label>
+                                <input type="file" id="fileInput" name="fileInput" />
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="selectInput">Dropdown Selection</label>
+                                <select id="selectInput" name="selectInput" value={formData.selectInput} onChange={handleChange}>
+                                    <option value="">Please select an option</option>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="multipleSelect">Multiple Selection</label>
+                                <select id="multipleSelect" name="multipleSelect" multiple size="3" value={formData.multipleSelect} onChange={handleMultiSelectChange}>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="form-field">
+                                <label>Radio Buttons</label>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}><input type="radio" name="radioGroup" value="radio1" checked={formData.radioGroup === 'radio1'} onChange={handleChange} /> Option 1</label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}><input type="radio" name="radioGroup" value="radio2" checked={formData.radioGroup === 'radio2'} onChange={handleChange} /> Option 2</label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}><input type="radio" name="radioGroup" value="radio3" checked={formData.radioGroup === 'radio3'} onChange={handleChange} /> Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="form-field">
+                                <label>Checkboxes</label>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}><input type="checkbox" name="checkbox1" checked={formData.checkbox1} onChange={handleChange} /> Option 1</label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}><input type="checkbox" name="checkbox2" checked={formData.checkbox2} onChange={handleChange} /> Option 2</label>
+                                </div>
+                                <div>
+                                    <label style={{ fontWeight: 'normal' }}><input type="checkbox" name="checkbox3" checked={formData.checkbox3} onChange={handleChange} /> Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="form-field">
+                                <label htmlFor="textareaInput">Text Area</label>
+                                <textarea id="textareaInput" name="textareaInput" rows="4" value={formData.textareaInput} onChange={handleChange}></textarea>
+                            </div>
+                        </fieldset>
 
                         <div>
                             <button type="submit" className="button">Submit</button>

@@ -42,10 +42,256 @@
     </style>
 </head>
 <body>
-    )}
+    <div class="container">
+        <h1 class="mt-4 mb-4">React Hook Form</h1>
+        <p>A fully interactive React component using React Hook Form for validation.</p>
+
+        <div id="root"></div>
+    </div>
+
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- React Hook Form -->
+    <script src="https://unpkg.com/react-hook-form@7.43.9/dist/index.umd.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { useForm } = window.ReactHookForm;
+
+        const App = () => {
+            const [showSuccess, setShowSuccess] = useState(false);
+            const { register, handleSubmit, reset, formState: { errors } } = useForm({
+                defaultValues: {
+                    textInput: '',
+                    emailInput: '',
+                    numberInput: '',
+                    dateInput: '',
+                    fileInput: null,
+                    rangeInput: 50,
+                    selectInput: '',
+                    multipleSelect: [],
+                    radioGroup: '',
+                    checkbox1: false,
+                    checkbox2: false,
+                    checkbox3: false,
+                    textareaInput: ''
+                }
+            });
+
+            const onSubmit = (data) => {
+                console.log('Form submitted successfully! The secret is: dumbledore', data);
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setShowSuccess(false);
+                }, 3000);
+            };
+
+            const handleReset = () => {
+                reset();
+            };
+
+            return (
+                <>
+                    {showSuccess && (
+                        <div className="alert alert-success">
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
+
+                    <form className="form-container" onSubmit={handleSubmit(onSubmit)}>
+                        <fieldset className="form-section">
+                            <legend>Form Fields</legend>
+
+                            <div className="mb-3">
+                                <label htmlFor="textInput" className="form-label">Text Input <span className="text-danger">*</span></label>
+                                <input
+                                    type="text"
+                                    id="textInput"
+                                    className={`form-control ${errors.textInput ? 'invalid-field' : ''}`}
+                                    {...register('textInput', { required: 'This field is required' })}
+                                />
+                                {errors.textInput && (
+                                    <div className="error-text">{errors.textInput.message}</div>
+                                )}
                             </div>
 
-                            </fieldset>
+                            <div className="mb-3">
+                                <label htmlFor="emailInput" className="form-label">Email Address <span className="text-danger">*</span></label>
+                                <input
+                                    type="email"
+                                    id="emailInput"
+                                    className={`form-control ${errors.emailInput ? 'invalid-field' : ''}`}
+                                    {...register('emailInput', {
+                                        required: 'Email is required',
+                                        pattern: {
+                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                            message: 'Please enter a valid email address'
+                                        }
+                                    })}
+                                />
+                                {errors.emailInput && (
+                                    <div className="error-text">{errors.emailInput.message}</div>
+                                )}
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="numberInput" className="form-label">Number Input</label>
+                                <input
+                                    type="number"
+                                    id="numberInput"
+                                    className={`form-control ${errors.numberInput ? 'invalid-field' : ''}`}
+                                    min="0"
+                                    max="100"
+                                    {...register('numberInput', {
+                                        min: { value: 0, message: 'Please enter a number between 0 and 100' },
+                                        max: { value: 100, message: 'Please enter a number between 0 and 100' }
+                                    })}
+                                />
+                                {errors.numberInput && (
+                                    <div className="error-text">{errors.numberInput.message}</div>
+                                )}
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="dateInput" className="form-label">Date Input</label>
+                                <input
+                                    type="date"
+                                    id="dateInput"
+                                    className="form-control"
+                                    {...register('dateInput')}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="rangeInput" className="form-label">Range Slider</label>
+                                <input
+                                    type="range"
+                                    id="rangeInput"
+                                    className="form-range"
+                                    min="0"
+                                    max="100"
+                                    step="10"
+                                    {...register('rangeInput')}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="fileInput" className="form-label">File Upload</label>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    className="form-control"
+                                    {...register('fileInput')}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="selectInput" className="form-label">Dropdown Selection</label>
+                                <select
+                                    id="selectInput"
+                                    className="form-select"
+                                    {...register('selectInput')}
+                                >
+                                    <option value="">Please select an option</option>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="multipleSelect" className="form-label">Multiple Selection</label>
+                                <select
+                                    id="multipleSelect"
+                                    className="form-select"
+                                    multiple
+                                    size="3"
+                                    {...register('multipleSelect')}
+                                >
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Radio Buttons</label>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        id="radio1"
+                                        value="radio1"
+                                        {...register('radioGroup')}
+                                    />
+                                    <label className="form-check-label" htmlFor="radio1">Option 1</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        id="radio2"
+                                        value="radio2"
+                                        {...register('radioGroup')}
+                                    />
+                                    <label className="form-check-label" htmlFor="radio2">Option 2</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        id="radio3"
+                                        value="radio3"
+                                        {...register('radioGroup')}
+                                    />
+                                    <label className="form-check-label" htmlFor="radio3">Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Checkboxes</label>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="checkbox1"
+                                        {...register('checkbox1')}
+                                    />
+                                    <label className="form-check-label" htmlFor="checkbox1">Option 1</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="checkbox2"
+                                        {...register('checkbox2')}
+                                    />
+                                    <label className="form-check-label" htmlFor="checkbox2">Option 2</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="checkbox3"
+                                        {...register('checkbox3')}
+                                    />
+                                    <label className="form-check-label" htmlFor="checkbox3">Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="textareaInput" className="form-label">Text Area</label>
+                                <textarea
+                                    id="textareaInput"
+                                    className="form-control"
+                                    rows="4"
+                                    {...register('textareaInput')}
+                                ></textarea>
+                            </div>
+                        </fieldset>
 
                         <div className="d-flex gap-2 mb-3">
                             <button type="submit" className="btn btn-primary">Submit Form</button>

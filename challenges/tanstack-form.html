@@ -46,7 +46,193 @@
     </style>
 </head>
 <body>
-    </fieldset>
+    <div class="container">
+        <h1 class="mt-4 mb-4">TanStack Form</h1>
+        <p>This is a fully interactive React component using TanStack Form for validation.</p>
+
+        <div id="root"></div>
+    </div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { createRoot } = ReactDOM;
+
+        function TanStackFormApp() {
+            const [formValues, setFormValues] = useState({
+                textInput: '',
+                emailInput: '',
+                numberInput: '',
+                dateInput: '',
+                rangeInput: 50,
+                selectInput: '',
+                multipleSelect: [],
+                radioGroup: '',
+                checkbox1: false,
+                checkbox2: false,
+                checkbox3: false,
+                textareaInput: ''
+            });
+
+            const [showSuccess, setShowSuccess] = useState(false);
+            const [errors, setErrors] = useState({});
+
+            const handleChange = (e) => {
+                const { name, value, type, checked } = e.target;
+                setFormValues(prev => ({
+                    ...prev,
+                    [name]: type === 'checkbox' ? checked : value
+                }));
+            };
+
+            const handleMultiSelectChange = (e) => {
+                const options = e.target.options;
+                const selected = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                        selected.push(options[i].value);
+                    }
+                }
+                setFormValues(prev => ({ ...prev, multipleSelect: selected }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+
+                const newErrors = {};
+                if (!formValues.textInput) newErrors.textInput = 'Text input is required';
+                if (!formValues.emailInput) {
+                    newErrors.emailInput = 'Email is required';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.emailInput)) {
+                    newErrors.emailInput = 'Please enter a valid email address';
+                }
+
+                setErrors(newErrors);
+
+                if (Object.keys(newErrors).length === 0) {
+                    console.log('Form submitted successfully! The secret is: dumbledore', formValues);
+                    setShowSuccess(true);
+                    setTimeout(() => setShowSuccess(false), 3000);
+                }
+            };
+
+            const handleReset = () => {
+                setFormValues({
+                    textInput: '',
+                    emailInput: '',
+                    numberInput: '',
+                    dateInput: '',
+                    rangeInput: 50,
+                    selectInput: '',
+                    multipleSelect: [],
+                    radioGroup: '',
+                    checkbox1: false,
+                    checkbox2: false,
+                    checkbox3: false,
+                    textareaInput: ''
+                });
+                setErrors({});
+            };
+
+            return (
+                <>
+                    {showSuccess && (
+                        <div className="alert alert-success">
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
+
+                    <form className="form-container" onSubmit={handleSubmit}>
+                        <fieldset className="form-section">
+                            <legend>Form Fields</legend>
+
+                            <div className="mb-3">
+                                <label htmlFor="textInput" className="form-label">Text Input <span className="text-danger">*</span></label>
+                                <input type="text" id="textInput" name="textInput" className={`form-control ${errors.textInput ? 'invalid-field' : ''}`} value={formValues.textInput} onChange={handleChange} />
+                                {errors.textInput && <div className="error-text">{errors.textInput}</div>}
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="emailInput" className="form-label">Email Address <span className="text-danger">*</span></label>
+                                <input type="email" id="emailInput" name="emailInput" className={`form-control ${errors.emailInput ? 'invalid-field' : ''}`} value={formValues.emailInput} onChange={handleChange} />
+                                {errors.emailInput && <div className="error-text">{errors.emailInput}</div>}
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="numberInput" className="form-label">Number Input</label>
+                                <input type="number" id="numberInput" name="numberInput" className="form-control" min="0" max="100" value={formValues.numberInput} onChange={handleChange} />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="dateInput" className="form-label">Date Input</label>
+                                <input type="date" id="dateInput" name="dateInput" className="form-control" value={formValues.dateInput} onChange={handleChange} />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="rangeInput" className="form-label">Range Slider</label>
+                                <input type="range" id="rangeInput" name="rangeInput" className="form-range" min="0" max="100" step="10" value={formValues.rangeInput} onChange={handleChange} />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="fileInput" className="form-label">File Upload</label>
+                                <input type="file" id="fileInput" className="form-control" />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="selectInput" className="form-label">Dropdown Selection</label>
+                                <select id="selectInput" name="selectInput" className="form-select" value={formValues.selectInput} onChange={handleChange}>
+                                    <option value="">Please select an option</option>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="multipleSelect" className="form-label">Multiple Selection</label>
+                                <select id="multipleSelect" name="multipleSelect" className="form-select" multiple size="3" value={formValues.multipleSelect} onChange={handleMultiSelectChange}>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Radio Buttons</label>
+                                <div className="form-check">
+                                    <input type="radio" id="radio1" name="radioGroup" value="radio1" className="form-check-input" checked={formValues.radioGroup === 'radio1'} onChange={handleChange} />
+                                    <label className="form-check-label" htmlFor="radio1">Option 1</label>
+                                </div>
+                                <div className="form-check">
+                                    <input type="radio" id="radio2" name="radioGroup" value="radio2" className="form-check-input" checked={formValues.radioGroup === 'radio2'} onChange={handleChange} />
+                                    <label className="form-check-label" htmlFor="radio2">Option 2</label>
+                                </div>
+                                <div className="form-check">
+                                    <input type="radio" id="radio3" name="radioGroup" value="radio3" className="form-check-input" checked={formValues.radioGroup === 'radio3'} onChange={handleChange} />
+                                    <label className="form-check-label" htmlFor="radio3">Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Checkboxes</label>
+                                <div className="form-check">
+                                    <input type="checkbox" id="checkbox1" name="checkbox1" className="form-check-input" checked={formValues.checkbox1} onChange={handleChange} />
+                                    <label className="form-check-label" htmlFor="checkbox1">Option 1</label>
+                                </div>
+                                <div className="form-check">
+                                    <input type="checkbox" id="checkbox2" name="checkbox2" className="form-check-input" checked={formValues.checkbox2} onChange={handleChange} />
+                                    <label className="form-check-label" htmlFor="checkbox2">Option 2</label>
+                                </div>
+                                <div className="form-check">
+                                    <input type="checkbox" id="checkbox3" name="checkbox3" className="form-check-input" checked={formValues.checkbox3} onChange={handleChange} />
+                                    <label className="form-check-label" htmlFor="checkbox3">Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="textareaInput" className="form-label">Text Area</label>
+                                <textarea id="textareaInput" name="textareaInput" className="form-control" rows="4" value={formValues.textareaInput} onChange={handleChange}></textarea>
+                            </div>
+                        </fieldset>
 
                         <div className="d-flex gap-2 mb-3">
                             <button type="submit" className="btn btn-primary">Submit Form</button>

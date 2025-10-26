@@ -55,10 +55,394 @@
     </style>
 </head>
 <body>
-    )}
+    <div class="container">
+        <h1 class="mt-4 mb-3 text-center">Formik Form</h1>
+        <p class="text-center mb-4">This form example demonstrates a fully interactive React-based form with client-side validation.</p>
+
+        <div id="root"></div>
+    </div>
+
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        function FormikForm() {
+            const [formValues, setFormValues] = React.useState({
+                textInput: '',
+                emailInput: '',
+                numberInput: '',
+                dateInput: '',
+                fileInput: null,
+                rangeInput: 50,
+                selectInput: '',
+                multipleSelect: [],
+                radioGroup: '',
+                checkbox1: false,
+                checkbox2: false,
+                checkbox3: false,
+                textareaInput: ''
+            });
+
+            const [touched, setTouched] = React.useState({});
+            const [errors, setErrors] = React.useState({});
+            const [isSubmitting, setIsSubmitting] = React.useState(false);
+            const [showSuccess, setShowSuccess] = React.useState(false);
+
+            // Validation function
+            const validateForm = (values) => {
+                const newErrors = {};
+
+                if (!values.textInput) {
+                    newErrors.textInput = 'Text input is required';
+                }
+
+                if (!values.emailInput) {
+                    newErrors.emailInput = 'Email is required';
+                } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.emailInput)) {
+                    newErrors.emailInput = 'Invalid email address';
+                }
+
+                return newErrors;
+            };
+
+            // Run validation when form values change
+            React.useEffect(() => {
+                const validationErrors = validateForm(formValues);
+                setErrors(validationErrors);
+            }, [formValues]);
+
+            const handleChange = (e) => {
+                const { name, value, type, checked } = e.target;
+
+                if (type === 'checkbox' && name.startsWith('checkbox')) {
+                    setFormValues(prev => ({
+                        ...prev,
+                        [name]: checked
+                    }));
+                } else if (type === 'checkbox') {
+                    setFormValues(prev => ({
+                        ...prev,
+                        [name]: checked
+                    }));
+                } else {
+                    setFormValues(prev => ({
+                        ...prev,
+                        [name]: value
+                    }));
+                }
+
+                // Mark as touched
+                setTouched(prev => ({
+                    ...prev,
+                    [name]: true
+                }));
+            };
+
+            const handleMultiSelectChange = (e) => {
+                const options = e.target.options;
+                const selected = [];
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                        selected.push(options[i].value);
+                    }
+                }
+                setFormValues(prev => ({
+                    ...prev,
+                    multipleSelect: selected
+                }));
+            };
+
+            const handleBlur = (e) => {
+                const { name } = e.target;
+                setTouched(prev => ({
+                    ...prev,
+                    [name]: true
+                }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+
+                // Mark all fields as touched
+                const allFields = {};
+                Object.keys(formValues).forEach(key => {
+                    allFields[key] = true;
+                });
+
+                setTouched(allFields);
+
+                // Validate form
+                const validationErrors = validateForm(formValues);
+                setErrors(validationErrors);
+
+                // If no errors, submit form
+                if (Object.keys(validationErrors).length === 0) {
+                    setIsSubmitting(true);
+
+                    // Simulate API call
+                    setTimeout(() => {
+                        console.log('Form submitted successfully! The secret is: dumbledore', formValues);
+                        setIsSubmitting(false);
+                        setShowSuccess(true);
+
+                        setTimeout(() => {
+                            setShowSuccess(false);
+                        }, 3000);
+                    }, 1000);
+                }
+            };
+
+            const handleReset = () => {
+                setFormValues({
+                    textInput: '',
+                    emailInput: '',
+                    numberInput: '',
+                    dateInput: '',
+                    fileInput: null,
+                    rangeInput: 50,
+                    selectInput: '',
+                    multipleSelect: [],
+                    radioGroup: '',
+                    checkbox1: false,
+                    checkbox2: false,
+                    checkbox3: false,
+                    textareaInput: ''
+                });
+                setTouched({});
+                setErrors({});
+            };
+
+            // Helper functions
+            const getFieldError = (name) => {
+                return touched[name] && errors[name] ? errors[name] : null;
+            };
+
+            const isFieldInvalid = (name) => {
+                return touched[name] && errors[name] ? true : false;
+            };
+
+            return (
+                <div>
+                    {showSuccess && (
+                        <div className="alert alert-success" role="alert">
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
+
+                    <form className="form-container" onSubmit={handleSubmit}>
+                        <fieldset className="form-section">
+                            <legend>Form Fields</legend>
+
+                            <div className="mb-3">
+                                <label htmlFor="textInput" className="form-label label-required">Text Input</label>
+                                <input
+                                    type="text"
+                                    id="textInput"
+                                    name="textInput"
+                                    className={`form-control ${isFieldInvalid('textInput') ? 'is-invalid' : ''}`}
+                                    value={formValues.textInput}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {getFieldError('textInput') && (
+                                    <div className="error-text">{getFieldError('textInput')}</div>
+                                )}
                             </div>
 
-                            </fieldset>
+                            <div className="mb-3">
+                                <label htmlFor="emailInput" className="form-label label-required">Email Address</label>
+                                <input
+                                    type="email"
+                                    id="emailInput"
+                                    name="emailInput"
+                                    className={`form-control ${isFieldInvalid('emailInput') ? 'is-invalid' : ''}`}
+                                    value={formValues.emailInput}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {getFieldError('emailInput') && (
+                                    <div className="error-text">{getFieldError('emailInput')}</div>
+                                )}
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="numberInput" className="form-label">Number Input</label>
+                                <input
+                                    type="number"
+                                    id="numberInput"
+                                    name="numberInput"
+                                    className="form-control"
+                                    min="0"
+                                    max="100"
+                                    value={formValues.numberInput}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="dateInput" className="form-label">Date Input</label>
+                                <input
+                                    type="date"
+                                    id="dateInput"
+                                    name="dateInput"
+                                    className="form-control"
+                                    value={formValues.dateInput}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="rangeInput" className="form-label">Range Slider</label>
+                                <input
+                                    type="range"
+                                    id="rangeInput"
+                                    name="rangeInput"
+                                    className="form-range"
+                                    min="0"
+                                    max="100"
+                                    step="10"
+                                    value={formValues.rangeInput}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="fileInput" className="form-label">File Upload</label>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    name="fileInput"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="selectInput" className="form-label">Dropdown Selection</label>
+                                <select
+                                    id="selectInput"
+                                    name="selectInput"
+                                    className="form-select"
+                                    value={formValues.selectInput}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Please select an option</option>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="multipleSelect" className="form-label">Multiple Selection</label>
+                                <select
+                                    id="multipleSelect"
+                                    name="multipleSelect"
+                                    className="form-select"
+                                    multiple
+                                    size="3"
+                                    value={formValues.multipleSelect}
+                                    onChange={handleMultiSelectChange}
+                                >
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Radio Buttons</label>
+                                <div className="form-check">
+                                    <input
+                                        type="radio"
+                                        id="radio1"
+                                        name="radioGroup"
+                                        value="radio1"
+                                        className="form-check-input"
+                                        checked={formValues.radioGroup === 'radio1'}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="radio1">Option 1</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="radio"
+                                        id="radio2"
+                                        name="radioGroup"
+                                        value="radio2"
+                                        className="form-check-input"
+                                        checked={formValues.radioGroup === 'radio2'}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="radio2">Option 2</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="radio"
+                                        id="radio3"
+                                        name="radioGroup"
+                                        value="radio3"
+                                        className="form-check-input"
+                                        checked={formValues.radioGroup === 'radio3'}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="radio3">Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Checkboxes</label>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="checkbox1"
+                                        name="checkbox1"
+                                        className="form-check-input"
+                                        checked={formValues.checkbox1}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="checkbox1">Option 1</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="checkbox2"
+                                        name="checkbox2"
+                                        className="form-check-input"
+                                        checked={formValues.checkbox2}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="checkbox2">Option 2</label>
+                                </div>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="checkbox3"
+                                        name="checkbox3"
+                                        className="form-check-input"
+                                        checked={formValues.checkbox3}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="checkbox3">Option 3</label>
+                                </div>
+                            </div>
+
+                            <div className="mb-3">
+                                <label htmlFor="textareaInput" className="form-label">Text Area</label>
+                                <textarea
+                                    id="textareaInput"
+                                    name="textareaInput"
+                                    className="form-control"
+                                    rows="4"
+                                    value={formValues.textareaInput}
+                                    onChange={handleChange}
+                                ></textarea>
+                            </div>
+                        </fieldset>
 
                         <div className="d-flex gap-2 mb-3">
                             <button type="submit" className="btn btn-primary" disabled={isSubmitting}>

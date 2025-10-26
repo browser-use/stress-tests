@@ -33,7 +33,107 @@
 	</style>
 </head>
 <body>
-	<div class="form-check">
+	<div class="container">
+		<h1 class="text-center">Shadow DOM Form</h1>
+		<p class="text-center subtitle">Form fields are encapsulated within Shadow DOM</p>
+
+		<div class="alert alert-success" id="successMessage" style="display: none;">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<custom-form id="shadowForm"></custom-form>
+	</div>
+
+	<script>
+		class CustomForm extends HTMLElement {
+			constructor() {
+				super();
+				this.attachShadow({ mode: 'open' });
+
+				const style = document.createElement('style');
+				style.textContent = `
+					:host {
+						display: block;
+					}
+					.form-label {
+						font-weight: 600;
+						color: #34495e;
+						margin-bottom: 8px;
+						display: block;
+					}
+					.form-control, select {
+						width: 100%;
+						padding: 10px;
+						border: 2px solid #e0e0e0;
+						border-radius: 6px;
+						font-size: 14px;
+						margin-bottom: 15px;
+						box-sizing: border-box;
+					}
+					.form-control:focus, select:focus {
+						outline: none;
+						border-color: #3498db;
+					}
+					.form-check {
+						margin: 8px 0;
+					}
+					.btn-primary {
+						background-color: #3498db;
+						color: white;
+						border: none;
+						padding: 12px 40px;
+						font-weight: 600;
+						border-radius: 6px;
+						cursor: pointer;
+					}
+					.btn-primary:hover {
+						background-color: #2980b9;
+					}
+					.text-center {
+						text-align: center;
+					}
+				`;
+
+				const form = document.createElement('form');
+				form.innerHTML = `
+					<label class="form-label">Full Name</label>
+					<input type="text" class="form-control" name="name" required>
+
+					<label class="form-label">Email Address</label>
+					<input type="email" class="form-control" name="email" required>
+
+					<label class="form-label">Age</label>
+					<input type="number" class="form-control" name="age" min="0" max="150">
+
+					<label class="form-label">Birthdate</label>
+					<input type="date" class="form-control" name="birthdate">
+
+					<label class="form-label">Upload Resume</label>
+					<input type="file" class="form-control" name="resume">
+
+					<label class="form-label">Satisfaction: <span id="satisfactionValue">50</span></label>
+					<input type="range" class="form-control" name="satisfaction" min="0" max="100" value="50">
+
+					<label class="form-label">Country</label>
+					<select class="form-control" name="country">
+						<option value="">Select a country</option>
+						<option value="usa">United States</option>
+						<option value="canada">Canada</option>
+						<option value="uk">United Kingdom</option>
+					</select>
+
+					<label class="form-label">Interests (hold Ctrl to select multiple)</label>
+					<select class="form-control" name="interests" multiple size="3">
+						<option value="tech">Technology</option>
+						<option value="sports">Sports</option>
+						<option value="music">Music</option>
+					</select>
+
+					<label class="form-label">Gender</label>
+					<div class="form-check">
+						<input type="radio" name="gender" value="male"> Male
+					</div>
+					<div class="form-check">
 						<input type="radio" name="gender" value="female"> Female
 					</div>
 					<div class="form-check">

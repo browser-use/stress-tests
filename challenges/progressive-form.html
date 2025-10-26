@@ -162,8 +162,72 @@
 	</style>
 </head>
 <body>
-	<!-- Step 2: Additional Info -->
-			<div class="form-check">
+	<div class="container">
+		<h1 class="text-center">Multi-Step Form</h1>
+		<p class="text-center" style="color: #64748b; margin-bottom: 30px;">Complete all 4 steps to submit</p>
+
+		<div class="alert" id="successMessage">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<div class="progress-bar">
+			<div class="progress-fill" id="progressFill" style="width: 0%"></div>
+			<div class="step active" data-step="1">1</div>
+			<div class="step" data-step="2">2</div>
+			<div class="step" data-step="3">3</div>
+			<div class="step" data-step="4">4</div>
+		</div>
+
+		<form id="progressiveForm">
+			<!-- Step 1: Basic Info -->
+			<div class="form-step active" data-step="1">
+				<h3>Step 1: Basic Information</h3>
+				<label class="form-label">Full Name</label>
+				<input type="text" class="form-control" name="name" required>
+
+				<label class="form-label">Email Address</label>
+				<input type="email" class="form-control" name="email" required>
+
+				<label class="form-label">Age</label>
+				<input type="number" class="form-control" name="age" min="0" max="150">
+			</div>
+
+			<!-- Step 2: Additional Info -->
+			<div class="form-step" data-step="2">
+				<h3>Step 2: Additional Information</h3>
+				<label class="form-label">Birthdate</label>
+				<input type="date" class="form-control" name="birthdate">
+
+				<label class="form-label">Upload Resume</label>
+				<input type="file" class="form-control" name="resume">
+
+				<label class="form-label">Satisfaction: <span id="satisfactionValue">50</span></label>
+				<input type="range" class="form-control" name="satisfaction" min="0" max="100" value="50">
+			</div>
+
+			<!-- Step 3: Preferences -->
+			<div class="form-step" data-step="3">
+				<h3>Step 3: Preferences</h3>
+				<label class="form-label">Country</label>
+				<select class="form-select" name="country">
+					<option value="">Select a country</option>
+					<option value="usa">United States</option>
+					<option value="canada">Canada</option>
+					<option value="uk">United Kingdom</option>
+				</select>
+
+				<label class="form-label">Interests (hold Ctrl to select multiple)</label>
+				<select class="form-select" name="interests" multiple size="3">
+					<option value="tech">Technology</option>
+					<option value="sports">Sports</option>
+					<option value="music">Music</option>
+				</select>
+
+				<label class="form-label">Gender</label>
+				<div class="form-check">
+					<input type="radio" name="gender" value="male"> Male
+				</div>
+				<div class="form-check">
 					<input type="radio" name="gender" value="female"> Female
 				</div>
 				<div class="form-check">
