@@ -348,27 +348,23 @@
     <div class="container">
         <h1>Progressive Multi-step Form</h1>
         <p>This form reveals fields progressively based on previous answers, which can be challenging for autofill systems.</p>
-        
+
         <div class="alert alert-success" id="success-message">
             <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
         </div>
-        
+
         <div class="progress-container">
             <div class="progress-bar">
                 <div class="progress-step active" id="step-1">
                     1
-                    <span class="progress-step-text">Basic Info</span>
+                    <span class="progress-step-text">Step 1</span>
                 </div>
                 <div class="progress-step" id="step-2">
                     2
-                    <span class="progress-step-text">Address</span>
+                    <span class="progress-step-text">Step 2</span>
                 </div>
                 <div class="progress-step" id="step-3">
                     3
-                    <span class="progress-step-text">Preferences</span>
-                </div>
-                <div class="progress-step" id="step-4">
-                    4
                     <span class="progress-step-text">Review</span>
                 </div>
             </div>
@@ -378,324 +374,113 @@
             <!-- Step 1: Basic Information -->
             <div class="form-step active" id="step-1-content">
                 <div class="form-section">
-                    <h2>Personal Information</h2>
-                    
-                    <div class="form-group">
-                        <label for="firstName" class="form-label required">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" required>
-                        <div class="invalid-feedback">First name is required</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="lastName" class="form-label required">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" required>
-                        <div class="invalid-feedback">Last name is required</div>
-                    </div>
-                    
+                    <h2>Basic Information</h2>
+
                     <div class="form-group">
                         <label for="email" class="form-label required">Email Address</label>
                         <input type="email" id="email" name="email" class="form-control" required>
                         <div class="invalid-feedback">Please enter a valid email address</div>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="123-456-7890">
-                        <div class="form-text">Format: 123-456-7890</div>
-                        <div class="invalid-feedback">Please enter a valid phone number</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="applicantType" class="form-label required">I am applying as a</label>
-                        <select id="applicantType" name="applicantType" class="form-control" required>
-                            <option value="">Select applicant type</option>
-                            <option value="individual">Individual</option>
-                            <option value="business">Business</option>
-                            <option value="nonprofit">Non-profit Organization</option>
+                        <label for="category" class="form-label required">Category</label>
+                        <select id="category" name="category" class="form-control" required>
+                            <option value="">Select a category</option>
+                            <option value="technology">Technology</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
                         </select>
-                        <div class="invalid-feedback">Please select an applicant type</div>
+                        <div class="invalid-feedback">Please select a category</div>
                     </div>
-                    
-                    <!-- Conditional fields based on applicant type -->
-                    <div id="individual-fields" style="display: none;">
+
+                    <!-- Conditional field based on category -->
+                    <div id="conditional-dropdown" style="display: none;">
                         <div class="form-group">
-                            <label for="dob" class="form-label required">Date of Birth</label>
-                            <input type="date" id="dob" name="dob" class="form-control">
-                            <div class="invalid-feedback">Date of birth is required</div>
-                        </div>
-                    </div>
-                    
-                    <div id="business-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="companyName" class="form-label required">Company Name</label>
-                            <input type="text" id="companyName" name="companyName" class="form-control">
-                            <div class="invalid-feedback">Company name is required</div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="taxId" class="form-label required">Tax ID</label>
-                            <input type="text" id="taxId" name="taxId" class="form-control">
-                            <div class="invalid-feedback">Tax ID is required</div>
-                        </div>
-                    </div>
-                    
-                    <div id="nonprofit-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="orgName" class="form-label required">Organization Name</label>
-                            <input type="text" id="orgName" name="orgName" class="form-control">
-                            <div class="invalid-feedback">Organization name is required</div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="taxExemptId" class="form-label required">Tax Exempt ID</label>
-                            <input type="text" id="taxExemptId" name="taxExemptId" class="form-control">
-                            <div class="invalid-feedback">Tax exempt ID is required</div>
+                            <label for="subCategory" class="form-label required">Sub-Category</label>
+                            <select id="subCategory" name="subCategory" class="form-control">
+                                <option value="">Select sub-category</option>
+                                <option value="software">Software</option>
+                                <option value="hardware">Hardware</option>
+                                <option value="services">Services</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a sub-category</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-buttons">
-                    <div></div> <!-- Empty div for flexbox spacing -->
+                    <div></div>
                     <button type="button" class="btn btn-primary" id="step1-next">Next</button>
                 </div>
             </div>
             
-            <!-- Step 2: Address Information -->
+            <!-- Step 2: Additional Details -->
             <div class="form-step" id="step-2-content">
                 <div class="form-section">
-                    <h2>Address Information</h2>
-                    
+                    <h2>Additional Details</h2>
+
                     <div class="form-group">
-                        <label for="street" class="form-label required">Street Address</label>
-                        <input type="text" id="street" name="street" class="form-control" required>
-                        <div class="invalid-feedback">Street address is required</div>
+                        <label for="eventDate" class="form-label required">Event Date</label>
+                        <input type="date" id="eventDate" name="eventDate" class="form-control" required>
+                        <div class="invalid-feedback">Event date is required</div>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="city" class="form-label required">City</label>
-                        <input type="text" id="city" name="city" class="form-control" required>
-                        <div class="invalid-feedback">City is required</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="state" class="form-label required">State</label>
-                        <select id="state" name="state" class="form-control" required>
-                            <option value="">Select State</option>
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <option value="CA">California</option>
-                            <option value="CO">Colorado</option>
-                            <option value="NY">New York</option>
-                            <option value="TX">Texas</option>
-                            <option value="WA">Washington</option>
-                        </select>
-                        <div class="invalid-feedback">State is required</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="zipCode" class="form-label required">Zip Code</label>
-                        <input type="text" id="zipCode" name="zipCode" class="form-control" required>
-                        <div class="invalid-feedback">Please enter a valid zip code</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="addressType" class="form-label required">Address Type</label>
-                        <select id="addressType" name="addressType" class="form-control" required>
-                            <option value="">Select address type</option>
-                            <option value="residential">Residential</option>
-                            <option value="business">Business</option>
-                            <option value="poBox">P.O. Box</option>
-                        </select>
-                        <div class="invalid-feedback">Please select an address type</div>
-                    </div>
-                    
-                    <!-- Conditional fields based on address type -->
-                    <div id="residential-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="residenceType" class="form-label">Residence Type</label>
-                            <select id="residenceType" name="residenceType" class="form-control">
-                                <option value="">Select residence type</option>
-                                <option value="house">House</option>
-                                <option value="apartment">Apartment</option>
-                                <option value="condo">Condominium</option>
-                                <option value="other">Other</option>
-                            </select>
+                        <label class="form-label required">Preference</label>
+                        <div class="form-check">
+                            <input type="radio" id="optionA" name="preference" value="optionA" class="form-check-input" required>
+                            <label for="optionA" class="form-check-label">Option A</label>
                         </div>
-                    </div>
-                    
-                    <div id="business-address-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="buildingName" class="form-label">Building Name</label>
-                            <input type="text" id="buildingName" name="buildingName" class="form-control">
+                        <div class="form-check">
+                            <input type="radio" id="optionB" name="preference" value="optionB" class="form-check-input" required>
+                            <label for="optionB" class="form-check-label">Option B</label>
                         </div>
-                    </div>
-                    
-                    <div id="pobox-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="poBoxNumber" class="form-label required">P.O. Box Number</label>
-                            <input type="text" id="poBoxNumber" name="poBoxNumber" class="form-control">
-                            <div class="invalid-feedback">P.O. Box number is required</div>
+                        <div class="form-check">
+                            <input type="radio" id="optionC" name="preference" value="optionC" class="form-check-input" required>
+                            <label for="optionC" class="form-check-label">Option C</label>
                         </div>
+                        <div class="invalid-feedback">Please select a preference</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="document" class="form-label required">Upload Document</label>
+                        <input type="file" id="document" name="document" class="form-control" required>
+                        <div class="invalid-feedback">Please upload a document</div>
                     </div>
                 </div>
-                
+
                 <div class="form-buttons">
                     <button type="button" class="btn btn-secondary" id="step2-prev">Previous</button>
                     <button type="button" class="btn btn-primary" id="step2-next">Next</button>
                 </div>
             </div>
             
-            <!-- Step 3: Preferences -->
+            <!-- Step 3: Review and Submit -->
             <div class="form-step" id="step-3-content">
                 <div class="form-section">
-                    <h2>Preferences</h2>
-                    
-                    <div class="form-group">
-                        <label for="contactMethod" class="form-label required">Preferred Contact Method</label>
-                        <select id="contactMethod" name="contactMethod" class="form-control" required>
-                            <option value="">Select contact method</option>
-                            <option value="email">Email</option>
-                            <option value="phone">Phone</option>
-                            <option value="mail">Mail</option>
-                        </select>
-                        <div class="invalid-feedback">Please select a contact method</div>
-                    </div>
-                    
-                    <!-- Conditional fields based on contact method -->
-                    <div id="email-contact-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="emailFrequency" class="form-label">Email Frequency</label>
-                            <select id="emailFrequency" name="emailFrequency" class="form-control">
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div id="phone-contact-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="callTime" class="form-label">Best Time to Call</label>
-                            <select id="callTime" name="callTime" class="form-control">
-                                <option value="morning">Morning (8am-12pm)</option>
-                                <option value="afternoon">Afternoon (12pm-5pm)</option>
-                                <option value="evening">Evening (5pm-8pm)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="interestArea" class="form-label required">Area of Interest</label>
-                        <select id="interestArea" name="interestArea" class="form-control" required>
-                            <option value="">Select area of interest</option>
-                            <option value="technology">Technology</option>
-                            <option value="healthcare">Healthcare</option>
-                            <option value="education">Education</option>
-                            <option value="finance">Finance</option>
-                            <option value="other">Other</option>
-                        </select>
-                        <div class="invalid-feedback">Please select an area of interest</div>
-                    </div>
-                    
-                    <!-- Conditional fields based on interest area -->
-                    <div id="technology-fields" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label">Technology Interests</label>
-                            <div class="form-check">
-                                <input type="checkbox" id="webDev" name="techInterests" value="webDev" class="form-check-input">
-                                <label for="webDev" class="form-check-label">Web Development</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" id="mobileDev" name="techInterests" value="mobileDev" class="form-check-input">
-                                <label for="mobileDev" class="form-check-label">Mobile Development</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" id="dataScience" name="techInterests" value="dataScience" class="form-check-input">
-                                <label for="dataScience" class="form-check-label">Data Science</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="healthcare-fields" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label">Healthcare Interests</label>
-                            <div class="form-check">
-                                <input type="checkbox" id="telemedicine" name="healthcareInterests" value="telemedicine" class="form-check-input">
-                                <label for="telemedicine" class="form-check-label">Telemedicine</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" id="patientCare" name="healthcareInterests" value="patientCare" class="form-check-input">
-                                <label for="patientCare" class="form-check-label">Patient Care</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" id="medicalResearch" name="healthcareInterests" value="medicalResearch" class="form-check-input">
-                                <label for="medicalResearch" class="form-check-label">Medical Research</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="alphanumericOnly" class="form-label">Alphanumeric Reference Code</label>
-                        <input type="text" id="alphanumericOnly" name="alphanumericOnly" class="form-control">
-                        <div class="form-text">Only letters and numbers are allowed</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="disabledInput" class="form-label">Disabled Field</label>
-                        <input type="text" id="disabledInput" name="disabledInput" class="form-control" value="This field is disabled" disabled>
-                    </div>
-                </div>
-                
-                <div class="form-buttons">
-                    <button type="button" class="btn btn-secondary" id="step3-prev">Previous</button>
-                    <button type="button" class="btn btn-primary" id="step3-next">Next</button>
-                </div>
-            </div>
-            
-            <!-- Step 4: Review and Submit -->
-            <div class="form-step" id="step-4-content">
-                <div class="form-section">
                     <h2>Review Your Information</h2>
-                    
+
                     <div id="review-content">
                         <!-- This will be filled dynamically with the form data -->
                     </div>
-                    
+
                     <div class="form-group">
                         <div class="form-check">
                             <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
                             <label for="terms" class="form-check-label">
-                                I agree to the <a href="#" id="terms-link">Terms and Conditions</a>
+                                I agree to the Terms and Conditions
                             </label>
                             <div class="invalid-feedback">You must agree to the terms and conditions</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-buttons">
-                    <button type="button" class="btn btn-secondary" id="step4-prev">Previous</button>
+                    <button type="button" class="btn btn-secondary" id="step3-prev">Previous</button>
                     <button type="submit" class="btn btn-primary" id="submit-form">Submit Form</button>
-                    <button type="button" class="btn btn-danger" id="modal-button">Open Modal</button>
                 </div>
             </div>
         </form>
-    </div>
-    
-    <!-- Modal -->
-    <div class="modal" id="red-herring-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Red Herring Modal</h4>
-                <button type="button" class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>This is a red herring modal instead of submitting the form.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary modal-close-btn">Close</button>
-            </div>
-        </div>
     </div>
     
     <script>
@@ -703,7 +488,7 @@
             // Cache DOM elements
             const form = document.getElementById('progressive-form');
             const successMessage = document.getElementById('success-message');
-            
+
             // Steps
             const steps = [
                 {
@@ -720,107 +505,22 @@
                 {
                     content: document.getElementById('step-3-content'),
                     indicator: document.getElementById('step-3'),
-                    nextBtn: document.getElementById('step3-next'),
                     prevBtn: document.getElementById('step3-prev')
-                },
-                {
-                    content: document.getElementById('step-4-content'),
-                    indicator: document.getElementById('step-4'),
-                    prevBtn: document.getElementById('step4-prev')
                 }
             ];
-            
+
             let currentStep = 0;
-            
+
             // Conditional fields
-            const applicantType = document.getElementById('applicantType');
-            const individualFields = document.getElementById('individual-fields');
-            const businessFields = document.getElementById('business-fields');
-            const nonprofitFields = document.getElementById('nonprofit-fields');
-            
-            const addressType = document.getElementById('addressType');
-            const residentialFields = document.getElementById('residential-fields');
-            const businessAddressFields = document.getElementById('business-address-fields');
-            const poboxFields = document.getElementById('pobox-fields');
-            
-            const contactMethod = document.getElementById('contactMethod');
-            const emailContactFields = document.getElementById('email-contact-fields');
-            const phoneContactFields = document.getElementById('phone-contact-fields');
-            
-            const interestArea = document.getElementById('interestArea');
-            const technologyFields = document.getElementById('technology-fields');
-            const healthcareFields = document.getElementById('healthcare-fields');
-            
-            // Alphanumeric validation
-            const alphanumericInput = document.getElementById('alphanumericOnly');
-            if (alphanumericInput) {
-                alphanumericInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-            }
-            
-            // Toggle conditional fields based on selections
-            applicantType.addEventListener('change', function() {
-                hideElement(individualFields);
-                hideElement(businessFields);
-                hideElement(nonprofitFields);
-                
-                switch(this.value) {
-                    case 'individual':
-                        showElement(individualFields);
-                        break;
-                    case 'business':
-                        showElement(businessFields);
-                        break;
-                    case 'nonprofit':
-                        showElement(nonprofitFields);
-                        break;
-                }
-            });
-            
-            addressType.addEventListener('change', function() {
-                hideElement(residentialFields);
-                hideElement(businessAddressFields);
-                hideElement(poboxFields);
-                
-                switch(this.value) {
-                    case 'residential':
-                        showElement(residentialFields);
-                        break;
-                    case 'business':
-                        showElement(businessAddressFields);
-                        break;
-                    case 'poBox':
-                        showElement(poboxFields);
-                        break;
-                }
-            });
-            
-            contactMethod.addEventListener('change', function() {
-                hideElement(emailContactFields);
-                hideElement(phoneContactFields);
-                
-                switch(this.value) {
-                    case 'email':
-                        showElement(emailContactFields);
-                        break;
-                    case 'phone':
-                        showElement(phoneContactFields);
-                        break;
-                }
-            });
-            
-            interestArea.addEventListener('change', function() {
-                hideElement(technologyFields);
-                hideElement(healthcareFields);
-                
-                switch(this.value) {
-                    case 'technology':
-                        showElement(technologyFields);
-                        break;
-                    case 'healthcare':
-                        showElement(healthcareFields);
-                        break;
+            const category = document.getElementById('category');
+            const conditionalDropdown = document.getElementById('conditional-dropdown');
+
+            // Toggle conditional dropdown based on category selection
+            category.addEventListener('change', function() {
+                if (this.value === 'technology') {
+                    showElement(conditionalDropdown);
+                } else {
+                    hideElement(conditionalDropdown);
                 }
             });
             

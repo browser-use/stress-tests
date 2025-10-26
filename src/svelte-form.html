@@ -237,7 +237,6 @@
         let currentFormData = {};
         let currentErrors = {};
         let currentShowSuccess = false;
-        let currentShowModal = false;
         let isInitialized = false;
 
         // Subscribe to store changes (Svelte reactivity)
@@ -259,13 +258,6 @@
             currentShowSuccess = value;
             if (isInitialized) {
                 updateSuccessDisplay();
-            }
-        });
-
-        showModal.subscribe(value => {
-            currentShowModal = value;
-            if (isInitialized) {
-                updateModalDisplay();
             }
         });
 

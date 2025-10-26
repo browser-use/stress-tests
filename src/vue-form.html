@@ -243,74 +243,42 @@
         const app = createApp({
             setup() {
                 const formData = reactive({
-                    firstName: '',
-                    lastName: '',
                     email: '',
-                    phone: '',
-                    age: null,
-                    gender: '',
-                    address: {
-                        street: '',
-                        line2: '',
-                        city: '',
-                        state: '',
-                        zipCode: '',
-                        country: ''
-                    },
-                    username: '',
-                    password: '',
-                    confirmPassword: '',
-                    interests: [],
-                    meetingDate: '',
-                    meetingTime: '',
-                    contactPreference: '',
-                    alphanumericOnly: '',
-                    url: '',
-                    satisfactionLevel: 50,
+                    country: '',
                     favoriteColor: '',
-                    comments: '',
-                    termsAgreement: false
+                    meetingDate: '',
+                    contactPreference: ''
                 });
-                
+
                 const errors = reactive({});
-                const showModal = ref(false);
                 const formSubmitted = ref(false);
                 const formTouched = ref(false);
-                
+
                 const submitForm = () => {
                     formTouched.value = true;
-                    
+
                     // Validate form
                     validateForm();
-                    
+
                     // Check if there are any errors
                     if (Object.keys(errors).length === 0) {
                         // Form submission logic
                         console.log('Form submitted successfully!', formData);
                         formSubmitted.value = true;
-                        
+
                         // Hide success message after 3 seconds
                         setTimeout(() => {
                             formSubmitted.value = false;
                         }, 3000);
                     }
                 };
-                
+
                 const validateForm = () => {
                     // Clear previous errors
                     Object.keys(errors).forEach(key => {
                         delete errors[key];
                     });
-                    
-                    // Required fields validation
-                    if (!formData.firstName.trim()) {
-                        errors.firstName = 'First name is required';
-                    }
-                    
-                    if (!formData.lastName.trim()) {
-                        errors.lastName = 'Last name is required';
-                    }
-                    
+
                     // Email validation
                     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!formData.email.trim()) {
@@ -318,135 +286,38 @@
                     } else if (!emailPattern.test(formData.email)) {
                         errors.email = 'Please enter a valid email address';
                     }
-                    
-                    // Phone validation
-                    if (formData.phone) {
-                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                        if (!phonePattern.test(formData.phone)) {
-                            errors.phone = 'Please enter a valid phone number (e.g. 123-456-7890)';
-                        }
+
+                    // Country validation
+                    if (!formData.country) {
+                        errors.country = 'Country is required';
                     }
-                    
-                    // Age validation
-                    if (!formData.age) {
-                        errors.age = 'Age is required';
-                    } else if (formData.age < 18 || formData.age > 120) {
-                        errors.age = 'Age must be between 18 and 120';
+
+                    // Favorite color validation
+                    if (!formData.favoriteColor) {
+                        errors.favoriteColor = 'Favorite color is required';
                     }
-                    
-                    // Address validation
-                    if (!formData.address.street.trim()) {
-                        errors['address.street'] = 'Street address is required';
+
+                    // Meeting date validation
+                    if (!formData.meetingDate) {
+                        errors.meetingDate = 'Meeting date is required';
                     }
-                    
-                    if (!formData.address.city.trim()) {
-                        errors['address.city'] = 'City is required';
-                    }
-                    
-                    if (!formData.address.state) {
-                        errors['address.state'] = 'State is required';
-                    }
-                    
-                    if (!formData.address.zipCode.trim()) {
-                        errors['address.zipCode'] = 'Zip code is required';
-                    } else {
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(formData.address.zipCode)) {
-                            errors['address.zipCode'] = 'Please enter a valid zip code';
-                        }
-                    }
-                    
-                    if (!formData.address.country) {
-                        errors['address.country'] = 'Country is required';
-                    }
-                    
-                    // Username validation
-                    if (!formData.username.trim()) {
-                        errors.username = 'Username is required';
-                    } else if (formData.username.length < 4) {
-                        errors.username = 'Username must be at least 4 characters';
-                    }
-                    
-                    // Password validation
-                    if (!formData.password) {
-                        errors.password = 'Password is required';
-                    } else if (formData.password.length < 8) {
-                        errors.password = 'Password must be at least 8 characters';
-                    }
-                    
-                    // Confirm password validation
-                    if (formData.password !== formData.confirmPassword) {
-                        errors.confirmPassword = 'Passwords must match';
-                    }
-                    
-                    // Alphanumeric validation
-                    if (formData.alphanumericOnly && !/^[a-zA-Z0-9]*$/.test(formData.alphanumericOnly)) {
-                        errors.alphanumericOnly = 'Only letters and numbers are allowed';
-                    }
-                    
-                    // URL validation
-                    if (formData.url) {
-                        try {
-                            new URL(formData.url);
-                        } catch (e) {
-                            errors.url = 'Please enter a valid URL';
-                        }
-                    }
-                    
-                    // Terms agreement validation
-                    if (!formData.termsAgreement) {
-                        errors.termsAgreement = 'You must agree to the terms and conditions';
+
+                    // Contact preference validation
+                    if (!formData.contactPreference) {
+                        errors.contactPreference = 'Please select a contact preference';
                     }
                 };
-                
-                const resetForm = () => {
-                    // Reset all form fields
-                    Object.keys(formData).forEach(key => {
-                        if (key === 'address') {
-                            Object.keys(formData.address).forEach(addrKey => {
-                                formData.address[addrKey] = '';
-                            });
-                        } else if (key === 'interests') {
-                            formData[key] = [];
-                        } else if (key === 'satisfactionLevel') {
-                            formData[key] = 50;
-                        } else if (key === 'termsAgreement') {
-                            formData[key] = false;
-                        } else {
-                            formData[key] = '';
-                        }
-                    });
-                    
-                    // Clear errors
-                    Object.keys(errors).forEach(key => {
-                        delete errors[key];
-                    });
-                    
-                    formTouched.value = false;
-                };
-                
-                const validateAlphanumeric = (e) => {
-                    formData.alphanumericOnly = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                };
-                
-                const showTerms = () => {
-                    alert('Terms and Conditions would be displayed here.');
-                };
-                
+
                 const hasError = (field) => {
                     return formTouched.value && errors[field];
                 };
-                
+
                 return {
                     formData,
                     errors,
-                    showModal,
                     formSubmitted,
                     formTouched,
                     submitForm,
-                    resetForm,
-                    validateAlphanumeric,
-                    showTerms,
                     hasError
                 };
             }

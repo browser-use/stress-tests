@@ -118,27 +118,17 @@
     
     <script type="text/babel">
         const {
-            Button, 
-            TextField, 
-            FormControl, 
-            FormControlLabel, 
-            FormGroup,
-            InputLabel, 
-            Select, 
-            MenuItem, 
-            FormHelperText,
-            Radio, 
-            RadioGroup, 
-            Checkbox, 
-            Switch, 
-            Slider,
-            Dialog, 
-            DialogActions, 
-            DialogContent, 
-            DialogContentText, 
-            DialogTitle,
-            Alert, 
-            Box, 
+            Button,
+            TextField,
+            FormControl,
+            FormControlLabel,
+            InputLabel,
+            Select,
+            MenuItem,
+            Radio,
+            RadioGroup,
+            Alert,
+            Box,
             Typography,
             createTheme,
             ThemeProvider,
@@ -205,7 +195,7 @@
                             <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
                         </Alert>
                     )}
-                    
+
                     <Box
                         component="form"
                         onSubmit={handleSubmit}
@@ -217,627 +207,107 @@
                             mb: 3,
                         }}
                     >
-                        {/* Personal Information Section */}
-                        <Box sx={{ mb: 4 }}>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    mb: 2, 
-                                    pb: 1, 
-                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-                                    color: 'primary.main'
-                                }}
-                            >
-                                Personal Information
-                            </Typography>
-                            
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                                <TextField
-                                    id="firstName"
-                                    name="firstName"
-                                    label="First Name"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    error={!!errors.firstName}
-                                    helperText={errors.firstName}
-                                    required
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                                
-                                <TextField
-                                    id="lastName"
-                                    name="lastName"
-                                    label="Last Name"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    error={!!errors.lastName}
-                                    helperText={errors.lastName}
-                                    required
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                            </Box>
-                            
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                                <TextField
-                                    id="email"
-                                    name="email"
-                                    label="Email Address"
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    error={!!errors.email}
-                                    helperText={errors.email}
-                                    required
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                                
-                                <TextField
-                                    id="phone"
-                                    name="phone"
-                                    label="Phone Number"
-                                    type="tel"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    error={!!errors.phone}
-                                    helperText={errors.phone || "Format: 123-456-7890"}
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                            </Box>
-                            
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                                <TextField
-                                    id="birthDate"
-                                    name="birthDate"
-                                    label="Date of Birth"
-                                    type="date"
-                                    value={formData.birthDate}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ shrink: true }}
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                                
-                                <FormControl sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}>
-                                    <InputLabel id="gender-label">Gender</InputLabel>
-                                    <Select
-                                        labelId="gender-label"
-                                        id="gender"
-                                        name="gender"
-                                        value={formData.gender}
-                                        onChange={handleChange}
-                                        label="Gender"
-                                    >
-                                        <MenuItem value=""><em>None</em></MenuItem>
-                                        <MenuItem value="male">Male</MenuItem>
-                                        <MenuItem value="female">Female</MenuItem>
-                                        <MenuItem value="other">Other</MenuItem>
-                                        <MenuItem value="prefer-not-to-say">Prefer not to say</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                        </Box>
-                        
-                        {/* Contact Information Section */}
-                        <Box sx={{ mb: 4 }}>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    mb: 2, 
-                                    pb: 1, 
-                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-                                    color: 'primary.main'
-                                }}
-                            >
-                                Contact Information
-                            </Typography>
-                            
-                            <TextField
-                                id="address"
-                                name="address"
-                                label="Street Address"
-                                value={formData.address}
+                        <TextField
+                            id="email"
+                            name="email"
+                            label="Email Address"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            fullWidth
+                            sx={{ mb: 3 }}
+                        />
+
+                        <FormControl fullWidth sx={{ mb: 3 }}>
+                            <InputLabel id="country-label">Country</InputLabel>
+                            <Select
+                                labelId="country-label"
+                                id="country"
+                                name="country"
+                                value={formData.country}
                                 onChange={handleChange}
-                                error={!!errors.address}
-                                helperText={errors.address}
-                                required
-                                fullWidth
-                                sx={{ mb: 2 }}
-                            />
-                            
-                            <TextField
-                                id="addressLine2"
-                                name="addressLine2"
-                                label="Address Line 2"
-                                value={formData.addressLine2}
-                                onChange={handleChange}
-                                fullWidth
-                                sx={{ mb: 2 }}
-                                helperText="Apartment, suite, unit, etc."
-                            />
-                            
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                                <TextField
-                                    id="city"
-                                    name="city"
-                                    label="City"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    error={!!errors.city}
-                                    helperText={errors.city}
-                                    required
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                                
-                                <FormControl 
-                                    error={!!errors.state} 
-                                    required 
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                >
-                                    <InputLabel id="state-label">State</InputLabel>
-                                    <Select
-                                        labelId="state-label"
-                                        id="state"
-                                        name="state"
-                                        value={formData.state}
-                                        onChange={handleChange}
-                                        label="State"
-                                    >
-                                        <MenuItem value=""><em>None</em></MenuItem>
-                                        <MenuItem value="AL">Alabama</MenuItem>
-                                        <MenuItem value="AK">Alaska</MenuItem>
-                                        <MenuItem value="AZ">Arizona</MenuItem>
-                                        {/* More states would be listed here */}
-                                        <MenuItem value="WY">Wyoming</MenuItem>
-                                    </Select>
-                                    {errors.state && <FormHelperText>{errors.state}</FormHelperText>}
-                                </FormControl>
-                            </Box>
-                            
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                                <TextField
-                                    id="zipCode"
-                                    name="zipCode"
-                                    label="Zip Code"
-                                    value={formData.zipCode}
-                                    onChange={handleChange}
-                                    error={!!errors.zipCode}
-                                    helperText={errors.zipCode}
-                                    required
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                                
-                                <FormControl 
-                                    error={!!errors.country} 
-                                    required 
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                >
-                                    <InputLabel id="country-label">Country</InputLabel>
-                                    <Select
-                                        labelId="country-label"
-                                        id="country"
-                                        name="country"
-                                        value={formData.country}
-                                        onChange={handleChange}
-                                        label="Country"
-                                    >
-                                        <MenuItem value=""><em>None</em></MenuItem>
-                                        <MenuItem value="US">United States</MenuItem>
-                                        <MenuItem value="CA">Canada</MenuItem>
-                                        <MenuItem value="UK">United Kingdom</MenuItem>
-                                        <MenuItem value="AU">Australia</MenuItem>
-                                        {/* More countries would be listed here */}
-                                    </Select>
-                                    {errors.country && <FormHelperText>{errors.country}</FormHelperText>}
-                                </FormControl>
-                            </Box>
-                        </Box>
-                        
-                        {/* Account Information Section */}
-                        <Box sx={{ mb: 4 }}>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    mb: 2, 
-                                    pb: 1, 
-                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-                                    color: 'primary.main'
-                                }}
+                                label="Country"
                             >
-                                Account Information
+                                <MenuItem value=""><em>None</em></MenuItem>
+                                <MenuItem value="US">United States</MenuItem>
+                                <MenuItem value="CA">Canada</MenuItem>
+                                <MenuItem value="UK">United Kingdom</MenuItem>
+                                <MenuItem value="AU">Australia</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth sx={{ mb: 3 }}>
+                            <InputLabel id="department-label">Department</InputLabel>
+                            <Select
+                                labelId="department-label"
+                                id="department"
+                                name="department"
+                                value={formData.department}
+                                onChange={handleChange}
+                                label="Department"
+                            >
+                                <MenuItem value=""><em>None</em></MenuItem>
+                                <MenuItem value="engineering">Engineering</MenuItem>
+                                <MenuItem value="marketing">Marketing</MenuItem>
+                                <MenuItem value="sales">Sales</MenuItem>
+                                <MenuItem value="hr">Human Resources</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <TextField
+                            id="birthDate"
+                            name="birthDate"
+                            label="Date of Birth"
+                            type="date"
+                            value={formData.birthDate}
+                            onChange={handleChange}
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            sx={{ mb: 3 }}
+                        />
+
+                        <FormControl component="fieldset" sx={{ mb: 3 }}>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Contact Preference
                             </Typography>
-                            
-                            <TextField
-                                id="username"
-                                name="username"
-                                label="Username"
-                                value={formData.username}
+                            <RadioGroup
+                                name="contactPreference"
+                                value={formData.contactPreference}
                                 onChange={handleChange}
-                                error={!!errors.username}
-                                helperText={errors.username || "Must be at least 4 characters"}
-                                required
-                                fullWidth
-                                sx={{ mb: 2 }}
-                            />
-                            
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                                <TextField
-                                    id="password"
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    error={!!errors.password}
-                                    helperText={errors.password || "Must be at least 8 characters"}
-                                    required
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                                
-                                <TextField
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    label="Confirm Password"
-                                    type="password"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    error={!!errors.confirmPassword}
-                                    helperText={errors.confirmPassword}
-                                    required
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                            </Box>
-                        </Box>
-                        
-                        {/* Preferences Section */}
-                        <Box sx={{ mb: 4 }}>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    mb: 2, 
-                                    pb: 1, 
-                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-                                    color: 'primary.main'
-                                }}
                             >
-                                Preferences
-                            </Typography>
-                            
-                            <FormControl component="fieldset" sx={{ mb: 2 }}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Contact Preference
-                                </Typography>
-                                <RadioGroup
-                                    name="contactPreference"
-                                    value={formData.contactPreference}
-                                    onChange={handleChange}
-                                >
-                                    <FormControlLabel value="email" control={<Radio />} label="Email" />
-                                    <FormControlLabel value="phone" control={<Radio />} label="Phone" />
-                                    <FormControlLabel value="mail" control={<Radio />} label="Mail" />
-                                </RadioGroup>
-                            </FormControl>
-                            
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Interests
-                                </Typography>
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={formData.interests.includes('technology')}
-                                                onChange={handleChange}
-                                                name="interests"
-                                                value="technology"
-                                            />
-                                        }
-                                        label="Technology"
-                                        sx={{ width: { xs: '100%', sm: '33%' } }}
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={formData.interests.includes('sports')}
-                                                onChange={handleChange}
-                                                name="interests"
-                                                value="sports"
-                                            />
-                                        }
-                                        label="Sports"
-                                        sx={{ width: { xs: '100%', sm: '33%' } }}
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={formData.interests.includes('music')}
-                                                onChange={handleChange}
-                                                name="interests"
-                                                value="music"
-                                            />
-                                        }
-                                        label="Music"
-                                        sx={{ width: { xs: '100%', sm: '33%' } }}
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={formData.interests.includes('reading')}
-                                                onChange={handleChange}
-                                                name="interests"
-                                                value="reading"
-                                            />
-                                        }
-                                        label="Reading"
-                                        sx={{ width: { xs: '100%', sm: '33%' } }}
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={formData.interests.includes('travel')}
-                                                onChange={handleChange}
-                                                name="interests"
-                                                value="travel"
-                                            />
-                                        }
-                                        label="Travel"
-                                        sx={{ width: { xs: '100%', sm: '33%' } }}
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={formData.interests.includes('cooking')}
-                                                onChange={handleChange}
-                                                name="interests"
-                                                value="cooking"
-                                            />
-                                        }
-                                        label="Cooking"
-                                        sx={{ width: { xs: '100%', sm: '33%' } }}
-                                    />
-                                </Box>
-                            </Box>
-                            
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                                <TextField
-                                    id="preferredTime"
-                                    name="preferredTime"
-                                    label="Preferred Contact Time"
-                                    type="time"
-                                    value={formData.preferredTime}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ shrink: true }}
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                                
-                                <TextField
-                                    id="preferredDate"
-                                    name="preferredDate"
-                                    label="Preferred Contact Date"
-                                    type="date"
-                                    value={formData.preferredDate}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ shrink: true }}
-                                    sx={{ flex: 1, minWidth: { xs: '100%', sm: 'calc(50% - 8px)' } }}
-                                />
-                            </Box>
-                            
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={formData.newsletter}
-                                        onChange={handleChange}
-                                        name="newsletter"
-                                        color="primary"
-                                    />
-                                }
-                                label="Subscribe to newsletter"
-                                sx={{ display: 'block', mb: 1 }}
-                            />
-                            
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={formData.darkMode}
-                                        onChange={handleChange}
-                                        name="darkMode"
-                                        color="primary"
-                                    />
-                                }
-                                label="Dark Mode"
-                                sx={{ display: 'block', mb: 2 }}
-                            />
-                        </Box>
-                        
-                        {/* Additional Fields Section */}
-                        <Box sx={{ mb: 4 }}>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    mb: 2, 
-                                    pb: 1, 
-                                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-                                    color: 'primary.main'
-                                }}
+                                <FormControlLabel value="email" control={<Radio />} label="Email" />
+                                <FormControlLabel value="phone" control={<Radio />} label="Phone" />
+                                <FormControlLabel value="mail" control={<Radio />} label="Mail" />
+                            </RadioGroup>
+                        </FormControl>
+
+                        <Box sx={{ mb: 3 }}>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                startIcon={<span className="material-icons">attach_file</span>}
                             >
-                                Additional Fields
-                            </Typography>
-                            
-                            <TextField
-                                id="alphanumericOnly"
-                                name="alphanumericOnly"
-                                label="Alphanumeric Only"
-                                value={formData.alphanumericOnly}
-                                onChange={handleChange}
-                                error={!!errors.alphanumericOnly}
-                                helperText={errors.alphanumericOnly || "Only letters and numbers are allowed"}
-                                fullWidth
-                                sx={{ mb: 2 }}
-                            />
-                            
-                            <TextField
-                                id="disabledInput"
-                                label="Disabled Input"
-                                value="This field is disabled"
-                                disabled
-                                fullWidth
-                                sx={{ mb: 2 }}
-                            />
-                            
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Satisfaction Level
-                                </Typography>
-                                <Slider
-                                    name="satisfactionLevel"
-                                    value={formData.satisfactionLevel}
-                                    onChange={(e, newValue) => setFormData({ ...formData, satisfactionLevel: newValue })}
-                                    aria-labelledby="satisfaction-level-slider"
-                                    valueLabelDisplay="auto"
-                                    step={1}
-                                    marks
-                                    min={0}
-                                    max={100}
+                                Upload File
+                                <input
+                                    type="file"
+                                    hidden
+                                    onChange={handleFileChange}
                                 />
-                                <Box sx={{ textAlign: 'center', mt: 1 }}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {formData.satisfactionLevel}%
-                                    </Typography>
-                                </Box>
-                            </Box>
-                            
-                            <TextField
-                                id="comments"
-                                name="comments"
-                                label="Comments"
-                                multiline
-                                rows={4}
-                                value={formData.comments}
-                                onChange={handleChange}
-                                fullWidth
-                                sx={{ mb: 2 }}
-                            />
-                            
-                            <Box sx={{ mb: 2 }}>
-                                <Button
-                                    variant="outlined"
-                                    component="label"
-                                    startIcon={<span className="material-icons">attach_file</span>}
-                                >
-                                    Upload File
-                                    <input
-                                        type="file"
-                                        hidden
-                                        onChange={handleFileChange}
-                                    />
-                                </Button>
-                                <Typography variant="body2" sx={{ mt: 1, ml: 1 }}>
-                                    {fileName}
-                                </Typography>
-                            </Box>
-                            
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={formData.termsAgreement}
-                                        onChange={handleChange}
-                                        name="termsAgreement"
-                                        required
-                                    />
-                                }
-                                label={
-                                    <span>
-                                        I agree to the <a href="#" onClick={handleTermsClick}>Terms and Conditions</a> <span style={{ color: '#f44336' }}>*</span>
-                                    </span>
-                                }
-                                sx={{ mb: 2 }}
-                            />
-                            {errors.termsAgreement && (
-                                <FormHelperText error>{errors.termsAgreement}</FormHelperText>
-                            )}
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                            <Button 
-                                type="submit" 
-                                variant="contained" 
-                                color="primary"
-                                startIcon={<span className="material-icons">send</span>}
-                            >
-                                Submit
                             </Button>
-                            
-                            <Button 
-                                type="button" 
-                                variant="contained" 
-                                color="error"
-                                startIcon={<span className="material-icons">open_in_new</span>}
-                                onClick={handleOpenDialog}
-                            >
-                                Open Modal
-                            </Button>
-                            
-                            <Button 
-                                type="reset" 
-                                variant="outlined" 
-                                color="primary"
-                                startIcon={<span className="material-icons">refresh</span>}
-                                onClick={() => {
-                                    setFormData({
-                                        firstName: '',
-                                        lastName: '',
-                                        email: '',
-                                        phone: '',
-                                        birthDate: '',
-                                        gender: '',
-                                        address: '',
-                                        addressLine2: '',
-                                        city: '',
-                                        state: '',
-                                        zipCode: '',
-                                        country: '',
-                                        username: '',
-                                        password: '',
-                                        confirmPassword: '',
-                                        contactPreference: 'email',
-                                        interests: [],
-                                        preferredTime: '',
-                                        preferredDate: '',
-                                        newsletter: false,
-                                        darkMode: false,
-                                        alphanumericOnly: '',
-                                        satisfactionLevel: 50,
-                                        comments: '',
-                                        termsAgreement: false
-                                    });
-                                    setErrors({});
-                                }}
-                            >
-                                Reset
-                            </Button>
+                            <Typography variant="body2" sx={{ mt: 1, ml: 1 }}>
+                                {fileName}
+                            </Typography>
                         </Box>
+
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            startIcon={<span className="material-icons">send</span>}
+                        >
+                            Submit
+                        </Button>
                     </Box>
-                    
-                    {/* Dialog (Modal) */}
-                    <Dialog
-                        open={showDialog}
-                        onClose={handleCloseDialog}
-                        aria-labelledby="dialog-title"
-                    >
-                        <DialogTitle id="dialog-title">
-                            Red Herring Modal
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                This is a red herring modal instead of submitting the form.
-                            </DialogContentText>
-                            <DialogContentText>
-                                In a real application, this might contain additional options or information.
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleCloseDialog} color="primary">Cancel</Button>
-                            <Button onClick={handleCloseDialog} color="primary" variant="contained">OK</Button>
-                        </DialogActions>
-                    </Dialog>
                 </ThemeProvider>
             );
         }

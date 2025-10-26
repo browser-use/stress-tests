@@ -512,7 +512,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Generate days for the date selector
-            const daySelect = document.getElementById('field5_day');
+            const daySelect = document.getElementById('field4_day');
             if (daySelect) {
                 for (let i = 1; i <= 31; i++) {
                     const day = i < 10 ? '0' + i : i;
@@ -522,45 +522,23 @@
                     daySelect.appendChild(option);
                 }
             }
-            
+
             // Generate years for the date selector
-            const yearSelect = document.getElementById('field5_year');
+            const yearSelect = document.getElementById('field4_year');
             if (yearSelect) {
                 const currentYear = new Date().getFullYear();
-                for (let i = currentYear; i >= currentYear - 100; i--) {
+                for (let i = currentYear; i <= currentYear + 10; i++) {
                     const option = document.createElement('option');
                     option.value = i;
                     option.textContent = i;
                     yearSelect.appendChild(option);
                 }
             }
-            
-            // Generate years for credit card expiration
-            const expiryYearSelect = document.getElementById('field18_year');
-            if (expiryYearSelect) {
-                const currentYear = new Date().getFullYear();
-                for (let i = currentYear; i <= currentYear + 10; i++) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i;
-                    expiryYearSelect.appendChild(option);
-                }
-            }
-            
-            // Same as billing checkbox
-            const sameAsBillingCheckbox = document.getElementById('field13_billing');
-            const billingSection = document.getElementById('billingSection');
-            
-            if (sameAsBillingCheckbox && billingSection) {
-                sameAsBillingCheckbox.addEventListener('change', function() {
-                    billingSection.style.display = this.checked ? 'none' : 'block';
-                });
-            }
-            
+
             // File input styling
-            const fileInput = document.getElementById('field25_file');
+            const fileInput = document.getElementById('field6_file');
             const fileLabel = document.getElementById('file-label');
-            
+
             if (fileInput && fileLabel) {
                 fileInput.addEventListener('change', function() {
                     if (this.files.length > 0) {
@@ -570,48 +548,33 @@
                     }
                 });
             }
-            
-            // Alphanumeric validation
-            const alphanumericInput = document.getElementById('field19_alphanum');
-            if (alphanumericInput) {
-                alphanumericInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-            }
-            
+
             // Form submission
             const form = document.getElementById('wufooForm');
             const successMessage = document.getElementById('wufoo-success');
-            
+
             if (form) {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
+
                     // Reset previous error messages
                     const errorMessages = document.querySelectorAll('.wufoo-error');
                     errorMessages.forEach(error => error.style.display = 'none');
-                    
+
                     // Validate required fields
                     const requiredFields = form.querySelectorAll('[required]');
                     let isValid = true;
-                    
+
                     requiredFields.forEach(field => {
-                        if (field.type === 'checkbox' && !field.checked) {
-                            const errorId = `${field.id}-error`;
-                            const errorElement = document.getElementById(errorId);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        } else if (field.type === 'radio') {
+                        if (field.type === 'radio') {
                             const name = field.name;
                             const radioGroup = form.querySelectorAll(`input[name="${name}"]`);
                             let checked = false;
-                            
+
                             radioGroup.forEach(radio => {
                                 if (radio.checked) checked = true;
                             });
-                            
+
                             if (!checked) {
                                 const errorId = `${name.toLowerCase()}-error`;
                                 const errorElement = document.getElementById(errorId);
@@ -629,124 +592,29 @@
                             isValid = false;
                         }
                     });
-                    
+
                     // Email validation
-                    const emailInput = document.getElementById('field3_email');
+                    const emailInput = document.getElementById('field1_email');
                     if (emailInput && emailInput.value) {
                         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailPattern.test(emailInput.value)) {
-                            const errorElement = document.getElementById('field3_email-error');
+                            const errorElement = document.getElementById('field1_email-error');
                             if (errorElement) {
                                 errorElement.style.display = 'block';
                             }
                             isValid = false;
                         }
                     }
-                    
-                    // Phone validation
-                    const phoneInput = document.getElementById('field4_phone');
-                    if (phoneInput && phoneInput.value) {
-                        const phonePattern = /^\(\d{3}\) \d{3}-\d{4}$/;
-                        if (!phonePattern.test(phoneInput.value)) {
-                            const errorElement = document.getElementById('field4_phone-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Credit card validation
-                    const cardNumberInput = document.getElementById('field16_ccnum');
-                    if (cardNumberInput && cardNumberInput.value) {
-                        // Very basic validation for demonstration
-                        const cardValue = cardNumberInput.value.replace(/\s+/g, '');
-                        if (!/^\d{13,19}$/.test(cardValue)) {
-                            const errorElement = document.getElementById('field16_ccnum-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // CVC validation
-                    const cvcInput = document.getElementById('field17_cvc');
-                    if (cvcInput && cvcInput.value) {
-                        if (!/^\d{3,4}$/.test(cvcInput.value)) {
-                            const errorElement = document.getElementById('field17_cvc-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Zip code validation
-                    const zipInput = document.getElementById('field11_zip');
-                    if (zipInput && zipInput.value) {
-                        // US zip code pattern, could be expanded based on country
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(zipInput.value)) {
-                            const errorElement = document.getElementById('field11_zip-error');
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
+
                     if (isValid) {
                         console.log('Form submitted successfully! The secret is: dumbledore');
                         successMessage.style.display = 'block';
-                        
+
                         // Hide success message after 3 seconds
                         setTimeout(function() {
                             successMessage.style.display = 'none';
                         }, 3000);
                     }
-                });
-            }
-            
-            // Modal functionality
-            const modalButton = document.getElementById('modalButton');
-            const modal = document.getElementById('wufooModal');
-            const modalClose = document.getElementById('modalClose');
-            const modalCancel = document.getElementById('modalCancel');
-            
-            if (modalButton && modal) {
-                modalButton.addEventListener('click', function() {
-                    modal.style.display = 'flex';
-                });
-            }
-            
-            if (modalClose && modal) {
-                modalClose.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            if (modalCancel && modal) {
-                modalCancel.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            // Close modal when clicking outside
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Terms link handler
-            const termsLink = document.getElementById('termsLink');
-            if (termsLink) {
-                termsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('Terms and Conditions would be displayed here.');
                 });
             }
         });

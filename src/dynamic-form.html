@@ -221,609 +221,216 @@
                     .btn-secondary:hover {
                         background-color: #7f8c8d;
                     }
-                    
-                    .modal {
-                        display: none;
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        background-color: rgba(0, 0, 0, 0.5);
-                        z-index: 1000;
-                        align-items: center;
-                        justify-content: center;
-                    }
-                    
-                    .modal-dialog {
-                        max-width: 500px;
-                        width: 90%;
-                    }
-                    
-                    .modal-content {
-                        background-color: white;
-                        border-radius: 8px;
-                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-                    }
-                    
-                    .modal-header {
-                        padding: 15px 20px;
-                        border-bottom: 1px solid #e9ecef;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    }
-                    
-                    .modal-title {
-                        margin: 0;
-                    }
-                    
-                    .modal-close {
-                        background: none;
-                        border: none;
-                        font-size: 22px;
-                        cursor: pointer;
-                        color: #95a5a6;
-                    }
-                    
-                    .modal-body {
-                        padding: 20px;
-                    }
-                    
-                    .modal-footer {
-                        padding: 15px 20px;
-                        border-top: 1px solid #e9ecef;
-                        text-align: right;
-                    }
                 `;
                 
                 document.head.appendChild(formStyles);
                 
-                // Personal Information Section
-                const personalSection = document.createElement('div');
-                personalSection.className = 'form-section';
-                
-                const personalTitle = document.createElement('h2');
-                personalTitle.textContent = 'Personal Information';
-                personalSection.appendChild(personalTitle);
-                
-                // First Name
-                const firstNameGroup = document.createElement('div');
-                firstNameGroup.className = 'form-group';
-                
-                const firstNameLabel = document.createElement('label');
-                firstNameLabel.className = 'form-label required';
-                firstNameLabel.htmlFor = 'firstName';
-                firstNameLabel.textContent = 'First Name';
-                
-                const firstNameInput = document.createElement('input');
-                firstNameInput.type = 'text';
-                firstNameInput.className = 'form-control';
-                firstNameInput.id = 'firstName';
-                firstNameInput.name = 'firstName';
-                firstNameInput.required = true;
-                
-                const firstNameFeedback = document.createElement('div');
-                firstNameFeedback.className = 'invalid-feedback';
-                firstNameFeedback.textContent = 'First name is required';
-                
-                firstNameGroup.appendChild(firstNameLabel);
-                firstNameGroup.appendChild(firstNameInput);
-                firstNameGroup.appendChild(firstNameFeedback);
-                
-                // Last Name
-                const lastNameGroup = document.createElement('div');
-                lastNameGroup.className = 'form-group';
-                
-                const lastNameLabel = document.createElement('label');
-                lastNameLabel.className = 'form-label required';
-                lastNameLabel.htmlFor = 'lastName';
-                lastNameLabel.textContent = 'Last Name';
-                
-                const lastNameInput = document.createElement('input');
-                lastNameInput.type = 'text';
-                lastNameInput.className = 'form-control';
-                lastNameInput.id = 'lastName';
-                lastNameInput.name = 'lastName';
-                lastNameInput.required = true;
-                
-                const lastNameFeedback = document.createElement('div');
-                lastNameFeedback.className = 'invalid-feedback';
-                lastNameFeedback.textContent = 'Last name is required';
-                
-                lastNameGroup.appendChild(lastNameLabel);
-                lastNameGroup.appendChild(lastNameInput);
-                lastNameGroup.appendChild(lastNameFeedback);
-                
+                // Form Section
+                const formSection = document.createElement('div');
+                formSection.className = 'form-section';
+
+                const formTitle = document.createElement('h2');
+                formTitle.textContent = 'Simple Form';
+                formSection.appendChild(formTitle);
+
                 // Email
                 const emailGroup = document.createElement('div');
                 emailGroup.className = 'form-group';
-                
+
                 const emailLabel = document.createElement('label');
                 emailLabel.className = 'form-label required';
                 emailLabel.htmlFor = 'email';
                 emailLabel.textContent = 'Email Address';
-                
+
                 const emailInput = document.createElement('input');
                 emailInput.type = 'email';
                 emailInput.className = 'form-control';
                 emailInput.id = 'email';
                 emailInput.name = 'email';
                 emailInput.required = true;
-                
-                const emailFeedback = document.createElement('div');
-                emailFeedback.className = 'invalid-feedback';
-                emailFeedback.textContent = 'Please enter a valid email address';
-                
+
                 emailGroup.appendChild(emailLabel);
                 emailGroup.appendChild(emailInput);
-                emailGroup.appendChild(emailFeedback);
-                
-                // Phone
-                const phoneGroup = document.createElement('div');
-                phoneGroup.className = 'form-group';
-                
-                const phoneLabel = document.createElement('label');
-                phoneLabel.className = 'form-label';
-                phoneLabel.htmlFor = 'phone';
-                phoneLabel.textContent = 'Phone Number';
-                
-                const phoneInput = document.createElement('input');
-                phoneInput.type = 'tel';
-                phoneInput.className = 'form-control';
-                phoneInput.id = 'phone';
-                phoneInput.name = 'phone';
-                phoneInput.placeholder = '123-456-7890';
-                
-                const phoneText = document.createElement('div');
-                phoneText.className = 'form-text';
-                phoneText.textContent = 'Format: 123-456-7890';
-                
-                phoneGroup.appendChild(phoneLabel);
-                phoneGroup.appendChild(phoneInput);
-                phoneGroup.appendChild(phoneText);
-                
-                // Add fields to personal section
-                personalSection.appendChild(firstNameGroup);
-                personalSection.appendChild(lastNameGroup);
-                personalSection.appendChild(emailGroup);
-                personalSection.appendChild(phoneGroup);
-                
-                // Address Section
-                const addressSection = document.createElement('div');
-                addressSection.className = 'form-section';
-                
-                const addressTitle = document.createElement('h2');
-                addressTitle.textContent = 'Address Information';
-                addressSection.appendChild(addressTitle);
-                
-                // Street Address
-                const streetGroup = document.createElement('div');
-                streetGroup.className = 'form-group';
-                
-                const streetLabel = document.createElement('label');
-                streetLabel.className = 'form-label required';
-                streetLabel.htmlFor = 'street';
-                streetLabel.textContent = 'Street Address';
-                
-                const streetInput = document.createElement('input');
-                streetInput.type = 'text';
-                streetInput.className = 'form-control';
-                streetInput.id = 'street';
-                streetInput.name = 'street';
-                streetInput.required = true;
-                
-                const streetFeedback = document.createElement('div');
-                streetFeedback.className = 'invalid-feedback';
-                streetFeedback.textContent = 'Street address is required';
-                
-                streetGroup.appendChild(streetLabel);
-                streetGroup.appendChild(streetInput);
-                streetGroup.appendChild(streetFeedback);
-                
-                // City
-                const cityGroup = document.createElement('div');
-                cityGroup.className = 'form-group';
-                
-                const cityLabel = document.createElement('label');
-                cityLabel.className = 'form-label required';
-                cityLabel.htmlFor = 'city';
-                cityLabel.textContent = 'City';
-                
-                const cityInput = document.createElement('input');
-                cityInput.type = 'text';
-                cityInput.className = 'form-control';
-                cityInput.id = 'city';
-                cityInput.name = 'city';
-                cityInput.required = true;
-                
-                const cityFeedback = document.createElement('div');
-                cityFeedback.className = 'invalid-feedback';
-                cityFeedback.textContent = 'City is required';
-                
-                cityGroup.appendChild(cityLabel);
-                cityGroup.appendChild(cityInput);
-                cityGroup.appendChild(cityFeedback);
-                
-                // State
-                const stateGroup = document.createElement('div');
-                stateGroup.className = 'form-group';
-                
-                const stateLabel = document.createElement('label');
-                stateLabel.className = 'form-label required';
-                stateLabel.htmlFor = 'state';
-                stateLabel.textContent = 'State';
-                
-                const stateSelect = document.createElement('select');
-                stateSelect.className = 'form-control';
-                stateSelect.id = 'state';
-                stateSelect.name = 'state';
-                stateSelect.required = true;
-                
-                // Add options to state select
-                const states = [
-                    { value: '', text: 'Select State' },
-                    { value: 'AL', text: 'Alabama' },
-                    { value: 'AK', text: 'Alaska' },
-                    { value: 'AZ', text: 'Arizona' },
-                    { value: 'CA', text: 'California' },
-                    { value: 'CO', text: 'Colorado' },
-                    { value: 'CT', text: 'Connecticut' },
-                    { value: 'FL', text: 'Florida' },
-                    { value: 'GA', text: 'Georgia' },
-                    { value: 'HI', text: 'Hawaii' },
-                    { value: 'ID', text: 'Idaho' },
-                    { value: 'NY', text: 'New York' },
-                    { value: 'TX', text: 'Texas' },
-                    { value: 'WA', text: 'Washington' }
+
+                // Country Select
+                const countryGroup = document.createElement('div');
+                countryGroup.className = 'form-group';
+
+                const countryLabel = document.createElement('label');
+                countryLabel.className = 'form-label required';
+                countryLabel.htmlFor = 'country';
+                countryLabel.textContent = 'Country';
+
+                const countrySelect = document.createElement('select');
+                countrySelect.className = 'form-control';
+                countrySelect.id = 'country';
+                countrySelect.name = 'country';
+                countrySelect.required = true;
+
+                const countries = [
+                    { value: '', text: 'Select Country' },
+                    { value: 'US', text: 'United States' },
+                    { value: 'CA', text: 'Canada' },
+                    { value: 'UK', text: 'United Kingdom' },
+                    { value: 'AU', text: 'Australia' },
+                    { value: 'DE', text: 'Germany' }
                 ];
-                
-                states.forEach(state => {
+
+                countries.forEach(country => {
                     const option = document.createElement('option');
-                    option.value = state.value;
-                    option.textContent = state.text;
-                    stateSelect.appendChild(option);
+                    option.value = country.value;
+                    option.textContent = country.text;
+                    countrySelect.appendChild(option);
                 });
-                
-                const stateFeedback = document.createElement('div');
-                stateFeedback.className = 'invalid-feedback';
-                stateFeedback.textContent = 'Please select a state';
-                
-                stateGroup.appendChild(stateLabel);
-                stateGroup.appendChild(stateSelect);
-                stateGroup.appendChild(stateFeedback);
-                
-                // Zip Code
-                const zipGroup = document.createElement('div');
-                zipGroup.className = 'form-group';
-                
-                const zipLabel = document.createElement('label');
-                zipLabel.className = 'form-label required';
-                zipLabel.htmlFor = 'zipCode';
-                zipLabel.textContent = 'Zip Code';
-                
-                const zipInput = document.createElement('input');
-                zipInput.type = 'text';
-                zipInput.className = 'form-control';
-                zipInput.id = 'zipCode';
-                zipInput.name = 'zipCode';
-                zipInput.required = true;
-                
-                const zipFeedback = document.createElement('div');
-                zipFeedback.className = 'invalid-feedback';
-                zipFeedback.textContent = 'Please enter a valid zip code';
-                
-                zipGroup.appendChild(zipLabel);
-                zipGroup.appendChild(zipInput);
-                zipGroup.appendChild(zipFeedback);
-                
-                // Add fields to address section
-                addressSection.appendChild(streetGroup);
-                addressSection.appendChild(cityGroup);
-                addressSection.appendChild(stateGroup);
-                addressSection.appendChild(zipGroup);
-                
-                // Additional Fields Section
-                const additionalSection = document.createElement('div');
-                additionalSection.className = 'form-section';
-                
-                const additionalTitle = document.createElement('h2');
-                additionalTitle.textContent = 'Additional Fields';
-                additionalSection.appendChild(additionalTitle);
-                
-                // Date of Birth
-                const dobGroup = document.createElement('div');
-                dobGroup.className = 'form-group';
-                
-                const dobLabel = document.createElement('label');
-                dobLabel.className = 'form-label';
-                dobLabel.htmlFor = 'dob';
-                dobLabel.textContent = 'Date of Birth';
-                
-                const dobInput = document.createElement('input');
-                dobInput.type = 'date';
-                dobInput.className = 'form-control';
-                dobInput.id = 'dob';
-                dobInput.name = 'dob';
-                
-                dobGroup.appendChild(dobLabel);
-                dobGroup.appendChild(dobInput);
-                
-                // Preferred Time
-                const timeGroup = document.createElement('div');
-                timeGroup.className = 'form-group';
-                
-                const timeLabel = document.createElement('label');
-                timeLabel.className = 'form-label';
-                timeLabel.htmlFor = 'preferredTime';
-                timeLabel.textContent = 'Preferred Time';
-                
-                const timeInput = document.createElement('input');
-                timeInput.type = 'time';
-                timeInput.className = 'form-control';
-                timeInput.id = 'preferredTime';
-                timeInput.name = 'preferredTime';
-                
-                timeGroup.appendChild(timeLabel);
-                timeGroup.appendChild(timeInput);
-                
-                // Alphanumeric Only
-                const alphanumericGroup = document.createElement('div');
-                alphanumericGroup.className = 'form-group';
-                
-                const alphanumericLabel = document.createElement('label');
-                alphanumericLabel.className = 'form-label';
-                alphanumericLabel.htmlFor = 'alphanumeric';
-                alphanumericLabel.textContent = 'Alphanumeric Only';
-                
-                const alphanumericInput = document.createElement('input');
-                alphanumericInput.type = 'text';
-                alphanumericInput.className = 'form-control';
-                alphanumericInput.id = 'alphanumeric';
-                alphanumericInput.name = 'alphanumeric';
-                
-                const alphanumericText = document.createElement('div');
-                alphanumericText.className = 'form-text';
-                alphanumericText.textContent = 'Only letters and numbers are allowed';
-                
-                alphanumericGroup.appendChild(alphanumericLabel);
-                alphanumericGroup.appendChild(alphanumericInput);
-                alphanumericGroup.appendChild(alphanumericText);
-                
-                // Disabled Field
-                const disabledGroup = document.createElement('div');
-                disabledGroup.className = 'form-group';
-                
-                const disabledLabel = document.createElement('label');
-                disabledLabel.className = 'form-label';
-                disabledLabel.htmlFor = 'disabled';
-                disabledLabel.textContent = 'Disabled Field';
-                
-                const disabledInput = document.createElement('input');
-                disabledInput.type = 'text';
-                disabledInput.className = 'form-control';
-                disabledInput.id = 'disabled';
-                disabledInput.name = 'disabled';
-                disabledInput.value = 'This field is disabled';
-                disabledInput.disabled = true;
-                
-                disabledGroup.appendChild(disabledLabel);
-                disabledGroup.appendChild(disabledInput);
-                
-                // Terms Checkbox
-                const termsGroup = document.createElement('div');
-                termsGroup.className = 'form-group';
-                
-                const termsCheck = document.createElement('div');
-                termsCheck.className = 'form-check';
-                
-                const termsInput = document.createElement('input');
-                termsInput.type = 'checkbox';
-                termsInput.className = 'form-check-input';
-                termsInput.id = 'terms';
-                termsInput.name = 'terms';
-                termsInput.required = true;
-                
-                const termsLabel = document.createElement('label');
-                termsLabel.className = 'form-check-label';
-                termsLabel.htmlFor = 'terms';
-                termsLabel.textContent = 'I agree to the terms and conditions';
-                
-                const termsLink = document.createElement('a');
-                termsLink.href = '#';
-                termsLink.textContent = 'terms and conditions';
-                
-                termsLabel.textContent = 'I agree to the ';
-                termsLabel.appendChild(termsLink);
-                
-                const termsFeedback = document.createElement('div');
-                termsFeedback.className = 'invalid-feedback';
-                termsFeedback.textContent = 'You must agree to the terms and conditions';
-                
-                termsCheck.appendChild(termsInput);
-                termsCheck.appendChild(termsLabel);
-                termsGroup.appendChild(termsCheck);
-                termsGroup.appendChild(termsFeedback);
-                
-                // Add fields to additional section
-                additionalSection.appendChild(dobGroup);
-                additionalSection.appendChild(timeGroup);
-                additionalSection.appendChild(alphanumericGroup);
-                additionalSection.appendChild(disabledGroup);
-                additionalSection.appendChild(termsGroup);
-                
-                // Buttons
+
+                countryGroup.appendChild(countryLabel);
+                countryGroup.appendChild(countrySelect);
+
+                // Language Select
+                const languageGroup = document.createElement('div');
+                languageGroup.className = 'form-group';
+
+                const languageLabel = document.createElement('label');
+                languageLabel.className = 'form-label required';
+                languageLabel.htmlFor = 'language';
+                languageLabel.textContent = 'Preferred Language';
+
+                const languageSelect = document.createElement('select');
+                languageSelect.className = 'form-control';
+                languageSelect.id = 'language';
+                languageSelect.name = 'language';
+                languageSelect.required = true;
+
+                const languages = [
+                    { value: '', text: 'Select Language' },
+                    { value: 'en', text: 'English' },
+                    { value: 'es', text: 'Spanish' },
+                    { value: 'fr', text: 'French' },
+                    { value: 'de', text: 'German' }
+                ];
+
+                languages.forEach(language => {
+                    const option = document.createElement('option');
+                    option.value = language.value;
+                    option.textContent = language.text;
+                    languageSelect.appendChild(option);
+                });
+
+                languageGroup.appendChild(languageLabel);
+                languageGroup.appendChild(languageSelect);
+
+                // Date Picker
+                const dateGroup = document.createElement('div');
+                dateGroup.className = 'form-group';
+
+                const dateLabel = document.createElement('label');
+                dateLabel.className = 'form-label required';
+                dateLabel.htmlFor = 'appointmentDate';
+                dateLabel.textContent = 'Appointment Date';
+
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.className = 'form-control';
+                dateInput.id = 'appointmentDate';
+                dateInput.name = 'appointmentDate';
+                dateInput.required = true;
+
+                dateGroup.appendChild(dateLabel);
+                dateGroup.appendChild(dateInput);
+
+                // Radio Button Group
+                const radioGroup = document.createElement('div');
+                radioGroup.className = 'form-group';
+
+                const radioLabel = document.createElement('label');
+                radioLabel.className = 'form-label required';
+                radioLabel.textContent = 'Contact Method';
+
+                radioGroup.appendChild(radioLabel);
+
+                const contactMethods = [
+                    { value: 'email', text: 'Email' },
+                    { value: 'phone', text: 'Phone' },
+                    { value: 'mail', text: 'Mail' }
+                ];
+
+                contactMethods.forEach(method => {
+                    const radioDiv = document.createElement('div');
+                    radioDiv.className = 'form-check form-check-inline';
+
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.className = 'form-check-input';
+                    radioInput.id = 'contact_' + method.value;
+                    radioInput.name = 'contactMethod';
+                    radioInput.value = method.value;
+                    radioInput.required = true;
+
+                    const radioLabelElement = document.createElement('label');
+                    radioLabelElement.className = 'form-check-label';
+                    radioLabelElement.htmlFor = 'contact_' + method.value;
+                    radioLabelElement.textContent = method.text;
+
+                    radioDiv.appendChild(radioInput);
+                    radioDiv.appendChild(radioLabelElement);
+                    radioGroup.appendChild(radioDiv);
+                });
+
+                // File Upload
+                const fileGroup = document.createElement('div');
+                fileGroup.className = 'form-group';
+
+                const fileLabel = document.createElement('label');
+                fileLabel.className = 'form-label';
+                fileLabel.htmlFor = 'document';
+                fileLabel.textContent = 'Upload Document';
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.className = 'form-control';
+                fileInput.id = 'document';
+                fileInput.name = 'document';
+
+                fileGroup.appendChild(fileLabel);
+                fileGroup.appendChild(fileInput);
+
+                // Add fields to form section
+                formSection.appendChild(emailGroup);
+                formSection.appendChild(countryGroup);
+                formSection.appendChild(languageGroup);
+                formSection.appendChild(dateGroup);
+                formSection.appendChild(radioGroup);
+                formSection.appendChild(fileGroup);
+
+                // Submit Button
                 const buttonsDiv = document.createElement('div');
                 buttonsDiv.className = 'form-buttons';
-                
+
                 const submitButton = document.createElement('button');
                 submitButton.type = 'submit';
                 submitButton.className = 'btn btn-primary';
                 submitButton.textContent = 'Submit Form';
-                
-                const modalButton = document.createElement('button');
-                modalButton.type = 'button';
-                modalButton.className = 'btn btn-danger';
-                modalButton.id = 'modal-button';
-                modalButton.textContent = 'Open Modal';
-                
-                const resetButton = document.createElement('button');
-                resetButton.type = 'reset';
-                resetButton.className = 'btn btn-secondary';
-                resetButton.textContent = 'Reset Form';
-                
+
                 buttonsDiv.appendChild(submitButton);
-                buttonsDiv.appendChild(modalButton);
-                buttonsDiv.appendChild(resetButton);
-                
-                // Create the modal
-                const modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.id = 'red-herring-modal';
-                
-                const modalDialog = document.createElement('div');
-                modalDialog.className = 'modal-dialog';
-                
-                const modalContent = document.createElement('div');
-                modalContent.className = 'modal-content';
-                
-                const modalHeader = document.createElement('div');
-                modalHeader.className = 'modal-header';
-                
-                const modalTitle = document.createElement('h4');
-                modalTitle.className = 'modal-title';
-                modalTitle.textContent = 'Red Herring Modal';
-                
-                const modalCloseButton = document.createElement('button');
-                modalCloseButton.type = 'button';
-                modalCloseButton.className = 'modal-close';
-                modalCloseButton.setAttribute('aria-label', 'Close');
-                modalCloseButton.textContent = '×';
-                
-                modalHeader.appendChild(modalTitle);
-                modalHeader.appendChild(modalCloseButton);
-                
-                const modalBody = document.createElement('div');
-                modalBody.className = 'modal-body';
-                
-                const modalText = document.createElement('p');
-                modalText.textContent = 'This is a red herring modal instead of submitting the form.';
-                
-                modalBody.appendChild(modalText);
-                
-                const modalFooter = document.createElement('div');
-                modalFooter.className = 'modal-footer';
-                
-                const modalCloseBtn = document.createElement('button');
-                modalCloseBtn.type = 'button';
-                modalCloseBtn.className = 'btn btn-secondary';
-                modalCloseBtn.textContent = 'Close';
-                
-                modalFooter.appendChild(modalCloseBtn);
-                
-                modalContent.appendChild(modalHeader);
-                modalContent.appendChild(modalBody);
-                modalContent.appendChild(modalFooter);
-                
-                modalDialog.appendChild(modalContent);
-                modal.appendChild(modalDialog);
-                
+
                 // Build the form
-                form.appendChild(personalSection);
-                form.appendChild(addressSection);
-                form.appendChild(additionalSection);
+                form.appendChild(formSection);
                 form.appendChild(buttonsDiv);
-                
-                // Add form and modal to the container
+
+                // Add form to the container
                 formContainer.appendChild(form);
-                document.body.appendChild(modal);
                 
                 // Add event listeners
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
-                    // Validate form
-                    let isValid = true;
-                    const requiredFields = form.querySelectorAll('[required]');
-                    
-                    requiredFields.forEach(field => {
-                        if (field.type === 'checkbox') {
-                            if (!field.checked) {
-                                isValid = false;
-                                field.parentElement.nextElementSibling.style.display = 'block';
-                            } else {
-                                field.parentElement.nextElementSibling.style.display = 'none';
-                            }
-                        } else if (!field.value.trim()) {
-                            isValid = false;
-                            field.nextElementSibling.style.display = 'block';
-                        } else {
-                            field.nextElementSibling.style.display = 'none';
-                        }
-                    });
-                    
-                    // Email validation
-                    const emailField = document.getElementById('email');
-                    if (emailField && emailField.value) {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(emailField.value)) {
-                            isValid = false;
-                            emailField.nextElementSibling.style.display = 'block';
-                        }
-                    }
-                    
-                    // Zip code validation
-                    const zipField = document.getElementById('zipCode');
-                    if (zipField && zipField.value) {
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(zipField.value)) {
-                            isValid = false;
-                            zipField.nextElementSibling.style.display = 'block';
-                        }
-                    }
-                    
-                    if (isValid) {
-                        console.log('Form submitted successfully! The secret is: dumbledore');
-                        successMessage.style.display = 'block';
-                        
-                        // Hide success message after 3 seconds
-                        setTimeout(function() {
-                            successMessage.style.display = 'none';
-                        }, 3000);
-                    }
-                });
-                
-                // Modal functionality
-                const openModalBtn = document.getElementById('modal-button');
-                const modalElement = document.getElementById('red-herring-modal');
-                const closeButtons = document.querySelectorAll('.modal-close, .modal-footer .btn');
-                
-                openModalBtn.addEventListener('click', function() {
-                    modalElement.style.display = 'flex';
-                });
-                
-                closeButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        modalElement.style.display = 'none';
-                    });
-                });
-                
-                modalElement.addEventListener('click', function(e) {
-                    if (e.target === modalElement) {
-                        modalElement.style.display = 'none';
-                    }
-                });
-                
-                // Alphanumeric validation
-                const alphanumericField = document.getElementById('alphanumeric');
-                alphanumericField.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                });
-                
-                // Terms link functionality
-                termsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('Terms and Conditions would be displayed here.');
+
+                    console.log('Form submitted successfully! The secret is: dumbledore');
+                    successMessage.style.display = 'block';
+
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 3000);
                 });
             });
         });
