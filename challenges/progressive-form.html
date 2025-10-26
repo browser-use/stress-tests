@@ -392,20 +392,6 @@
                         </select>
                         <div class="invalid-feedback">Please select a category</div>
                     </div>
-
-                    <!-- Conditional field based on category -->
-                    <div id="conditional-dropdown" style="display: none;">
-                        <div class="form-group">
-                            <label for="subCategory" class="form-label required">Sub-Category</label>
-                            <select id="subCategory" name="subCategory" class="form-control">
-                                <option value="">Select sub-category</option>
-                                <option value="software">Software</option>
-                                <option value="hardware">Hardware</option>
-                                <option value="services">Services</option>
-                            </select>
-                            <div class="invalid-feedback">Please select a sub-category</div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="form-buttons">
@@ -510,19 +496,6 @@
             ];
 
             let currentStep = 0;
-
-            // Conditional fields
-            const category = document.getElementById('category');
-            const conditionalDropdown = document.getElementById('conditional-dropdown');
-
-            // Toggle conditional dropdown based on category selection
-            category.addEventListener('change', function() {
-                if (this.value === 'technology') {
-                    showElement(conditionalDropdown);
-                } else {
-                    hideElement(conditionalDropdown);
-                }
-            });
             
             // Initialize step navigation
             steps.forEach((step, index) => {
@@ -565,7 +538,6 @@
 
                 if (data.email) html += `<p><strong>Email:</strong> ${data.email}</p>`;
                 if (data.category) html += `<p><strong>Category:</strong> ${data.category}</p>`;
-                if (data.subCategory) html += `<p><strong>Sub-Category:</strong> ${data.subCategory}</p>`;
                 if (data.eventDate) html += `<p><strong>Event Date:</strong> ${data.eventDate}</p>`;
                 if (data.preference) html += `<p><strong>Preference:</strong> ${data.preference}</p>`;
 
@@ -660,9 +632,9 @@
 
                 // Validate each required field
                 requiredFields.forEach(field => {
-                    // Handle normal fields
-                    if (field.type !== 'checkbox' && field.type !== 'radio' && field.type !== 'file') {
-                        if (!field.value.trim()) {
+                    // Handle select/dropdown fields
+                    if (field.tagName === 'SELECT') {
+                        if (!field.value || field.value.trim() === '') {
                             field.classList.add('is-invalid');
                             const feedbackElement = field.nextElementSibling;
                             if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
@@ -683,13 +655,15 @@
                         }
                     }
                     // Handle checkboxes
-                    else if (field.type === 'checkbox' && !field.checked) {
-                        field.classList.add('is-invalid');
-                        const feedbackElement = field.closest('.form-check').nextElementSibling;
-                        if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                            feedbackElement.style.display = 'block';
+                    else if (field.type === 'checkbox') {
+                        if (!field.checked) {
+                            field.classList.add('is-invalid');
+                            const feedbackElement = field.closest('.form-check').nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
                         }
-                        isValid = false;
                     }
                     // Handle radio groups
                     else if (field.type === 'radio') {
@@ -703,6 +677,17 @@
 
                         if (!isChecked) {
                             field.classList.add('is-invalid');
+                            isValid = false;
+                        }
+                    }
+                    // Handle all other input fields (text, email, date, etc.)
+                    else if (field.type !== 'checkbox' && field.type !== 'radio' && field.type !== 'file') {
+                        if (!field.value || field.value.trim() === '') {
+                            field.classList.add('is-invalid');
+                            const feedbackElement = field.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
                             isValid = false;
                         }
                     }
@@ -724,17 +709,15 @@
                         }
                     }
 
-                    // Conditional subCategory validation when technology is selected
-                    if (category.value === 'technology') {
-                        const subCategoryField = document.getElementById('subCategory');
-                        if (subCategoryField && !subCategoryField.value) {
-                            subCategoryField.classList.add('is-invalid');
-                            const feedbackElement = subCategoryField.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
+                    // Category dropdown validation - ensure value is set
+                    const categoryField = document.getElementById('category');
+                    if (categoryField && (!categoryField.value || categoryField.value.trim() === '')) {
+                        categoryField.classList.add('is-invalid');
+                        const feedbackElement = categoryField.nextElementSibling;
+                        if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                            feedbackElement.style.display = 'block';
                         }
+                        isValid = false;
                     }
                 }
 

@@ -193,6 +193,15 @@
             margin-top: 0.25rem;
             color: #6c757d;
         }
+
+        /* Radio button validation */
+        .form-check-input.is-invalid ~ .form-check-label {
+            color: #dc3545;
+        }
+
+        .form-check-input.is-invalid {
+            border-color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -234,13 +243,13 @@
 
                 <div class="mb-3">
                     <label for="email" class="form-label required" data-i18n="email">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <input type="email" class="form-control" id="email" name="email" required>
                     <div class="invalid-feedback" data-i18n="email_error">Please enter a valid email address</div>
                 </div>
 
                 <div class="mb-3">
                     <label for="country" class="form-label required" data-i18n="country">Country</label>
-                    <select class="form-select" id="country" name="country">
+                    <select class="form-select" id="country" name="country" required>
                         <option value="" data-i18n="select">Select...</option>
                         <!-- Will be populated by JavaScript -->
                     </select>
@@ -248,36 +257,22 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="preferredLanguage" class="form-label required" data-i18n="preferred_language">Preferred Language</label>
-                    <select class="form-select" id="preferredLanguage" name="preferredLanguage">
-                        <option value="" data-i18n="select">Select...</option>
-                        <option value="en" data-i18n="language_english">English</option>
-                        <option value="es" data-i18n="language_spanish">Spanish</option>
-                        <option value="fr" data-i18n="language_french">French</option>
-                        <option value="de" data-i18n="language_german">German</option>
-                        <option value="jp" data-i18n="language_japanese">Japanese</option>
-                        <option value="ar" data-i18n="language_arabic">Arabic</option>
-                    </select>
-                    <div class="invalid-feedback" data-i18n="preferred_language_error">Preferred language is required</div>
-                </div>
-
-                <div class="mb-3">
                     <label for="birthDate" class="form-label required" data-i18n="birth_date">Date of Birth</label>
                     <div class="date-group">
-                        <select id="birthDay" name="birthDay" class="form-select">
+                        <select id="birthDay" name="birthDay" class="form-select" required>
                             <option value="" data-i18n="day">Day</option>
                             <!-- Will be populated by JavaScript -->
                         </select>
-                        <select id="birthMonth" name="birthMonth" class="form-select">
+                        <select id="birthMonth" name="birthMonth" class="form-select" required>
                             <option value="" data-i18n="month">Month</option>
                             <!-- Will be populated by JavaScript -->
                         </select>
-                        <select id="birthYear" name="birthYear" class="form-select">
+                        <select id="birthYear" name="birthYear" class="form-select" required>
                             <option value="" data-i18n="year">Year</option>
                             <!-- Will be populated by JavaScript -->
                         </select>
                     </div>
-                    <input type="hidden" id="birthDate" name="birthDate">
+                    <input type="hidden" id="birthDate" name="birthDate" required>
                     <div class="invalid-feedback" data-i18n="birth_date_error">Birth date is required</div>
                 </div>
 
@@ -285,15 +280,15 @@
                     <label class="form-label required" data-i18n="gender">Gender</label>
                     <div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="genderMale" value="male">
+                            <input class="form-check-input" type="radio" name="gender" id="genderMale" value="male" required>
                             <label class="form-check-label" for="genderMale" data-i18n="gender_male">Male</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="female">
+                            <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="female" required>
                             <label class="form-check-label" for="genderFemale" data-i18n="gender_female">Female</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="genderOther" value="other">
+                            <input class="form-check-input" type="radio" name="gender" id="genderOther" value="other" required>
                             <label class="form-check-label" for="genderOther" data-i18n="gender_other">Other</label>
                         </div>
                     </div>
@@ -1204,28 +1199,20 @@
                     emailField.classList.remove('is-invalid');
                 }
 
-                // Validate country
+                // Validate country - ensure a value is actually selected
                 const countryField = document.getElementById('country');
-                if (!countryField.value.trim()) {
+                if (!countryField.value || countryField.value.trim() === '') {
                     countryField.classList.add('is-invalid');
                     isValid = false;
                 } else {
                     countryField.classList.remove('is-invalid');
                 }
 
-                // Validate preferred language
-                const languageField = document.getElementById('preferredLanguage');
-                if (!languageField.value.trim()) {
-                    languageField.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    languageField.classList.remove('is-invalid');
-                }
-
-                // Validate birth date
+                // Validate birth date - all three dropdowns must have values
                 const birthDay = document.getElementById('birthDay');
                 const birthMonth = document.getElementById('birthMonth');
                 const birthYear = document.getElementById('birthYear');
+                const birthDateHidden = document.getElementById('birthDate');
 
                 if (!birthDay.value || !birthMonth.value || !birthYear.value) {
                     birthDay.classList.add('is-invalid');
@@ -1238,16 +1225,20 @@
                     birthYear.classList.remove('is-invalid');
                 }
 
-                // Validate gender
+                // Validate gender - one must be selected
                 const genderMale = document.getElementById('genderMale');
                 const genderFemale = document.getElementById('genderFemale');
                 const genderOther = document.getElementById('genderOther');
 
                 if (!genderMale.checked && !genderFemale.checked && !genderOther.checked) {
                     genderMale.classList.add('is-invalid');
+                    genderFemale.classList.add('is-invalid');
+                    genderOther.classList.add('is-invalid');
                     isValid = false;
                 } else {
                     genderMale.classList.remove('is-invalid');
+                    genderFemale.classList.remove('is-invalid');
+                    genderOther.classList.remove('is-invalid');
                 }
 
                 return isValid;
@@ -1259,6 +1250,16 @@
                 input.addEventListener('input', function() {
                     this.classList.remove('is-invalid');
                 });
+
+                // For radio buttons, clear all siblings' invalid state
+                if (input.type === 'radio') {
+                    input.addEventListener('change', function() {
+                        const radioGroup = document.querySelectorAll(`input[name="${this.name}"]`);
+                        radioGroup.forEach(radio => {
+                            radio.classList.remove('is-invalid');
+                        });
+                    });
+                }
             });
             
             // Validate email

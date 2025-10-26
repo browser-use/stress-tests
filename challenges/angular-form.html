@@ -51,7 +51,6 @@
             $scope.formData = {
                 email: '',
                 favoriteColor: '',
-                country: '',
                 birthDate: '',
                 contactPreference: ''
             };
@@ -59,7 +58,12 @@
             $scope.formSubmitted = false;
 
             $scope.submitForm = function() {
-                if ($scope.userForm.$valid) {
+                // Validate that all required fields are filled
+                if ($scope.userForm.$valid &&
+                    $scope.formData.email &&
+                    $scope.formData.favoriteColor &&
+                    $scope.formData.birthDate &&
+                    $scope.formData.contactPreference) {
                     console.log('Form submitted successfully!', $scope.formData);
                     $scope.formSubmitted = true;
 
@@ -68,6 +72,8 @@
                         $scope.formSubmitted = false;
                         $scope.$apply();
                     }, 3000);
+                } else {
+                    console.log('Form validation failed');
                 }
             };
         });
@@ -86,11 +92,14 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" id="email" name="email" ng-model="formData.email" class="form-control" required>
+                                <div ng-show="userForm.email.$touched && userForm.email.$invalid" class="text-danger small mt-1">
+                                    Email is required and must be valid
+                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="favoriteColor" class="form-label">Favorite Color</label>
-                                <select id="favoriteColor" name="favoriteColor" ng-model="formData.favoriteColor" class="form-select">
+                                <label for="favoriteColor" class="form-label">Favorite Color <span class="text-danger">*</span></label>
+                                <select id="favoriteColor" name="favoriteColor" ng-model="formData.favoriteColor" class="form-select" required>
                                     <option value="">Select a color</option>
                                     <option value="red">Red</option>
                                     <option value="blue">Blue</option>
@@ -99,45 +108,44 @@
                                     <option value="purple">Purple</option>
                                     <option value="orange">Orange</option>
                                 </select>
+                                <div ng-show="userForm.favoriteColor.$touched && userForm.favoriteColor.$invalid" class="text-danger small mt-1">
+                                    Please select a color
+                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="country" class="form-label">Country</label>
-                                <select id="country" name="country" ng-model="formData.country" class="form-select">
-                                    <option value="">Select a country</option>
-                                    <option value="usa">United States</option>
-                                    <option value="canada">Canada</option>
-                                    <option value="uk">United Kingdom</option>
-                                    <option value="germany">Germany</option>
-                                    <option value="france">France</option>
-                                    <option value="japan">Japan</option>
-                                </select>
+                                <label for="birthDate" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                                <input type="date" id="birthDate" name="birthDate" ng-model="formData.birthDate" class="form-control" required>
+                                <div ng-show="userForm.birthDate.$touched && userForm.birthDate.$invalid" class="text-danger small mt-1">
+                                    Date of Birth is required
+                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="birthDate" class="form-label">Date of Birth</label>
-                                <input type="date" id="birthDate" name="birthDate" ng-model="formData.birthDate" class="form-control">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Contact Preference</label>
+                                <label class="form-label">Contact Preference <span class="text-danger">*</span></label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="contactEmail" name="contactPreference" value="email" ng-model="formData.contactPreference">
+                                    <input class="form-check-input" type="radio" id="contactEmail" name="contactPreference" value="email" ng-model="formData.contactPreference" required>
                                     <label class="form-check-label" for="contactEmail">Email</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="contactPhone" name="contactPreference" value="phone" ng-model="formData.contactPreference">
+                                    <input class="form-check-input" type="radio" id="contactPhone" name="contactPreference" value="phone" ng-model="formData.contactPreference" required>
                                     <label class="form-check-label" for="contactPhone">Phone</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="contactMail" name="contactPreference" value="mail" ng-model="formData.contactPreference">
+                                    <input class="form-check-input" type="radio" id="contactMail" name="contactPreference" value="mail" ng-model="formData.contactPreference" required>
                                     <label class="form-check-label" for="contactMail">Mail</label>
+                                </div>
+                                <div ng-show="userForm.contactPreference.$touched && userForm.contactPreference.$invalid" class="text-danger small mt-1">
+                                    Please select a contact preference
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="fileUpload" class="form-label">Upload File</label>
-                                <input type="file" id="fileUpload" class="form-control">
+                                <label for="fileUpload" class="form-label">Upload File <span class="text-danger">*</span></label>
+                                <input type="file" id="fileUpload" name="fileUpload" class="form-control" required>
+                                <div ng-show="userForm.fileUpload.$touched && userForm.fileUpload.$invalid" class="text-danger small mt-1">
+                                    File upload is required
+                                </div>
                             </div>
                         </div>
 

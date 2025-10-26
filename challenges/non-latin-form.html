@@ -96,19 +96,6 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="state" class="form-label required">المحافظة/الولاية</label>
-                    <select class="form-select" id="state" name="state" required>
-                        <option value="">اختر...</option>
-                        <option value="القاهرة">القاهرة</option>
-                        <option value="الإسكندرية">الإسكندرية</option>
-                        <option value="الجيزة">الجيزة</option>
-                        <option value="الشرقية">الشرقية</option>
-                        <option value="أسيوط">أسيوط</option>
-                    </select>
-                    <div class="invalid-feedback">المحافظة/الولاية مطلوبة</div>
-                </div>
-
-                <div class="mb-3">
                     <label for="birthDate" class="form-label required">تاريخ الميلاد</label>
                     <input type="date" class="form-control" id="birthDate" name="birthDate" required>
                     <div class="invalid-feedback">تاريخ الميلاد مطلوب</div>
@@ -132,8 +119,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="document" class="form-label">رفع المستند</label>
-                    <input type="file" class="form-control" id="document" name="document">
+                    <label for="document" class="form-label required">رفع المستند</label>
+                    <input type="file" class="form-control" id="document" name="document" required>
+                    <div class="invalid-feedback">رفع المستند مطلوب</div>
                 </div>
             </div>
 
@@ -154,7 +142,19 @@
 
                 form.classList.remove('was-validated');
 
-                if (!form.checkValidity()) {
+                // Custom validation for dropdown
+                const countrySelect = document.getElementById('country');
+                let isValid = form.checkValidity();
+
+                // Explicitly check if dropdown has a value selected
+                if (countrySelect.value === '') {
+                    isValid = false;
+                    countrySelect.setCustomValidity('يرجى اختيار بلد');
+                } else {
+                    countrySelect.setCustomValidity('');
+                }
+
+                if (!isValid) {
                     e.stopPropagation();
                     form.classList.add('was-validated');
                 } else {
@@ -164,6 +164,14 @@
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 3000);
+                }
+            });
+
+            // Reset custom validity when user changes dropdown
+            const countrySelect = document.getElementById('country');
+            countrySelect.addEventListener('change', function() {
+                if (this.value !== '') {
+                    this.setCustomValidity('');
                 }
             });
         });

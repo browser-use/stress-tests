@@ -505,6 +505,15 @@
                 color: 'white',
                 fontSize: 16,
                 fontWeight: '500',
+            },
+            errorText: {
+                color: '#ef4444',
+                fontSize: 14,
+                marginTop: 5,
+            },
+            requiredAsterisk: {
+                color: '#ef4444',
+                marginLeft: 2,
             }
         });
         
@@ -514,15 +523,79 @@
                 this.state = {
                     email: '',
                     category: '',
-                    priority: '',
                     birthDate: '',
                     contactMethod: 'email',
                     file: null,
+                    errors: {
+                        email: '',
+                        category: '',
+                        birthDate: '',
+                        file: ''
+                    }
                 };
             }
 
+            validateEmail = (email) => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            validateDate = (date) => {
+                const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+                return dateRegex.test(date);
+            }
+
             handleSubmit = () => {
-                // Show success message
+                // Reset errors
+                const errors = {
+                    email: '',
+                    category: '',
+                    birthDate: '',
+                    file: ''
+                };
+
+                let hasErrors = false;
+
+                // Validate email
+                if (!this.state.email.trim()) {
+                    errors.email = 'Email is required';
+                    hasErrors = true;
+                } else if (!this.validateEmail(this.state.email)) {
+                    errors.email = 'Please enter a valid email address';
+                    hasErrors = true;
+                }
+
+                // Validate category - check that actual value is set in state, not empty string
+                if (!this.state.category || this.state.category === '') {
+                    errors.category = 'Category is required';
+                    hasErrors = true;
+                }
+
+                // Validate date
+                if (!this.state.birthDate.trim()) {
+                    errors.birthDate = 'Preferred Date is required';
+                    hasErrors = true;
+                } else if (!this.validateDate(this.state.birthDate)) {
+                    errors.birthDate = 'Please enter date in MM/DD/YYYY format';
+                    hasErrors = true;
+                }
+
+                // Validate file
+                if (!this.state.file) {
+                    errors.file = 'File upload is required';
+                    hasErrors = true;
+                }
+
+                // Update state with errors
+                this.setState({ errors });
+
+                // If there are errors, don't submit
+                if (hasErrors) {
+                    console.log('Form validation failed:', errors);
+                    return;
+                }
+
+                // Show success message only if validation passes
                 const successMessage = document.getElementById('success-message');
                 if (successMessage) {
                     successMessage.style.display = 'block';
@@ -538,7 +611,10 @@
 
             handleFileChange = (e) => {
                 const file = e.target.files[0];
-                this.setState({ file: file ? file.name : null });
+                this.setState({
+                    file: file ? file.name : null,
+                    errors: { ...this.state.errors, file: '' }
+                });
             }
             
             render() {
@@ -546,27 +622,42 @@
                     <ScrollView style={styles.container}>
                         {/* Email Field */}
                         <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Email Address</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.label}>Email Address</Text>
+                                <Text style={styles.requiredAsterisk}>*</Text>
+                            </View>
                             <TextInput
                                 style={styles.input}
                                 value={this.state.email}
-                                onChangeText={(text) => this.setState({ email: text })}
+                                onChangeText={(text) => this.setState({
+                                    email: text,
+                                    errors: { ...this.state.errors, email: '' }
+                                })}
                                 placeholder="Enter your email"
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                                 nativeID="email"
                                 name="email"
                             />
+                            {this.state.errors.email && (
+                                <Text style={styles.errorText}>{this.state.errors.email}</Text>
+                            )}
                         </View>
 
                         {/* Category Dropdown */}
                         <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Category</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.label}>Category</Text>
+                                <Text style={styles.requiredAsterisk}>*</Text>
+                            </View>
                             <View style={styles.pickerContainer}>
                                 <Picker
                                     selectedValue={this.state.category}
                                     style={styles.picker}
-                                    onValueChange={(itemValue) => this.setState({ category: itemValue })}
+                                    onValueChange={(itemValue) => this.setState({
+                                        category: itemValue,
+                                        errors: { ...this.state.errors, category: '' }
+                                    })}
                                     nativeID="category"
                                     name="category"
                                 >
@@ -577,39 +668,31 @@
                                     <Picker.Item label="Feedback" value="feedback" />
                                 </Picker>
                             </View>
-                        </View>
-
-                        {/* Priority Dropdown */}
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Priority</Text>
-                            <View style={styles.pickerContainer}>
-                                <Picker
-                                    selectedValue={this.state.priority}
-                                    style={styles.picker}
-                                    onValueChange={(itemValue) => this.setState({ priority: itemValue })}
-                                    nativeID="priority"
-                                    name="priority"
-                                >
-                                    <Picker.Item label="Select Priority" value="" />
-                                    <Picker.Item label="Low" value="low" />
-                                    <Picker.Item label="Medium" value="medium" />
-                                    <Picker.Item label="High" value="high" />
-                                    <Picker.Item label="Urgent" value="urgent" />
-                                </Picker>
-                            </View>
+                            {this.state.errors.category && (
+                                <Text style={styles.errorText}>{this.state.errors.category}</Text>
+                            )}
                         </View>
 
                         {/* Date Picker */}
                         <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Preferred Date</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.label}>Preferred Date</Text>
+                                <Text style={styles.requiredAsterisk}>*</Text>
+                            </View>
                             <TextInput
                                 style={styles.input}
                                 value={this.state.birthDate}
-                                onChangeText={(text) => this.setState({ birthDate: text })}
+                                onChangeText={(text) => this.setState({
+                                    birthDate: text,
+                                    errors: { ...this.state.errors, birthDate: '' }
+                                })}
                                 placeholder="MM/DD/YYYY"
                                 nativeID="birthDate"
                                 name="birthDate"
                             />
+                            {this.state.errors.birthDate && (
+                                <Text style={styles.errorText}>{this.state.errors.birthDate}</Text>
+                            )}
                         </View>
 
                         {/* Radio Button Group */}
@@ -656,7 +739,10 @@
 
                         {/* File Upload */}
                         <View style={styles.inputContainer}>
-                            <Text style={styles.label}>Upload File</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.label}>Upload File</Text>
+                                <Text style={styles.requiredAsterisk}>*</Text>
+                            </View>
                             <input
                                 type="file"
                                 onChange={this.handleFileChange}
@@ -672,6 +758,9 @@
                                 <Text style={{ marginTop: 5, color: '#6b7280' }}>
                                     Selected: {this.state.file}
                                 </Text>
+                            )}
+                            {this.state.errors.file && (
+                                <Text style={styles.errorText}>{this.state.errors.file}</Text>
                             )}
                         </View>
 

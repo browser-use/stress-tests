@@ -416,28 +416,6 @@
                     <div class="wufoo-error" id="field2_country-error">Please select your country</div>
                 </div>
 
-                <!-- 3. Select field (State) -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field3_state">State/Province</label>
-                    <select id="field3_state" name="Field3" class="wufoo-select" required>
-                        <option value="">Select one</option>
-                        <optgroup label="United States">
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <option value="CA">California</option>
-                            <option value="NY">New York</option>
-                            <option value="TX">Texas</option>
-                        </optgroup>
-                        <optgroup label="Canada">
-                            <option value="AB">Alberta</option>
-                            <option value="BC">British Columbia</option>
-                            <option value="ON">Ontario</option>
-                        </optgroup>
-                    </select>
-                    <div class="wufoo-error" id="field3_state-error">Please select your state/province</div>
-                </div>
-
                 <!-- 4. Date picker -->
                 <div class="wufoo-field wufoo-required">
                     <label class="wufoo-label">Event Date</label>
@@ -493,12 +471,13 @@
                 </div>
 
                 <!-- 6. File upload field -->
-                <div class="wufoo-field">
+                <div class="wufoo-field wufoo-required">
                     <label class="wufoo-label">Upload Document</label>
                     <div class="wufoo-file-input">
-                        <input type="file" id="field6_file" name="Field6">
+                        <input type="file" id="field6_file" name="Field6" required>
                         <div class="wufoo-file-label" id="file-label">Click to select a file</div>
                     </div>
+                    <div class="wufoo-error" id="field6_file-error">Please select a file to upload</div>
                 </div>
             </div>
 
@@ -562,40 +541,17 @@
                     errorMessages.forEach(error => error.style.display = 'none');
 
                     // Validate required fields
-                    const requiredFields = form.querySelectorAll('[required]');
                     let isValid = true;
 
-                    requiredFields.forEach(field => {
-                        if (field.type === 'radio') {
-                            const name = field.name;
-                            const radioGroup = form.querySelectorAll(`input[name="${name}"]`);
-                            let checked = false;
-
-                            radioGroup.forEach(radio => {
-                                if (radio.checked) checked = true;
-                            });
-
-                            if (!checked) {
-                                const errorId = `${name.toLowerCase()}-error`;
-                                const errorElement = document.getElementById(errorId);
-                                if (errorElement) {
-                                    errorElement.style.display = 'block';
-                                }
-                                isValid = false;
-                            }
-                        } else if (!field.value.trim()) {
-                            const errorId = `${field.id}-error`;
-                            const errorElement = document.getElementById(errorId);
-                            if (errorElement) {
-                                errorElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    });
-
-                    // Email validation
+                    // 1. Validate email
                     const emailInput = document.getElementById('field1_email');
-                    if (emailInput && emailInput.value) {
+                    if (!emailInput || !emailInput.value.trim()) {
+                        const errorElement = document.getElementById('field1_email-error');
+                        if (errorElement) {
+                            errorElement.style.display = 'block';
+                        }
+                        isValid = false;
+                    } else {
                         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailPattern.test(emailInput.value)) {
                             const errorElement = document.getElementById('field1_email-error');
@@ -604,6 +560,55 @@
                             }
                             isValid = false;
                         }
+                    }
+
+                    // 2. Validate country dropdown - check that actual value is selected
+                    const countrySelect = document.getElementById('field2_country');
+                    if (!countrySelect || !countrySelect.value || countrySelect.value === '') {
+                        const errorElement = document.getElementById('field2_country-error');
+                        if (errorElement) {
+                            errorElement.style.display = 'block';
+                        }
+                        isValid = false;
+                    }
+
+                    // 3. Validate date parts
+                    const monthSelect = document.getElementById('field4_month');
+                    const daySelect = document.getElementById('field4_day');
+                    const yearSelect = document.getElementById('field4_year');
+
+                    if (!monthSelect || !monthSelect.value || monthSelect.value === '' ||
+                        !daySelect || !daySelect.value || daySelect.value === '' ||
+                        !yearSelect || !yearSelect.value || yearSelect.value === '') {
+                        const errorElement = document.getElementById('field4-error');
+                        if (errorElement) {
+                            errorElement.style.display = 'block';
+                        }
+                        isValid = false;
+                    }
+
+                    // 4. Validate radio buttons
+                    const radioGroup = form.querySelectorAll('input[name="Field5"]');
+                    let radioChecked = false;
+                    radioGroup.forEach(radio => {
+                        if (radio.checked) radioChecked = true;
+                    });
+                    if (!radioChecked) {
+                        const errorElement = document.getElementById('field5-error');
+                        if (errorElement) {
+                            errorElement.style.display = 'block';
+                        }
+                        isValid = false;
+                    }
+
+                    // 5. Validate file upload
+                    const fileInput = document.getElementById('field6_file');
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                        const errorElement = document.getElementById('field6_file-error');
+                        if (errorElement) {
+                            errorElement.style.display = 'block';
+                        }
+                        isValid = false;
                     }
 
                     if (isValid) {

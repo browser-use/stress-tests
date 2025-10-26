@@ -14,43 +14,112 @@
         useForm: function(options) {
           const [formState, setFormState] = React.useState(options.defaultValues || {});
           const [errors, setErrors] = React.useState({});
-          
-          const handleSubmit = () => {
-            if (options.onSubmit) {
+          const [touched, setTouched] = React.useState({});
+
+          const validateField = (name, value, validators) => {
+            if (!validators) return undefined;
+
+            if (validators.onChange) {
+              return validators.onChange({ value });
+            }
+
+            if (validators.onBlur) {
+              return validators.onBlur({ value });
+            }
+
+            return undefined;
+          };
+
+          const validateAllFields = (fields) => {
+            const newErrors = {};
+            let hasErrors = false;
+
+            Object.keys(fields).forEach(fieldName => {
+              const fieldConfig = fields[fieldName];
+              const value = formState[fieldName];
+
+              if (fieldConfig && fieldConfig.validators) {
+                const error = validateField(fieldName, value, fieldConfig.validators);
+                if (error) {
+                  newErrors[fieldName] = error;
+                  hasErrors = true;
+                }
+              }
+            });
+
+            return { errors: newErrors, hasErrors };
+          };
+
+          const handleSubmit = (fields) => {
+            // Validate all fields before submit
+            const { errors: validationErrors, hasErrors } = validateAllFields(fields);
+            setErrors(validationErrors);
+
+            // Mark all fields as touched
+            const allTouched = {};
+            Object.keys(fields).forEach(key => {
+              allTouched[key] = true;
+            });
+            setTouched(allTouched);
+
+            if (!hasErrors && options.onSubmit) {
               options.onSubmit({ value: formState });
             }
           };
-          
+
           const Field = ({ name, validators, children }) => {
             const handleChange = (value) => {
               setFormState(prev => ({ ...prev, [name]: value }));
-              if (validators && validators.onChange) {
-                const error = validators.onChange({ value });
+
+              // Validate on change if field has been touched
+              if (touched[name] && validators) {
+                const error = validateField(name, value, validators);
                 setErrors(prev => ({ ...prev, [name]: error }));
               }
             };
-            
+
+            const handleBlur = () => {
+              setTouched(prev => ({ ...prev, [name]: true }));
+
+              // Validate on blur
+              if (validators) {
+                const value = formState[name];
+                const error = validateField(name, value, validators);
+                setErrors(prev => ({ ...prev, [name]: error }));
+              }
+            };
+
             const field = {
               name,
-              state: { value: formState[name] || '', meta: { errors: errors[name] } },
+              state: {
+                value: formState[name] !== undefined ? formState[name] : '',
+                meta: {
+                  errors: touched[name] ? (errors[name] ? [errors[name]] : []) : [],
+                  isTouched: touched[name] || false
+                }
+              },
               handleChange,
-              handleBlur: () => {}
+              handleBlur
             };
-            
+
             return children(field);
           };
-          
+
           const Subscribe = ({ selector, children }) => {
-            const [canSubmit] = React.useState(true);
-            const [isSubmitting] = React.useState(false);
+            const canSubmit = Object.keys(errors).length === 0;
+            const isSubmitting = false;
             return children(selector({ canSubmit, isSubmitting }));
           };
-          
+
           return {
             Field,
             Subscribe,
             handleSubmit,
-            reset: () => setFormState(options.defaultValues || {})
+            reset: () => {
+              setFormState(options.defaultValues || {});
+              setErrors({});
+              setTouched({});
+            }
           };
         }
       };
@@ -168,14 +237,71 @@
         function TanStackFormApp() {
             const [showSuccess, setShowSuccess] = useState(false);
 
+            // Field configurations with validators
+            const fieldConfigs = {
+                email: {
+                    validators: {
+                        onChange: ({ value }) => {
+                            if (!value || value.trim() === '') {
+                                return 'Email is required';
+                            }
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(value)) {
+                                return 'Please enter a valid email address';
+                            }
+                            return undefined;
+                        }
+                    }
+                },
+                department: {
+                    validators: {
+                        onChange: ({ value }) => {
+                            if (!value || value === '') {
+                                return 'Please select a department';
+                            }
+                            return undefined;
+                        }
+                    }
+                },
+                startDate: {
+                    validators: {
+                        onChange: ({ value }) => {
+                            if (!value || value.trim() === '') {
+                                return 'Start date is required';
+                            }
+                            return undefined;
+                        }
+                    }
+                },
+                preferredWorkTime: {
+                    validators: {
+                        onChange: ({ value }) => {
+                            if (!value || value.trim() === '') {
+                                return 'Please select a preferred work time';
+                            }
+                            return undefined;
+                        }
+                    }
+                },
+                resume: {
+                    validators: {
+                        onChange: ({ value }) => {
+                            if (!value) {
+                                return 'Please upload your resume';
+                            }
+                            return undefined;
+                        }
+                    }
+                }
+            };
+
             // Define form using TanStack Form
             const form = useForm({
                 defaultValues: {
                     email: '',
                     department: '',
-                    employmentType: '',
                     startDate: '',
-                    preferredWorkTime: 'morning',
+                    preferredWorkTime: '',
                     resume: null
                 },
                 onSubmit: async ({ value }) => {
@@ -197,7 +323,7 @@
                         id="tanstack-form"
                         onSubmit={(e) => {
                             e.preventDefault();
-                            form.handleSubmit();
+                            form.handleSubmit(fieldConfigs);
                         }}
                     >
                         <div className="form-section">
@@ -205,19 +331,24 @@
 
                             {/* Email Field */}
                             <div className="mb-3">
-                                <form.Field name="email">
+                                <form.Field name="email" validators={fieldConfigs.email.validators}>
                                     {(field) => (
                                         <>
                                             <label htmlFor="email" className="form-label">
-                                                Email Address
+                                                Email Address <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="email"
                                                 id="email"
-                                                className="form-control"
+                                                className={`form-control ${field.state.meta.errors.length > 0 ? 'invalid-field' : ''}`}
                                                 value={field.state.value}
                                                 onChange={(e) => field.handleChange(e.target.value)}
+                                                onBlur={field.handleBlur}
+                                                required
                                             />
+                                            {field.state.meta.errors.length > 0 && (
+                                                <div className="error-text">{field.state.meta.errors[0]}</div>
+                                            )}
                                         </>
                                     )}
                                 </form.Field>
@@ -225,17 +356,19 @@
 
                             {/* Department Dropdown */}
                             <div className="mb-3">
-                                <form.Field name="department">
+                                <form.Field name="department" validators={fieldConfigs.department.validators}>
                                     {(field) => (
                                         <>
                                             <label htmlFor="department" className="form-label">
-                                                Department
+                                                Department <span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="department"
-                                                className="form-select"
+                                                className={`form-select ${field.state.meta.errors.length > 0 ? 'invalid-field' : ''}`}
                                                 value={field.state.value}
                                                 onChange={(e) => field.handleChange(e.target.value)}
+                                                onBlur={field.handleBlur}
+                                                required
                                             >
                                                 <option value="">Select Department</option>
                                                 <option value="engineering">Engineering</option>
@@ -243,31 +376,9 @@
                                                 <option value="sales">Sales</option>
                                                 <option value="hr">Human Resources</option>
                                             </select>
-                                        </>
-                                    )}
-                                </form.Field>
-                            </div>
-
-                            {/* Employment Type Dropdown */}
-                            <div className="mb-3">
-                                <form.Field name="employmentType">
-                                    {(field) => (
-                                        <>
-                                            <label htmlFor="employmentType" className="form-label">
-                                                Employment Type
-                                            </label>
-                                            <select
-                                                id="employmentType"
-                                                className="form-select"
-                                                value={field.state.value}
-                                                onChange={(e) => field.handleChange(e.target.value)}
-                                            >
-                                                <option value="">Select Employment Type</option>
-                                                <option value="fulltime">Full-Time</option>
-                                                <option value="parttime">Part-Time</option>
-                                                <option value="contract">Contract</option>
-                                                <option value="intern">Intern</option>
-                                            </select>
+                                            {field.state.meta.errors.length > 0 && (
+                                                <div className="error-text">{field.state.meta.errors[0]}</div>
+                                            )}
                                         </>
                                     )}
                                 </form.Field>
@@ -275,19 +386,24 @@
 
                             {/* Start Date Picker */}
                             <div className="mb-3">
-                                <form.Field name="startDate">
+                                <form.Field name="startDate" validators={fieldConfigs.startDate.validators}>
                                     {(field) => (
                                         <>
                                             <label htmlFor="startDate" className="form-label">
-                                                Start Date
+                                                Start Date <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="date"
                                                 id="startDate"
-                                                className="form-control"
+                                                className={`form-control ${field.state.meta.errors.length > 0 ? 'invalid-field' : ''}`}
                                                 value={field.state.value}
                                                 onChange={(e) => field.handleChange(e.target.value)}
+                                                onBlur={field.handleBlur}
+                                                required
                                             />
+                                            {field.state.meta.errors.length > 0 && (
+                                                <div className="error-text">{field.state.meta.errors[0]}</div>
+                                            )}
                                         </>
                                     )}
                                 </form.Field>
@@ -295,10 +411,10 @@
 
                             {/* Preferred Work Time Radio Buttons */}
                             <div className="mb-3">
-                                <form.Field name="preferredWorkTime">
+                                <form.Field name="preferredWorkTime" validators={fieldConfigs.preferredWorkTime.validators}>
                                     {(field) => (
                                         <>
-                                            <label className="form-label">Preferred Work Time</label>
+                                            <label className="form-label">Preferred Work Time <span className="text-danger">*</span></label>
                                             <div>
                                                 <div className="form-check">
                                                     <input
@@ -309,6 +425,8 @@
                                                         value="morning"
                                                         checked={field.state.value === 'morning'}
                                                         onChange={(e) => field.handleChange(e.target.value)}
+                                                        onBlur={field.handleBlur}
+                                                        required
                                                     />
                                                     <label htmlFor="morning" className="form-check-label">
                                                         Morning (9 AM - 1 PM)
@@ -323,6 +441,8 @@
                                                         value="afternoon"
                                                         checked={field.state.value === 'afternoon'}
                                                         onChange={(e) => field.handleChange(e.target.value)}
+                                                        onBlur={field.handleBlur}
+                                                        required
                                                     />
                                                     <label htmlFor="afternoon" className="form-check-label">
                                                         Afternoon (1 PM - 5 PM)
@@ -337,12 +457,17 @@
                                                         value="evening"
                                                         checked={field.state.value === 'evening'}
                                                         onChange={(e) => field.handleChange(e.target.value)}
+                                                        onBlur={field.handleBlur}
+                                                        required
                                                     />
                                                     <label htmlFor="evening" className="form-check-label">
                                                         Evening (5 PM - 9 PM)
                                                     </label>
                                                 </div>
                                             </div>
+                                            {field.state.meta.errors.length > 0 && (
+                                                <div className="error-text">{field.state.meta.errors[0]}</div>
+                                            )}
                                         </>
                                     )}
                                 </form.Field>
@@ -350,18 +475,23 @@
 
                             {/* File Upload */}
                             <div className="mb-3">
-                                <form.Field name="resume">
+                                <form.Field name="resume" validators={fieldConfigs.resume.validators}>
                                     {(field) => (
                                         <>
                                             <label htmlFor="resume" className="form-label">
-                                                Upload Resume
+                                                Upload Resume <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="file"
                                                 id="resume"
-                                                className="form-control"
+                                                className={`form-control ${field.state.meta.errors.length > 0 ? 'invalid-field' : ''}`}
                                                 onChange={(e) => field.handleChange(e.target.files[0])}
+                                                onBlur={field.handleBlur}
+                                                required
                                             />
+                                            {field.state.meta.errors.length > 0 && (
+                                                <div className="error-text">{field.state.meta.errors[0]}</div>
+                                            )}
                                         </>
                                     )}
                                 </form.Field>

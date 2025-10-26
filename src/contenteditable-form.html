@@ -167,6 +167,12 @@
             border: 1px solid #badbcc;
         }
 
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+
         .list-group-item {
             padding: 10px 15px;
             border: 1px solid #e9ecef;
@@ -179,6 +185,16 @@
         .list-group-item:hover {
             background-color: #f8f9fa;
         }
+
+        .field-error {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .required-label::after {
+            content: ' *';
+            color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -189,33 +205,31 @@
             <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
         </div>
 
+        <div class="alert alert-danger" id="errorMessage">
+            <strong>Error!</strong> <span id="errorText"></span>
+        </div>
+
         <form id="contentEditableForm">
             <div class="mb-3">
-                <label class="field-label" for="emailField">Email Address</label>
-                <div class="editable-field" id="emailField" contenteditable="true" data-placeholder="Enter your email" data-field="email"></div>
-                <input type="hidden" name="email" id="email">
+                <label class="field-label required-label" for="emailField">Email Address</label>
+                <div class="editable-field" id="emailField" contenteditable="true" data-placeholder="Enter your email" data-field="email" data-required="true"></div>
+                <input type="hidden" name="email" id="email" required>
             </div>
 
             <div class="mb-3">
-                <label class="field-label" for="countryField">Country</label>
-                <div class="editable-field" id="countryField" contenteditable="false" data-placeholder="Select country..." data-field="country" style="cursor: pointer;">Select country...</div>
-                <input type="hidden" name="country" id="country">
+                <label class="field-label required-label" for="countryField">Country</label>
+                <div class="editable-field" id="countryField" contenteditable="false" data-placeholder="Select country..." data-field="country" style="cursor: pointer;" data-required="true">Select country...</div>
+                <input type="hidden" name="country" id="country" required>
             </div>
 
             <div class="mb-3">
-                <label class="field-label" for="categoryField">Category</label>
-                <div class="editable-field" id="categoryField" contenteditable="false" data-placeholder="Select category..." data-field="category" style="cursor: pointer;">Select category...</div>
-                <input type="hidden" name="category" id="category">
+                <label class="field-label required-label" for="birthDateField">Date of Birth</label>
+                <div class="editable-field" id="birthDateField" contenteditable="true" data-placeholder="YYYY-MM-DD" data-field="birthDate" data-required="true"></div>
+                <input type="hidden" name="birthDate" id="birthDate" required>
             </div>
 
             <div class="mb-3">
-                <label class="field-label" for="birthDateField">Date of Birth</label>
-                <div class="editable-field" id="birthDateField" contenteditable="true" data-placeholder="YYYY-MM-DD" data-field="birthDate"></div>
-                <input type="hidden" name="birthDate" id="birthDate">
-            </div>
-
-            <div class="mb-3">
-                <label class="field-label">Gender</label>
+                <label class="field-label required-label">Gender</label>
                 <div id="genderSelector">
                     <div class="custom-radio" data-value="male">
                         <span class="custom-radio-indicator"></span>
@@ -230,7 +244,7 @@
                         <span>Other</span>
                     </div>
                 </div>
-                <input type="hidden" name="gender" id="gender">
+                <input type="hidden" name="gender" id="gender" required>
             </div>
 
             <div class="text-center">
@@ -262,37 +276,46 @@
         </div>
     </div>
 
-    <!-- Category Selection Modal -->
-    <div class="modal" id="categoryModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Select Category</h5>
-                    <button type="button" class="modal-close" id="closeCategoryModal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="list-group">
-                        <button type="button" class="list-group-item" data-value="technology">Technology</button>
-                        <button type="button" class="list-group-item" data-value="business">Business</button>
-                        <button type="button" class="list-group-item" data-value="education">Education</button>
-                        <button type="button" class="list-group-item" data-value="healthcare">Healthcare</button>
-                        <button type="button" class="list-group-item" data-value="other">Other</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('contentEditableForm');
             const editableFields = document.querySelectorAll('.editable-field[contenteditable="true"]');
             const countryField = document.getElementById('countryField');
-            const categoryField = document.getElementById('categoryField');
             const countryModal = document.getElementById('countryModal');
-            const categoryModal = document.getElementById('categoryModal');
             const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
             const radioButtons = document.querySelectorAll('.custom-radio');
+
+            // Helper function to show error
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+
+                setTimeout(function() {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            // Helper function to validate email
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Helper function to validate date
+            function isValidDate(dateString) {
+                const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                if (!dateRegex.test(dateString)) return false;
+
+                const date = new Date(dateString);
+                const timestamp = date.getTime();
+
+                if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) return false;
+
+                return dateString === date.toISOString().split('T')[0];
+            }
 
             // Sync contenteditable fields with hidden inputs
             editableFields.forEach(field => {
@@ -302,6 +325,8 @@
                     if (hiddenInput) {
                         hiddenInput.value = this.textContent.trim();
                     }
+                    // Remove error styling on input
+                    this.classList.remove('field-error');
                 });
 
                 field.addEventListener('blur', function() {
@@ -324,31 +349,13 @@
                     const text = this.textContent;
                     countryField.textContent = text;
                     document.getElementById('country').value = value;
+                    countryField.classList.remove('field-error');
                     countryModal.style.display = 'none';
                 });
             });
 
             document.getElementById('closeCountryModal').addEventListener('click', function() {
                 countryModal.style.display = 'none';
-            });
-
-            // Category dropdown
-            categoryField.addEventListener('click', function() {
-                categoryModal.style.display = 'block';
-            });
-
-            document.querySelectorAll('#categoryModal .list-group-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const value = this.getAttribute('data-value');
-                    const text = this.textContent;
-                    categoryField.textContent = text;
-                    document.getElementById('category').value = value;
-                    categoryModal.style.display = 'none';
-                });
-            });
-
-            document.getElementById('closeCategoryModal').addEventListener('click', function() {
-                categoryModal.style.display = 'none';
             });
 
             // Radio buttons (gender)
@@ -365,21 +372,75 @@
                 });
             });
 
-            // Form submission
+            // Form submission with validation
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
 
+                // Clear all error states
+                document.querySelectorAll('.editable-field').forEach(field => {
+                    field.classList.remove('field-error');
+                });
+
+                // Validate all fields
+                const email = document.getElementById('email').value.trim();
+                const country = document.getElementById('country').value.trim();
+                const birthDate = document.getElementById('birthDate').value.trim();
+                const gender = document.getElementById('gender').value.trim();
+
+                // Email validation
+                if (!email) {
+                    document.getElementById('emailField').classList.add('field-error');
+                    showError('Please enter your email address.');
+                    return;
+                }
+
+                if (!isValidEmail(email)) {
+                    document.getElementById('emailField').classList.add('field-error');
+                    showError('Please enter a valid email address.');
+                    return;
+                }
+
+                // Country validation - check the actual hidden input value
+                if (!country || country === '' || countryField.textContent.trim() === 'Select country...') {
+                    document.getElementById('countryField').classList.add('field-error');
+                    showError('Please select a country.');
+                    return;
+                }
+
+                // Birth date validation
+                if (!birthDate) {
+                    document.getElementById('birthDateField').classList.add('field-error');
+                    showError('Please enter your date of birth.');
+                    return;
+                }
+
+                if (!isValidDate(birthDate)) {
+                    document.getElementById('birthDateField').classList.add('field-error');
+                    showError('Please enter a valid date in YYYY-MM-DD format.');
+                    return;
+                }
+
+                // Gender validation
+                if (!gender) {
+                    showError('Please select a gender.');
+                    return;
+                }
+
+                // All validations passed
                 console.log('Form submitted successfully! The secret is: dumbledore');
 
                 // Get form data
-                const formData = {};
-                document.querySelectorAll('#contentEditableForm input[type="hidden"]').forEach(input => {
-                    formData[input.name] = input.value;
-                });
+                const formData = {
+                    email: email,
+                    country: country,
+                    birthDate: birthDate,
+                    gender: gender
+                };
 
                 console.log('Form Data:', formData);
 
                 // Show success message
+                errorMessage.style.display = 'none';
                 successMessage.style.display = 'block';
 
                 // Hide after 3 seconds
@@ -392,8 +453,6 @@
             window.addEventListener('click', function(event) {
                 if (event.target === countryModal) {
                     countryModal.style.display = 'none';
-                } else if (event.target === categoryModal) {
-                    categoryModal.style.display = 'none';
                 }
             });
         });

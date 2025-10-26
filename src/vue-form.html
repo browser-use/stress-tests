@@ -179,22 +179,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="favoriteColor" class="form-label label-required">Favorite Color</label>
-                        <select id="favoriteColor" v-model="formData.favoriteColor" class="form-select" :class="{'is-invalid': hasError('favoriteColor')}">
-                            <option value="">Select a color</option>
-                            <option value="red">Red</option>
-                            <option value="green">Green</option>
-                            <option value="blue">Blue</option>
-                            <option value="yellow">Yellow</option>
-                            <option value="purple">Purple</option>
-                            <option value="orange">Orange</option>
-                        </select>
-                        <div class="error-text" v-if="hasError('favoriteColor')">
-                            Favorite color is required
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
                         <label for="meetingDate" class="form-label label-required">Preferred Meeting Date</label>
                         <input type="date" id="meetingDate" v-model="formData.meetingDate" class="form-control" :class="{'is-invalid': hasError('meetingDate')}" />
                         <div class="error-text" v-if="hasError('meetingDate')">
@@ -222,8 +206,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="fileUpload" class="form-label">File Upload</label>
-                        <input type="file" id="fileUpload" class="form-control" />
+                        <label for="fileUpload" class="form-label label-required">File Upload</label>
+                        <input type="file" id="fileUpload" @change="handleFileUpload" class="form-control" :class="{'is-invalid': hasError('fileUpload')}" />
+                        <div class="error-text" v-if="hasError('fileUpload')">
+                            Please upload a file
+                        </div>
                     </div>
                 </div>
 
@@ -245,9 +232,9 @@
                 const formData = reactive({
                     email: '',
                     country: '',
-                    favoriteColor: '',
                     meetingDate: '',
-                    contactPreference: ''
+                    contactPreference: '',
+                    fileUpload: null
                 });
 
                 const errors = reactive({});
@@ -279,37 +266,50 @@
                         delete errors[key];
                     });
 
-                    // Email validation
+                    // Email validation - required and must be valid format
                     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!formData.email.trim()) {
+                    if (!formData.email || !formData.email.trim()) {
                         errors.email = 'Email is required';
-                    } else if (!emailPattern.test(formData.email)) {
+                    } else if (!emailPattern.test(formData.email.trim())) {
                         errors.email = 'Please enter a valid email address';
                     }
 
-                    // Country validation
-                    if (!formData.country) {
+                    // Country validation - required and must be selected (not empty string)
+                    if (!formData.country || formData.country.trim() === '') {
                         errors.country = 'Country is required';
                     }
 
-                    // Favorite color validation
-                    if (!formData.favoriteColor) {
-                        errors.favoriteColor = 'Favorite color is required';
-                    }
-
-                    // Meeting date validation
-                    if (!formData.meetingDate) {
+                    // Meeting date validation - required
+                    if (!formData.meetingDate || formData.meetingDate.trim() === '') {
                         errors.meetingDate = 'Meeting date is required';
                     }
 
-                    // Contact preference validation
-                    if (!formData.contactPreference) {
+                    // Contact preference validation - required
+                    if (!formData.contactPreference || formData.contactPreference.trim() === '') {
                         errors.contactPreference = 'Please select a contact preference';
+                    }
+
+                    // File upload validation - required
+                    if (!formData.fileUpload) {
+                        errors.fileUpload = 'Please upload a file';
                     }
                 };
 
                 const hasError = (field) => {
                     return formTouched.value && errors[field];
+                };
+
+                const handleFileUpload = (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        formData.fileUpload = file;
+                        // Clear error if file is selected
+                        if (formTouched.value && errors.fileUpload) {
+                            delete errors.fileUpload;
+                        }
+                    } else {
+                        formData.fileUpload = null;
+                    }
                 };
 
                 return {
@@ -318,7 +318,8 @@
                     formSubmitted,
                     formTouched,
                     submitForm,
-                    hasError
+                    hasError,
+                    handleFileUpload
                 };
             }
         });

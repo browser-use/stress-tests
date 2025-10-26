@@ -273,39 +273,6 @@
                 countryGroup.appendChild(countryLabel);
                 countryGroup.appendChild(countrySelect);
 
-                // Language Select
-                const languageGroup = document.createElement('div');
-                languageGroup.className = 'form-group';
-
-                const languageLabel = document.createElement('label');
-                languageLabel.className = 'form-label required';
-                languageLabel.htmlFor = 'language';
-                languageLabel.textContent = 'Preferred Language';
-
-                const languageSelect = document.createElement('select');
-                languageSelect.className = 'form-control';
-                languageSelect.id = 'language';
-                languageSelect.name = 'language';
-                languageSelect.required = true;
-
-                const languages = [
-                    { value: '', text: 'Select Language' },
-                    { value: 'en', text: 'English' },
-                    { value: 'es', text: 'Spanish' },
-                    { value: 'fr', text: 'French' },
-                    { value: 'de', text: 'German' }
-                ];
-
-                languages.forEach(language => {
-                    const option = document.createElement('option');
-                    option.value = language.value;
-                    option.textContent = language.text;
-                    languageSelect.appendChild(option);
-                });
-
-                languageGroup.appendChild(languageLabel);
-                languageGroup.appendChild(languageSelect);
-
                 // Date Picker
                 const dateGroup = document.createElement('div');
                 dateGroup.className = 'form-group';
@@ -368,7 +335,7 @@
                 fileGroup.className = 'form-group';
 
                 const fileLabel = document.createElement('label');
-                fileLabel.className = 'form-label';
+                fileLabel.className = 'form-label required';
                 fileLabel.htmlFor = 'document';
                 fileLabel.textContent = 'Upload Document';
 
@@ -377,6 +344,7 @@
                 fileInput.className = 'form-control';
                 fileInput.id = 'document';
                 fileInput.name = 'document';
+                fileInput.required = true;
 
                 fileGroup.appendChild(fileLabel);
                 fileGroup.appendChild(fileInput);
@@ -384,7 +352,6 @@
                 // Add fields to form section
                 formSection.appendChild(emailGroup);
                 formSection.appendChild(countryGroup);
-                formSection.appendChild(languageGroup);
                 formSection.appendChild(dateGroup);
                 formSection.appendChild(radioGroup);
                 formSection.appendChild(fileGroup);
@@ -410,6 +377,25 @@
                 // Add event listeners
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
+
+                    // Validate all required fields
+                    const email = form.querySelector('#email').value.trim();
+                    const country = form.querySelector('#country').value;
+                    const appointmentDate = form.querySelector('#appointmentDate').value;
+                    const contactMethod = form.querySelector('input[name="contactMethod"]:checked');
+                    const document = form.querySelector('#document').files.length;
+
+                    // Check if all required fields are filled
+                    if (!email || !country || !appointmentDate || !contactMethod || !document) {
+                        alert('Please fill in all required fields');
+                        return;
+                    }
+
+                    // Additional validation for dropdown - ensure a non-empty value is selected
+                    if (country === '') {
+                        alert('Please select a valid country');
+                        return;
+                    }
 
                     console.log('Form submitted successfully! The secret is: dumbledore');
                     successMessage.style.display = 'block';

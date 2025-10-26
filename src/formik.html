@@ -126,7 +126,6 @@
             const [formValues, setFormValues] = React.useState({
                 email: '',
                 country: '',
-                favoriteColor: '',
                 dateOfBirth: '',
                 contactMethod: '',
                 fileUpload: null
@@ -148,12 +147,20 @@
                     newErrors.email = 'Invalid email address';
                 }
 
-                if (!values.country) {
+                if (!values.country || values.country === '') {
                     newErrors.country = 'Country is required';
                 }
 
-                if (!values.contactMethod) {
+                if (!values.dateOfBirth || values.dateOfBirth === '') {
+                    newErrors.dateOfBirth = 'Date of Birth is required';
+                }
+
+                if (!values.contactMethod || values.contactMethod === '') {
                     newErrors.contactMethod = 'Contact method is required';
+                }
+
+                if (!values.fileUpload) {
+                    newErrors.fileUpload = 'File upload is required';
                 }
 
                 return newErrors;
@@ -201,6 +208,12 @@
                         fileUpload: null
                     }));
                 }
+
+                // Mark as touched
+                setTouched(prev => ({
+                    ...prev,
+                    fileUpload: true
+                }));
             };
 
             const handleSubmit = (e) => {
@@ -296,34 +309,19 @@
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="favoriteColor" className="form-label">Favorite Color</label>
-                                <select
-                                    id="favoriteColor"
-                                    name="favoriteColor"
-                                    className="form-select"
-                                    value={formValues.favoriteColor}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select a color</option>
-                                    <option value="red">Red</option>
-                                    <option value="blue">Blue</option>
-                                    <option value="green">Green</option>
-                                    <option value="yellow">Yellow</option>
-                                    <option value="purple">Purple</option>
-                                    <option value="orange">Orange</option>
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
+                                <label htmlFor="dateOfBirth" className="form-label label-required">Date of Birth</label>
                                 <input
                                     type="date"
                                     id="dateOfBirth"
                                     name="dateOfBirth"
-                                    className="form-control"
+                                    className={`form-control ${isFieldInvalid('dateOfBirth') ? 'is-invalid' : ''}`}
                                     value={formValues.dateOfBirth}
                                     onChange={handleChange}
+                                    onBlur={handleBlur}
                                 />
+                                {getFieldError('dateOfBirth') && (
+                                    <div className="error-text">{getFieldError('dateOfBirth')}</div>
+                                )}
                             </div>
 
                             <div className="mb-3">
@@ -370,15 +368,18 @@
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="fileUpload" className="form-label">Upload File</label>
+                                <label htmlFor="fileUpload" className="form-label label-required">Upload File</label>
                                 <input
                                     type="file"
                                     id="fileUpload"
                                     name="fileUpload"
-                                    className="form-control"
+                                    className={`form-control ${isFieldInvalid('fileUpload') ? 'is-invalid' : ''}`}
                                     onChange={handleFileChange}
                                 />
                                 <small className="form-text text-muted">{fileName}</small>
+                                {getFieldError('fileUpload') && (
+                                    <div className="error-text">{getFieldError('fileUpload')}</div>
+                                )}
                             </div>
                         </div>
 

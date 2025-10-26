@@ -284,14 +284,15 @@
                 <table>
                     <tr>
                         <td colspan="2" data-label="Email:">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email">
+                            <label for="email" class="required">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
                         </td>
                     </tr>
                     <tr>
-                        <td width="50%" data-label="Country:">
-                            <label for="country">Country</label>
-                            <select id="country" name="country">
+                        <td colspan="2" data-label="Country:">
+                            <label for="country" class="required">Country</label>
+                            <select id="country" name="country" required>
                                 <option value="">Select...</option>
                                 <option value="US">United States</option>
                                 <option value="CA">Canada</option>
@@ -299,22 +300,14 @@
                                 <option value="AU">Australia</option>
                                 <option value="DE">Germany</option>
                             </select>
-                        </td>
-                        <td width="50%" data-label="Subscription Plan:">
-                            <label for="subscriptionPlan">Subscription Plan</label>
-                            <select id="subscriptionPlan" name="subscriptionPlan">
-                                <option value="">Select a plan...</option>
-                                <option value="free">Free</option>
-                                <option value="basic">Basic</option>
-                                <option value="premium">Premium</option>
-                            </select>
+                            <div class="invalid-feedback">Please select a country.</div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2" data-label="Date of Birth:">
-                            <label for="birthDate">Date of Birth</label>
+                            <label for="birthDate" class="required">Date of Birth</label>
                             <div class="date-group">
-                                <select id="birthMonth" name="birthMonth">
+                                <select id="birthMonth" name="birthMonth" required>
                                     <option value="">Month</option>
                                     <option value="01">January</option>
                                     <option value="02">February</option>
@@ -329,46 +322,49 @@
                                     <option value="11">November</option>
                                     <option value="12">December</option>
                                 </select>
-                                <select id="birthDay" name="birthDay">
+                                <select id="birthDay" name="birthDay" required>
                                     <option value="">Day</option>
                                 </select>
-                                <select id="birthYear" name="birthYear">
+                                <select id="birthYear" name="birthYear" required>
                                     <option value="">Year</option>
                                 </select>
                             </div>
+                            <div class="invalid-feedback">Please select a complete date of birth.</div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2" data-label="Gender:">
-                            <span class="cell-label">Gender</span>
+                            <span class="cell-label required">Gender</span>
                             <table class="table-nested">
                                 <tr>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="gender" id="genderMale" value="male">
+                                            <input class="form-check-input" type="radio" name="gender" id="genderMale" value="male" required>
                                             <label class="form-check-label" for="genderMale">Male</label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="female">
+                                            <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="female" required>
                                             <label class="form-check-label" for="genderFemale">Female</label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="gender" id="genderOther" value="other">
+                                            <input class="form-check-input" type="radio" name="gender" id="genderOther" value="other" required>
                                             <label class="form-check-label" for="genderOther">Other</label>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
+                            <div class="invalid-feedback">Please select a gender.</div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2" data-label="Upload File:">
-                            <label for="fileUpload">Upload File</label>
-                            <input type="file" id="fileUpload" name="fileUpload">
+                            <label for="fileUpload" class="required">Upload File</label>
+                            <input type="file" id="fileUpload" name="fileUpload" required>
+                            <div class="invalid-feedback">Please upload a file.</div>
                         </td>
                     </tr>
                 </table>
@@ -396,6 +392,79 @@
             // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
+
+                // Reset previous validation states
+                const invalidElements = form.querySelectorAll('.is-invalid');
+                invalidElements.forEach(el => el.classList.remove('is-invalid'));
+
+                const feedbacks = form.querySelectorAll('.invalid-feedback');
+                feedbacks.forEach(fb => fb.style.display = 'none');
+
+                // Validate all fields
+                let isValid = true;
+
+                // Validate email
+                const email = document.getElementById('email');
+                if (!email.value || !email.validity.valid) {
+                    email.classList.add('is-invalid');
+                    email.nextElementSibling.style.display = 'block';
+                    isValid = false;
+                }
+
+                // Validate country dropdown - check actual value in form state
+                const country = document.getElementById('country');
+                if (!country.value || country.value === '') {
+                    country.classList.add('is-invalid');
+                    country.nextElementSibling.style.display = 'block';
+                    isValid = false;
+                }
+
+                // Validate birth date dropdowns - check actual values in form state
+                const birthMonth = document.getElementById('birthMonth');
+                const birthDay = document.getElementById('birthDay');
+                const birthYear = document.getElementById('birthYear');
+
+                if (!birthMonth.value || birthMonth.value === '') {
+                    birthMonth.classList.add('is-invalid');
+                    isValid = false;
+                }
+                if (!birthDay.value || birthDay.value === '') {
+                    birthDay.classList.add('is-invalid');
+                    isValid = false;
+                }
+                if (!birthYear.value || birthYear.value === '') {
+                    birthYear.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                if (!birthMonth.value || !birthDay.value || !birthYear.value) {
+                    const dateGroup = document.querySelector('.date-group');
+                    dateGroup.nextElementSibling.style.display = 'block';
+                }
+
+                // Validate gender radio buttons
+                const genderInputs = document.querySelectorAll('input[name="gender"]');
+                const genderChecked = Array.from(genderInputs).some(input => input.checked);
+                if (!genderChecked) {
+                    genderInputs.forEach(input => input.classList.add('is-invalid'));
+                    const genderFeedback = document.querySelector('input[name="gender"]').closest('td').querySelector('.invalid-feedback');
+                    if (genderFeedback) genderFeedback.style.display = 'block';
+                    isValid = false;
+                }
+
+                // Validate file upload
+                const fileUpload = document.getElementById('fileUpload');
+                if (!fileUpload.files || fileUpload.files.length === 0) {
+                    fileUpload.classList.add('is-invalid');
+                    fileUpload.nextElementSibling.style.display = 'block';
+                    isValid = false;
+                }
+
+                // Only proceed if all validations pass
+                if (!isValid) {
+                    console.log('Form validation failed. Please fill in all required fields.');
+                    return false;
+                }
 
                 console.log('Form submitted successfully! The secret is: dumbledore');
 

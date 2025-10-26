@@ -235,23 +235,17 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="favoriteColor" class="form-label">Favorite Color</label>
-                    <select id="favoriteColor" {{action "updateFavoriteColor" on="change"}} class="form-select">
-                        <option value="">Select a color</option>
-                        <option value="red">Red</option>
-                        <option value="blue">Blue</option>
-                        <option value="green">Green</option>
-                        <option value="yellow">Yellow</option>
-                    </select>
+                    <label for="birthDate" class="form-label label-required">Date of Birth</label>
+                    {{input type="date" id="birthDate" value=changeset.birthDate class="form-control" required=true}}
+                    {{#if changeset.error.birthDate}}
+                        <div class="error-text">
+                            {{changeset.error.birthDate.validation}}
+                        </div>
+                    {{/if}}
                 </div>
 
                 <div class="mb-3">
-                    <label for="birthDate" class="form-label">Date of Birth</label>
-                    {{input type="date" id="birthDate" value=changeset.birthDate class="form-control"}}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Preferred Contact Method</label>
+                    <label class="form-label label-required">Preferred Contact Method</label>
                     <div class="form-check">
                         {{input type="radio" class="form-check-input" id="contactEmail" name="contactMethod" value="email" checked=isEmailChecked change="updateContactMethod" param="email"}}
                         <label class="form-check-label" for="contactEmail">Email</label>
@@ -264,11 +258,21 @@
                         {{input type="radio" class="form-check-input" id="contactMail" name="contactMethod" value="mail" checked=isMailChecked change="updateContactMethod" param="mail"}}
                         <label class="form-check-label" for="contactMail">Mail</label>
                     </div>
+                    {{#if changeset.error.contactMethod}}
+                        <div class="error-text">
+                            {{changeset.error.contactMethod.validation}}
+                        </div>
+                    {{/if}}
                 </div>
 
                 <div class="mb-3">
-                    <label for="fileUpload" class="form-label">File Upload</label>
-                    {{input type="file" id="fileUpload" class="form-control"}}
+                    <label for="fileUpload" class="form-label label-required">File Upload</label>
+                    {{input type="file" id="fileUpload" class="form-control" required=true}}
+                    {{#if changeset.error.fileUpload}}
+                        <div class="error-text">
+                            {{changeset.error.fileUpload.validation}}
+                        </div>
+                    {{/if}}
                 </div>
             </div>
 
@@ -349,9 +353,9 @@
                     const model = {
                         email: '',
                         country: '',
-                        favoriteColor: '',
                         birthDate: '',
-                        contactMethod: ''
+                        contactMethod: '',
+                        fileUpload: ''
                     };
 
                     // Instead of using changeset, we'll directly use the model
@@ -365,15 +369,32 @@
                     const model = this.get('model');
                     const errors = {};
 
-                    // Basic validation
-                    if (!model.email) {
+                    // Email validation
+                    if (!model.email || model.email.trim() === '') {
                         errors.email = { validation: 'Email is required' };
                     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(model.email)) {
                         errors.email = { validation: 'Please enter a valid email address' };
                     }
 
-                    if (!model.country) {
+                    // Country validation - check actual model value, not just visual selection
+                    if (!model.country || model.country.trim() === '') {
                         errors.country = { validation: 'Country is required' };
+                    }
+
+                    // Birth date validation
+                    if (!model.birthDate || model.birthDate.trim() === '') {
+                        errors.birthDate = { validation: 'Date of Birth is required' };
+                    }
+
+                    // Contact method validation
+                    if (!model.contactMethod || model.contactMethod.trim() === '') {
+                        errors.contactMethod = { validation: 'Preferred Contact Method is required' };
+                    }
+
+                    // File upload validation
+                    const fileInput = document.getElementById('fileUpload');
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                        errors.fileUpload = { validation: 'File upload is required' };
                     }
 
                     this.set('changeset.error', errors);
@@ -382,13 +403,25 @@
 
                 actions: {
                     updateCountry: function(event) {
-                        this.set('model.country', event.target.value);
+                        const value = event.target.value;
+                        this.set('model.country', value);
+                        this.set('changeset.country', value);
+                        // Clear error on change
+                        if (this.get('changeset.error.country')) {
+                            const errors = this.get('changeset.error');
+                            delete errors.country;
+                            this.set('changeset.error', errors);
+                        }
                     },
                     updateContactMethod: function(value) {
                         this.set('model.contactMethod', value);
-                    },
-                    updateFavoriteColor: function(event) {
-                        this.set('model.favoriteColor', event.target.value);
+                        this.set('changeset.contactMethod', value);
+                        // Clear error on change
+                        if (this.get('changeset.error.contactMethod')) {
+                            const errors = this.get('changeset.error');
+                            delete errors.contactMethod;
+                            this.set('changeset.error', errors);
+                        }
                     },
                     submitForm: function(event) {
                         event.preventDefault();

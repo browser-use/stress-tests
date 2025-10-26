@@ -172,10 +172,10 @@
                     <input type="hidden" name="email" id="email">
                 </div>
 
-                <!-- Dropdown 1: Country -->
+                <!-- Dropdown: Country -->
                 <div class="mb-3">
-                    <label for="country" class="form-label">Country</label>
-                    <select class="form-select" id="country" name="country">
+                    <label for="country" class="form-label required">Country</label>
+                    <select class="form-select" id="country" name="country" required>
                         <option value="">Select a country</option>
                         <option value="us">United States</option>
                         <option value="uk">United Kingdom</option>
@@ -183,44 +183,36 @@
                         <option value="au">Australia</option>
                         <option value="de">Germany</option>
                     </select>
-                </div>
-
-                <!-- Dropdown 2: Experience Level -->
-                <div class="mb-3">
-                    <label for="experience" class="form-label">Experience Level</label>
-                    <select class="form-select" id="experience" name="experience">
-                        <option value="">Select experience level</option>
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="advanced">Advanced</option>
-                        <option value="expert">Expert</option>
-                    </select>
+                    <div class="invalid-feedback" id="countryError">Please select a country</div>
                 </div>
 
                 <!-- Date picker -->
                 <div class="mb-3">
-                    <label for="birthDate" class="form-label">Date of Birth</label>
-                    <input type="date" class="form-control" id="birthDate" name="birthDate">
+                    <label for="birthDate" class="form-label required">Date of Birth</label>
+                    <input type="date" class="form-control" id="birthDate" name="birthDate" required>
+                    <div class="invalid-feedback" id="birthDateError">Please select a date of birth</div>
                 </div>
 
                 <!-- Radio button group -->
                 <div class="mb-3">
-                    <label class="form-label">Preferred Contact Method</label>
+                    <label class="form-label required">Preferred Contact Method</label>
                     <div class="rating">
-                        <input type="radio" id="contact3" name="contactMethod" value="phone">
+                        <input type="radio" id="contact3" name="contactMethod" value="phone" required>
                         <label for="contact3" title="Phone"></label>
-                        <input type="radio" id="contact2" name="contactMethod" value="sms">
+                        <input type="radio" id="contact2" name="contactMethod" value="sms" required>
                         <label for="contact2" title="SMS"></label>
-                        <input type="radio" id="contact1" name="contactMethod" value="email">
+                        <input type="radio" id="contact1" name="contactMethod" value="email" required>
                         <label for="contact1" title="Email"></label>
                     </div>
                     <div class="form-text">Select your preferred contact method (email, SMS, or phone)</div>
+                    <div class="invalid-feedback" id="contactMethodError" style="display: none;">Please select a contact method</div>
                 </div>
 
                 <!-- File upload -->
                 <div class="mb-3">
-                    <label for="fileUpload" class="form-label">Upload Document</label>
-                    <input type="file" class="form-control" id="fileUpload" name="fileUpload">
+                    <label for="fileUpload" class="form-label required">Upload Document</label>
+                    <input type="file" class="form-control" id="fileUpload" name="fileUpload" required>
+                    <div class="invalid-feedback" id="fileUploadError">Please upload a document</div>
                 </div>
             </div>
 
@@ -258,6 +250,28 @@
                 document.getElementById('emailError').style.display = 'none';
             });
 
+            // Remove validation errors on user interaction
+            document.getElementById('country').addEventListener('change', function() {
+                this.classList.remove('is-invalid');
+                document.getElementById('countryError').style.display = 'none';
+            });
+
+            document.getElementById('birthDate').addEventListener('change', function() {
+                this.classList.remove('is-invalid');
+                document.getElementById('birthDateError').style.display = 'none';
+            });
+
+            document.getElementsByName('contactMethod').forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    document.getElementById('contactMethodError').style.display = 'none';
+                });
+            });
+
+            document.getElementById('fileUpload').addEventListener('change', function() {
+                this.classList.remove('is-invalid');
+                document.getElementById('fileUploadError').style.display = 'none';
+            });
+
             // Form validation and submission
             const form = document.getElementById('richTextForm');
             const emailInput = document.getElementById('email');
@@ -276,6 +290,49 @@
                 } else {
                     document.getElementById('emailEditor').classList.remove('is-invalid');
                     document.getElementById('emailError').style.display = 'none';
+                }
+
+                // Validate country dropdown
+                const countrySelect = document.getElementById('country');
+                if (!countrySelect.value || countrySelect.value === '') {
+                    isValid = false;
+                    countrySelect.classList.add('is-invalid');
+                    document.getElementById('countryError').style.display = 'block';
+                } else {
+                    countrySelect.classList.remove('is-invalid');
+                    document.getElementById('countryError').style.display = 'none';
+                }
+
+                // Validate date of birth
+                const birthDateInput = document.getElementById('birthDate');
+                if (!birthDateInput.value) {
+                    isValid = false;
+                    birthDateInput.classList.add('is-invalid');
+                    document.getElementById('birthDateError').style.display = 'block';
+                } else {
+                    birthDateInput.classList.remove('is-invalid');
+                    document.getElementById('birthDateError').style.display = 'none';
+                }
+
+                // Validate contact method radio buttons
+                const contactMethodRadios = document.getElementsByName('contactMethod');
+                const contactMethodSelected = Array.from(contactMethodRadios).some(radio => radio.checked);
+                if (!contactMethodSelected) {
+                    isValid = false;
+                    document.getElementById('contactMethodError').style.display = 'block';
+                } else {
+                    document.getElementById('contactMethodError').style.display = 'none';
+                }
+
+                // Validate file upload
+                const fileUploadInput = document.getElementById('fileUpload');
+                if (!fileUploadInput.files || fileUploadInput.files.length === 0) {
+                    isValid = false;
+                    fileUploadInput.classList.add('is-invalid');
+                    document.getElementById('fileUploadError').style.display = 'block';
+                } else {
+                    fileUploadInput.classList.remove('is-invalid');
+                    document.getElementById('fileUploadError').style.display = 'none';
                 }
 
                 if (isValid) {
@@ -317,9 +374,16 @@
                 // Reset regular form elements
                 form.reset();
 
-                // Remove validation errors
+                // Remove all validation errors
                 document.getElementById('emailEditor').classList.remove('is-invalid');
                 document.getElementById('emailError').style.display = 'none';
+                document.getElementById('country').classList.remove('is-invalid');
+                document.getElementById('countryError').style.display = 'none';
+                document.getElementById('birthDate').classList.remove('is-invalid');
+                document.getElementById('birthDateError').style.display = 'none';
+                document.getElementById('contactMethodError').style.display = 'none';
+                document.getElementById('fileUpload').classList.remove('is-invalid');
+                document.getElementById('fileUploadError').style.display = 'none';
 
                 // Hide success message
                 successMessage.style.display = 'none';
