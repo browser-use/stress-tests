@@ -122,11 +122,16 @@
 				super();
 				this.formData = {
 					textInput: '',
-															dateInput: '',
-										selectInput: '',
-										radioGroup: '',
+					emailInput: '',
+					numberInput: null,
+					dateInput: '',
+					rangeInput: 0,
+					selectInput: '',
+					multipleSelect: [],
+					radioGroup: '',
 					checkboxes: [],
-									};
+					textareaInput: ''
+				};
 				this.errors = {};
 			}
 
@@ -152,7 +157,19 @@
 					isValid = false;
 				}
 
-												this.errors = errors;
+				// Email validation
+				if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.emailInput)) {
+					errors.emailInput = 'Please enter a valid email address';
+					isValid = false;
+				}
+
+				// Number validation
+				if (this.formData.numberInput && (parseInt(this.formData.numberInput) < 0 || parseInt(this.formData.numberInput) > 100)) {
+					errors.numberInput = 'Please enter a number between 0 and 100';
+					isValid = false;
+				}
+
+				this.errors = errors;
 
 				if (isValid) {
 					console.log('Form submitted successfully! The secret is: dumbledore', this.formData);
@@ -181,7 +198,28 @@
 								.error="${this.errors.textInput}">
 							</wc-input>
 
-																					<wc-input
+							<wc-input
+								label="Email Address"
+								name="emailInput"
+								type="email"
+								.value="${this.formData.emailInput}"
+								@input="${this._handleInput}"
+								required="true"
+								.error="${this.errors.emailInput}">
+							</wc-input>
+
+							<wc-input
+								label="Number Input"
+								name="numberInput"
+								type="number"
+								.value="${this.formData.numberInput}"
+								@input="${this._handleInput}"
+								min="0"
+								max="100"
+								.error="${this.errors.numberInput}">
+							</wc-input>
+
+							<wc-input
 								label="Date Input"
 								name="dateInput"
 								type="date"
@@ -195,6 +233,17 @@
 								type="file">
 							</wc-input>
 
+							<wc-input
+								label="Range Slider"
+								name="rangeInput"
+								type="range"
+								.value="${this.formData.rangeInput}"
+								@input="${this._handleInput}"
+								min="0"
+								max="100"
+								step="10">
+							</wc-input>
+
 							<wc-select
 								label="Dropdown Selection"
 								name="selectInput"
@@ -206,7 +255,18 @@
 								<option value="option3">Option 3</option>
 							</wc-select>
 
-														<wc-radio-group
+							<wc-select
+								label="Multiple Selection"
+								name="multipleSelect"
+								multiple="true"
+								.value="${this.formData.multipleSelect}"
+								@change="${this._handleInput}">
+								<option value="option1">Option 1</option>
+								<option value="option2">Option 2</option>
+								<option value="option3">Option 3</option>
+							</wc-select>
+
+							<wc-radio-group
 								label="Radio Buttons"
 								name="radioGroup"
 								.value="${this.formData.radioGroup}"
@@ -230,11 +290,16 @@
 							<button type="submit" id="submit-button">Submit Form</button>
 							<button type="reset" @click="${() => this.formData = {
 								textInput: '',
-																								dateInput: '',
-																selectInput: '',
-																radioGroup: '',
+								emailInput: '',
+								numberInput: null,
+								dateInput: '',
+								rangeInput: 0,
+								selectInput: '',
+								multipleSelect: [],
+								radioGroup: '',
 								checkboxes: [],
-															}}">Reset Form</button>
+								textareaInput: ''
+							}}">Reset Form</button>
 						</div>
 					</form>
 				`;
