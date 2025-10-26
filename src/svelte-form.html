@@ -223,35 +223,15 @@
         
         // Create reactive stores (Svelte's core reactivity system)
         const formData = writable({
-            firstName: '',
-            lastName: '',
             email: '',
-            phone: '',
-            birthDate: '',
-            website: '',
-            username: '',
-            bio: '',
             theme: '',
-            notifications: {
-                email: false,
-                sms: false,
-                push: false
-            },
-            contactPreference: '',
-            preferredTime: '',
             language: '',
-            timezone: '',
-            darkMode: false,
-            alphanumericOnly: '',
-            satisfactionLevel: 50,
-            favoriteColor: '#ff3e00',
-            comments: '',
-            termsAgreement: false
+            birthDate: '',
+            contactPreference: ''
         });
 
         const errors = writable({});
         const showSuccess = writable(false);
-        const showModal = writable(false);
 
         // Current values for quick access
         let currentFormData = {};
@@ -292,42 +272,14 @@
         // Form validation using Svelte derived store
         const validationErrors = derived(formData, ($formData) => {
             const newErrors = {};
-            
-            // Required fields validation
-            if (!$formData.firstName) newErrors.firstName = 'First name is required';
-            if (!$formData.lastName) newErrors.lastName = 'Last name is required';
-            
+
             // Email validation
             if (!$formData.email) {
                 newErrors.email = 'Email is required';
             } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($formData.email)) {
                 newErrors.email = 'Please enter a valid email address';
             }
-            
-            // Phone validation
-            if ($formData.phone && !/^\d{3}-\d{3}-\d{4}$/.test($formData.phone)) {
-                newErrors.phone = 'Please enter a valid phone number (e.g. 123-456-7890)';
-            }
-            
-            // Website validation
-            if ($formData.website) {
-                try {
-                    new URL($formData.website);
-                } catch (err) {
-                    newErrors.website = 'Please enter a valid URL';
-                }
-            }
-                    
-            // Username validation
-            if (!$formData.username) newErrors.username = 'Username is required';
-            
 
-            
-            // Terms agreement validation
-            if (!$formData.termsAgreement) {
-                newErrors.termsAgreement = 'You must agree to the terms and conditions';
-            }
-            
             return newErrors;
         });
 
@@ -339,12 +291,7 @@
         // Svelte-style reactive functions
         function updateFormData(field, value) {
             formData.update(data => {
-                if (field.includes('.')) {
-                    const [parent, child] = field.split('.');
-                    return { ...data, [parent]: { ...data[parent], [child]: value } };
-                } else {
-                    return { ...data, [field]: value };
-                }
+                return { ...data, [field]: value };
             });
         }
 
@@ -360,17 +307,8 @@
         
         // Handle input change with Svelte reactivity
         function handleInputChange(event) {
-            const { name, value, type, checked } = event.target;
-            const fieldValue = type === 'checkbox' ? checked : value;
-            
-            // For alphanumeric input
-            if (name === 'alphanumericOnly') {
-                const cleanValue = value.replace(/[^a-zA-Z0-9]/g, '');
-                event.target.value = cleanValue;
-                updateFormData(name, cleanValue);
-            } else {
-                updateFormData(name, fieldValue);
-            }
+            const { name, value } = event.target;
+            updateFormData(name, value);
         }
 
         // Efficient update functions (no full re-render)
@@ -380,27 +318,15 @@
 
             // Update all form inputs with current values
             Object.keys(currentFormData).forEach(key => {
-                if (key === 'notifications') {
-                    // Handle nested notification checkboxes
-                    Object.keys(currentFormData.notifications).forEach(notifKey => {
-                        const input = form.querySelector(`[name="notifications.${notifKey}"]`);
-                        if (input && input.type === 'checkbox') {
-                            input.checked = currentFormData.notifications[notifKey];
-                        }
-                    });
-                } else {
-                    const input = form.querySelector(`[name="${key}"]`);
-                    if (input) {
-                        if (input.type === 'checkbox') {
-                            input.checked = currentFormData[key];
-                        } else if (input.type === 'radio') {
-                            const radioInputs = form.querySelectorAll(`[name="${key}"]`);
-                            radioInputs.forEach(radio => {
-                                radio.checked = radio.value === currentFormData[key];
-                            });
-                        } else {
-                            input.value = currentFormData[key] || '';
-                        }
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    if (input.type === 'radio') {
+                        const radioInputs = form.querySelectorAll(`[name="${key}"]`);
+                        radioInputs.forEach(radio => {
+                            radio.checked = radio.value === currentFormData[key];
+                        });
+                    } else {
+                        input.value = currentFormData[key] || '';
                     }
                 }
             });
@@ -499,30 +425,11 @@
         // Reset form using Svelte stores
         function resetForm() {
             formData.set({
-                firstName: '',
-                lastName: '',
                 email: '',
-                phone: '',
-                birthDate: '',
-                website: '',
-                username: '',
-                bio: '',
                 theme: '',
-                notifications: {
-                    email: false,
-                    sms: false,
-                    push: false
-                },
-                contactPreference: '',
-                preferredTime: '',
                 language: '',
-                timezone: '',
-                darkMode: false,
-                alphanumericOnly: '',
-                satisfactionLevel: 50,
-                favoriteColor: '#ff3e00',
-                comments: '',
-                termsAgreement: false
+                birthDate: '',
+                contactPreference: ''
             });
         }
         
@@ -545,136 +452,23 @@
                 ` : ''}
                 
                 <form class="form-container" id="svelte-form">
-                    <!-- User Information Section -->
+                    <!-- Simplified Form Section -->
                     <div class="form-section">
                         <h3>User Information</h3>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label label-required">First Name</label>
-                                <input 
-                                    type="text" 
-                                    id="firstName" 
-                                    name="firstName" 
-                                    class="form-control ${currentErrors.firstName ? 'error-field' : ''}" 
-                                    value="${currentFormData.firstName || ''}"
-                                    required 
-                                />
-                                ${currentErrors.firstName ? `<div class="error-text">${currentErrors.firstName}</div>` : ''}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label label-required">Last Name</label>
-                                <input 
-                                    type="text" 
-                                    id="lastName" 
-                                    name="lastName" 
-                                    class="form-control ${currentErrors.lastName ? 'error-field' : ''}" 
-                                    value="${currentFormData.lastName || ''}"
-                                    required 
-                                />
-                                ${currentErrors.lastName ? `<div class="error-text">${currentErrors.lastName}</div>` : ''}
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="email" class="form-label label-required">Email Address</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    class="form-control ${currentErrors.email ? 'error-field' : ''}" 
-                                    value="${currentFormData.email || ''}"
-                                    required 
-                                />
-                                ${currentErrors.email ? `<div class="error-text">${currentErrors.email}</div>` : ''}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <input 
-                                    type="tel" 
-                                    id="phone" 
-                                    name="phone" 
-                                    class="form-control ${currentErrors.phone ? 'error-field' : ''}" 
-                                    placeholder="123-456-7890" 
-                                    value="${currentFormData.phone || ''}"
-                                />
-                                ${currentErrors.phone ? `<div class="error-text">${currentErrors.phone}</div>` : ''}
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="birthDate" class="form-label">Date of Birth</label>
-                                <input 
-                                    type="date" 
-                                    id="birthDate" 
-                                    name="birthDate" 
-                                    class="form-control" 
-                                    value="${currentFormData.birthDate || ''}"
-                                />
-                            </div>
-                            <div class="col-md-6">
-                                <label for="website" class="form-label">Website</label>
-                                <input 
-                                    type="url" 
-                                    id="website" 
-                                    name="website" 
-                                    class="form-control ${currentErrors.website ? 'error-field' : ''}" 
-                                    placeholder="https://example.com" 
-                                    value="${currentFormData.website || ''}"
-                                />
-                                ${currentErrors.website ? `<div class="error-text">${currentErrors.website}</div>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Profile Section -->
-                    <div class="form-section">
-                        <h3>Profile</h3>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="username" class="form-label label-required">Username</label>
-                                <input 
-                                    type="text" 
-                                    id="username" 
-                                    name="username" 
-                                    class="form-control ${currentErrors.username ? 'error-field' : ''}" 
-                                    value="${currentFormData.username || ''}"
-                                    required 
-                                />
-                                ${currentErrors.username ? `<div class="error-text">${currentErrors.username}</div>` : ''}
-                            </div>
-                        </div>
-                        
 
-                        
                         <div class="mb-3">
-                            <label for="bio" class="form-label">Bio</label>
-                            <textarea 
-                                id="bio" 
-                                name="bio" 
-                                class="form-control" 
-                                rows="3"
-                            >${currentFormData.bio || ''}</textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="profilePicture" class="form-label">Profile Picture</label>
-                            <input 
-                                type="file" 
-                                id="profilePicture" 
-                                class="form-control" 
-                                accept="image/*" 
+                            <label for="email" class="form-label label-required">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control ${currentErrors.email ? 'error-field' : ''}"
+                                value="${currentFormData.email || ''}"
+                                required
                             />
+                            ${currentErrors.email ? `<div class="error-text">${currentErrors.email}</div>` : ''}
                         </div>
-                    </div>
-                    
-                    <!-- Preferences Section -->
-                    <div class="form-section">
-                        <h3>Preferences</h3>
-                        
+
                         <div class="mb-3">
                             <label for="theme" class="form-label">Preferred Theme</label>
                             <select id="theme" name="theme" class="form-select">
@@ -682,221 +476,81 @@
                                 <option value="light" ${currentFormData.theme === 'light' ? 'selected' : ''}>Light</option>
                                 <option value="dark" ${currentFormData.theme === 'dark' ? 'selected' : ''}>Dark</option>
                                 <option value="system" ${currentFormData.theme === 'system' ? 'selected' : ''}>System Default</option>
-                                <option value="custom" ${currentFormData.theme === 'custom' ? 'selected' : ''}>Custom</option>
                             </select>
                         </div>
-                        
+
                         <div class="mb-3">
-                            <label class="form-label">Notification Preferences</label>
-                            <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="checkbox" 
-                                    id="notificationEmail" 
-                                    name="notifications.email" 
-                                    ${currentFormData.notifications?.email ? 'checked' : ''}
-                                />
-                                <label class="form-check-label" for="notificationEmail">Email Notifications</label>
-                            </div>
-                            <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="checkbox" 
-                                    id="notificationSms" 
-                                    name="notifications.sms" 
-                                    ${currentFormData.notifications?.sms ? 'checked' : ''}
-                                />
-                                <label class="form-check-label" for="notificationSms">SMS Notifications</label>
-                            </div>
-                            <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="checkbox" 
-                                    id="notificationPush" 
-                                    name="notifications.push" 
-                                    ${currentFormData.notifications?.push ? 'checked' : ''}
-                                />
-                                <label class="form-check-label" for="notificationPush">Push Notifications</label>
-                            </div>
+                            <label for="language" class="form-label">Preferred Language</label>
+                            <select id="language" name="language" class="form-select">
+                                <option value="">Select a language</option>
+                                <option value="en" ${currentFormData.language === 'en' ? 'selected' : ''}>English</option>
+                                <option value="es" ${currentFormData.language === 'es' ? 'selected' : ''}>Spanish</option>
+                                <option value="fr" ${currentFormData.language === 'fr' ? 'selected' : ''}>French</option>
+                                <option value="de" ${currentFormData.language === 'de' ? 'selected' : ''}>German</option>
+                            </select>
                         </div>
-                        
+
+                        <div class="mb-3">
+                            <label for="birthDate" class="form-label">Date of Birth</label>
+                            <input
+                                type="date"
+                                id="birthDate"
+                                name="birthDate"
+                                class="form-control"
+                                value="${currentFormData.birthDate || ''}"
+                            />
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">Contact Preference</label>
                             <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="radio" 
-                                    id="contactEmail" 
-                                    name="contactPreference" 
-                                    value="email" 
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="contactEmail"
+                                    name="contactPreference"
+                                    value="email"
                                     ${currentFormData.contactPreference === 'email' ? 'checked' : ''}
                                 />
                                 <label class="form-check-label" for="contactEmail">Email</label>
                             </div>
                             <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="radio" 
-                                    id="contactPhone" 
-                                    name="contactPreference" 
-                                    value="phone" 
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="contactPhone"
+                                    name="contactPreference"
+                                    value="phone"
                                     ${currentFormData.contactPreference === 'phone' ? 'checked' : ''}
                                 />
                                 <label class="form-check-label" for="contactPhone">Phone</label>
                             </div>
                             <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="radio" 
-                                    id="contactNone" 
-                                    name="contactPreference" 
-                                    value="none" 
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="contactNone"
+                                    name="contactPreference"
+                                    value="none"
                                     ${currentFormData.contactPreference === 'none' ? 'checked' : ''}
                                 />
                                 <label class="form-check-label" for="contactNone">Do Not Contact</label>
                             </div>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="preferredTime" class="form-label">Preferred Contact Time</label>
-                                <input 
-                                    type="time" 
-                                    id="preferredTime" 
-                                    name="preferredTime" 
-                                    class="form-control" 
-                                    value="${currentFormData.preferredTime || ''}"
-                                />
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="language" class="form-label">Preferred Language</label>
-                                <select id="language" name="language" class="form-select">
-                                    <option value="">Select a language</option>
-                                    <option value="en" ${currentFormData.language === 'en' ? 'selected' : ''}>English</option>
-                                    <option value="es" ${currentFormData.language === 'es' ? 'selected' : ''}>Spanish</option>
-                                    <option value="fr" ${currentFormData.language === 'fr' ? 'selected' : ''}>French</option>
-                                    <option value="de" ${currentFormData.language === 'de' ? 'selected' : ''}>German</option>
-                                    <option value="it" ${currentFormData.language === 'it' ? 'selected' : ''}>Italian</option>
-                                    <option value="pt" ${currentFormData.language === 'pt' ? 'selected' : ''}>Portuguese</option>
-                                    <option value="zh" ${currentFormData.language === 'zh' ? 'selected' : ''}>Chinese</option>
-                                    <option value="ja" ${currentFormData.language === 'ja' ? 'selected' : ''}>Japanese</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="timezone" class="form-label">Timezone</label>
-                                <select id="timezone" name="timezone" class="form-select">
-                                    <option value="">Select a timezone</option>
-                                    <option value="America/Los_Angeles" ${currentFormData.timezone === 'America/Los_Angeles' ? 'selected' : ''}>Pacific Time (UTC-8)</option>
-                                    <option value="America/Denver" ${currentFormData.timezone === 'America/Denver' ? 'selected' : ''}>Mountain Time (UTC-7)</option>
-                                    <option value="America/Chicago" ${currentFormData.timezone === 'America/Chicago' ? 'selected' : ''}>Central Time (UTC-6)</option>
-                                    <option value="America/New_York" ${currentFormData.timezone === 'America/New_York' ? 'selected' : ''}>Eastern Time (UTC-5)</option>
-                                    <option value="UTC" ${currentFormData.timezone === 'UTC' ? 'selected' : ''}>UTC</option>
-                                    <option value="Europe/Berlin" ${currentFormData.timezone === 'Europe/Berlin' ? 'selected' : ''}>Central European Time (UTC+1)</option>
-                                    <option value="Europe/Helsinki" ${currentFormData.timezone === 'Europe/Helsinki' ? 'selected' : ''}>Eastern European Time (UTC+2)</option>
-                                    <option value="Asia/Shanghai" ${currentFormData.timezone === 'Asia/Shanghai' ? 'selected' : ''}>China Standard Time (UTC+8)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-check mb-3">
-                            <input 
-                                class="form-check-input" 
-                                type="checkbox" 
-                                id="darkMode" 
-                                name="darkMode" 
-                                ${currentFormData.darkMode ? 'checked' : ''}
+
+                        <div class="mb-3">
+                            <label for="profilePicture" class="form-label">Profile Picture</label>
+                            <input
+                                type="file"
+                                id="profilePicture"
+                                class="form-control"
+                                accept="image/*"
                             />
-                            <label class="form-check-label" for="darkMode">Enable Dark Mode</label>
                         </div>
                     </div>
-                    
-                    <!-- Additional Fields Section -->
-                    <div class="form-section">
-                        <h3>Additional Fields</h3>
-                        
-                        <div class="mb-3">
-                            <label for="alphanumericOnly" class="form-label">Alphanumeric Only</label>
-                            <input 
-                                type="text" 
-                                id="alphanumericOnly" 
-                                name="alphanumericOnly" 
-                                class="form-control" 
-                                value="${currentFormData.alphanumericOnly || ''}"
-                            />
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="disabledInput" class="form-label">Disabled Input</label>
-                            <input 
-                                type="text" 
-                                id="disabledInput" 
-                                class="form-control" 
-                                value="This field is disabled" 
-                                disabled 
-                            />
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="satisfactionLevel" class="form-label">Satisfaction Level</label>
-                            <input 
-                                type="range" 
-                                id="satisfactionLevel" 
-                                name="satisfactionLevel" 
-                                class="form-range" 
-                                min="0" 
-                                max="100" 
-                                step="1" 
-                                value="${currentFormData.satisfactionLevel || 50}"
-                            />
-                            <div class="d-flex justify-content-between">
-                                <small>Not Satisfied</small>
-                                <small>Very Satisfied</small>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="favoriteColor" class="form-label">Favorite Color</label>
-                            <input 
-                                type="color" 
-                                id="favoriteColor" 
-                                name="favoriteColor" 
-                                class="form-control form-control-color" 
-                                value="${currentFormData.favoriteColor || '#ff3e00'}"
-                            />
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="comments" class="form-label">Additional Comments</label>
-                            <textarea 
-                                id="comments" 
-                                name="comments" 
-                                class="form-control" 
-                                rows="3"
-                            >${currentFormData.comments || ''}</textarea>
-                        </div>
-                        
-                        <div class="form-check mb-3">
-                            <input 
-                                class="form-check-input ${currentErrors.termsAgreement ? 'error-field' : ''}" 
-                                type="checkbox" 
-                                id="termsAgreement" 
-                                name="termsAgreement" 
-                                ${currentFormData.termsAgreement ? 'checked' : ''}
-                                required 
-                            />
-                            <label class="form-check-label" for="termsAgreement">
-                                I agree to the <a href="#" onclick="showTerms(event)">Terms and Conditions</a> <span class="text-danger">*</span>
-                            </label>
-                            ${currentErrors.termsAgreement ? `<div class="error-text">${currentErrors.termsAgreement}</div>` : ''}
-                        </div>
-                    </div>
-                    
+
                     <div class="d-flex gap-2 mb-3">
                         <button type="submit" class="btn btn-svelte">Submit Form</button>
-                        <button type="button" class="btn btn-danger" onclick="openModal()">Open Modal</button>
                         <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
                     </div>
                 </form>

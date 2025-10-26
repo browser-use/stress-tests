@@ -379,56 +379,71 @@
 <body>
     <div class="wufoo-container">
         <div class="wufoo-header">
-            <h1>Wufoo-Style Form (Tricky for Autofill)</h1>
-            <p>This form includes unusual field naming, layout, and structure patterns that might challenge autofill systems.</p>
+            <h1>Simplified Wufoo-Style Form</h1>
+            <p>A minimal form with Wufoo styling.</p>
         </div>
-        
+
         <div class="wufoo-success" id="wufoo-success">
             <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
         </div>
-        
+
         <form class="wufoo-form" id="wufooForm">
-            <!-- Hidden honeypot field to confuse bots and possibly autofill -->
-            <input type="text" name="dont_fill_this" class="wufoo-honeypot">
-            
-            <!-- Basic Information Section -->
             <div class="wufoo-section">
-                <h2 class="wufoo-section-title">Basic Information</h2>
-                
-                <!-- Using unusual field names and structures -->
+                <h2 class="wufoo-section-title">Form Information</h2>
+
+                <!-- 1. Text field (email) -->
                 <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field1_first">First Name</label>
-                    <input type="text" id="field1_first" name="Field1" class="wufoo-input" required>
-                    <div class="wufoo-error" id="field1_first-error">Please enter your first name</div>
-                </div>
-                
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field2_last">Last Name</label>
-                    <input type="text" id="field2_last" name="Field2" class="wufoo-input" required>
-                    <div class="wufoo-error" id="field2_last-error">Please enter your last name</div>
-                </div>
-                
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field3_email">Email Address</label>
+                    <label class="wufoo-label" for="field1_email">Email Address</label>
                     <div class="input-wrapper">
-                        <input type="email" id="field3_email" name="Field3" class="wufoo-input" required>
+                        <input type="email" id="field1_email" name="Field1" class="wufoo-input" required>
                         <i class="input-icon">✉</i>
                     </div>
-                    <div class="wufoo-error" id="field3_email-error">Please enter a valid email address</div>
+                    <div class="wufoo-error" id="field1_email-error">Please enter a valid email address</div>
                 </div>
-                
-                <div class="wufoo-field">
-                    <label class="wufoo-label" for="field4_phone">Phone Number</label>
-                    <input type="tel" id="field4_phone" name="Field4" class="wufoo-input" placeholder="(xxx) xxx-xxxx">
-                    <div class="wufoo-error" id="field4_phone-error">Please enter a valid phone number</div>
+
+                <!-- 2. Select field (Country) -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field2_country">Country</label>
+                    <select id="field2_country" name="Field2" class="wufoo-select" required>
+                        <option value="">Select one</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                    </select>
+                    <div class="wufoo-error" id="field2_country-error">Please select your country</div>
                 </div>
-                
-                <!-- Confusing date of birth field with multiple inputs -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label">Date of Birth</label>
+
+                <!-- 3. Select field (State) -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label" for="field3_state">State/Province</label>
+                    <select id="field3_state" name="Field3" class="wufoo-select" required>
+                        <option value="">Select one</option>
+                        <optgroup label="United States">
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="CA">California</option>
+                            <option value="NY">New York</option>
+                            <option value="TX">Texas</option>
+                        </optgroup>
+                        <optgroup label="Canada">
+                            <option value="AB">Alberta</option>
+                            <option value="BC">British Columbia</option>
+                            <option value="ON">Ontario</option>
+                        </optgroup>
+                    </select>
+                    <div class="wufoo-error" id="field3_state-error">Please select your state/province</div>
+                </div>
+
+                <!-- 4. Date picker -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label">Event Date</label>
                     <div class="wufoo-date-parts">
                         <div class="wufoo-date-part">
-                            <select id="field5_month" name="Field5Month" class="wufoo-select">
+                            <select id="field4_month" name="Field4Month" class="wufoo-select" required>
                                 <option value="">Month</option>
                                 <option value="01">January</option>
                                 <option value="02">February</option>
@@ -445,289 +460,53 @@
                             </select>
                         </div>
                         <div class="wufoo-date-part">
-                            <select id="field5_day" name="Field5Day" class="wufoo-select">
+                            <select id="field4_day" name="Field4Day" class="wufoo-select" required>
                                 <option value="">Day</option>
                                 <!-- JS will populate days -->
                             </select>
                         </div>
                         <div class="wufoo-date-part">
-                            <select id="field5_year" name="Field5Year" class="wufoo-select">
+                            <select id="field4_year" name="Field4Year" class="wufoo-select" required>
                                 <option value="">Year</option>
                                 <!-- JS will populate years -->
                             </select>
                         </div>
                     </div>
+                    <div class="wufoo-error" id="field4-error">Please select a date</div>
                 </div>
-                
-                <!-- Gender field -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label">Gender</label>
+
+                <!-- 5. Radio button group -->
+                <div class="wufoo-field wufoo-required">
+                    <label class="wufoo-label">Preferred Contact Method</label>
                     <div class="wufoo-options wufoo-inline-options">
                         <label class="wufoo-option">
-                            <input type="radio" name="Field6" value="Male"> Male
+                            <input type="radio" name="Field5" value="Email" required> Email
                         </label>
                         <label class="wufoo-option">
-                            <input type="radio" name="Field6" value="Female"> Female
+                            <input type="radio" name="Field5" value="Phone"> Phone
                         </label>
                         <label class="wufoo-option">
-                            <input type="radio" name="Field6" value="Non-binary"> Non-binary
-                        </label>
-                        <label class="wufoo-option">
-                            <input type="radio" name="Field6" value="Prefer not to say"> Prefer not to say
+                            <input type="radio" name="Field5" value="Mail"> Mail
                         </label>
                     </div>
+                    <div class="wufoo-error" id="field5-error">Please select a contact method</div>
                 </div>
-            </div>
-            
-            <!-- Address Section - structured in a confusing way -->
-            <div class="wufoo-section">
-                <h2 class="wufoo-section-title">Shipping Address</h2>
-                
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field7_address">Street Address</label>
-                    <input type="text" id="field7_address" name="Field7" class="wufoo-input" required>
-                    <div class="wufoo-error" id="field7_address-error">Please enter your street address</div>
-                </div>
-                
+
+                <!-- 6. File upload field -->
                 <div class="wufoo-field">
-                    <label class="wufoo-label" for="field8_address2">Address Line 2</label>
-                    <input type="text" id="field8_address2" name="Field8" class="wufoo-input" placeholder="Apartment, suite, unit, etc.">
-                </div>
-                
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field9_city">City</label>
-                    <input type="text" id="field9_city" name="Field9" class="wufoo-input" required>
-                    <div class="wufoo-error" id="field9_city-error">Please enter your city</div>
-                </div>
-                
-                <!-- State/Province with unusual structure -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field10_state">State/Province</label>
-                    <select id="field10_state" name="Field10" class="wufoo-select" required>
-                        <option value="">Select one</option>
-                        <optgroup label="United States">
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <!-- More states would be listed here -->
-                            <option value="WY">Wyoming</option>
-                        </optgroup>
-                        <optgroup label="Canada">
-                            <option value="AB">Alberta</option>
-                            <option value="BC">British Columbia</option>
-                            <!-- More provinces would be listed here -->
-                            <option value="YT">Yukon</option>
-                        </optgroup>
-                    </select>
-                    <div class="wufoo-error" id="field10_state-error">Please select your state/province</div>
-                </div>
-                
-                <!-- Zip/Postal Code with prefix -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field11_zip">Zip/Postal Code</label>
-                    <input type="text" id="field11_zip" name="Field11" class="wufoo-input" required>
-                    <div class="wufoo-error" id="field11_zip-error">Please enter a valid zip/postal code</div>
-                </div>
-                
-                <!-- Country field -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field12_country">Country</label>
-                    <select id="field12_country" name="Field12" class="wufoo-select" required>
-                        <option value="">Select one</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="AU">Australia</option>
-                        <!-- More countries would be listed here -->
-                    </select>
-                    <div class="wufoo-error" id="field12_country-error">Please select your country</div>
-                </div>
-                
-                <!-- Checkbox that might affect form layout -->
-                <div class="wufoo-field">
-                    <div class="wufoo-options">
-                        <label class="wufoo-option">
-                            <input type="checkbox" id="field13_billing" name="Field13" value="SameAsBilling">
-                            Billing address is same as shipping
-                        </label>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Payment Information - designed to be challenging for autofill -->
-            <div class="wufoo-section" id="billingSection">
-                <h2 class="wufoo-section-title">Payment Information</h2>
-                
-                <!-- Credit Card Type -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label">Card Type</label>
-                    <div class="wufoo-options wufoo-inline-options">
-                        <label class="wufoo-option">
-                            <input type="radio" name="Field14" value="Visa" required> Visa
-                        </label>
-                        <label class="wufoo-option">
-                            <input type="radio" name="Field14" value="MasterCard"> MasterCard
-                        </label>
-                        <label class="wufoo-option">
-                            <input type="radio" name="Field14" value="Amex"> American Express
-                        </label>
-                        <label class="wufoo-option">
-                            <input type="radio" name="Field14" value="Discover"> Discover
-                        </label>
-                    </div>
-                    <div class="wufoo-error" id="field14-error">Please select a card type</div>
-                </div>
-                
-                <!-- Deliberately cryptic field names -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field15_ccname">Name on Card</label>
-                    <input type="text" id="field15_ccname" name="Field15" class="wufoo-input" required>
-                    <div class="wufoo-error" id="field15_ccname-error">Please enter the name on your card</div>
-                </div>
-                
-                <!-- Card Number with unusual formatting -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field16_ccnum">Card Number</label>
-                    <input type="text" id="field16_ccnum" name="Field16" class="wufoo-input" placeholder="XXXX XXXX XXXX XXXX" required>
-                    <div class="wufoo-error" id="field16_ccnum-error">Please enter a valid card number</div>
-                </div>
-                
-                <!-- Security Code with custom tooltip -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label" for="field17_cvc">
-                        Security Code
-                        <div class="wufoo-tooltip">
-                            <span class="wufoo-tooltip-icon">?</span>
-                            <span class="wufoo-tooltip-text">The 3 or 4 digit code on the back of your card</span>
-                        </div>
-                    </label>
-                    <input type="text" id="field17_cvc" name="Field17" class="wufoo-input" maxlength="4" required>
-                    <div class="wufoo-error" id="field17_cvc-error">Please enter your security code</div>
-                </div>
-                
-                <!-- Expiration Date with split fields -->
-                <div class="wufoo-field wufoo-required">
-                    <label class="wufoo-label">Expiration Date</label>
-                    <div class="wufoo-date-parts">
-                        <div class="wufoo-date-part">
-                            <select id="field18_month" name="Field18Month" class="wufoo-select" required>
-                                <option value="">Month</option>
-                                <option value="01">01</option>
-                                <option value="02">02</option>
-                                <option value="03">03</option>
-                                <option value="04">04</option>
-                                <option value="05">05</option>
-                                <option value="06">06</option>
-                                <option value="07">07</option>
-                                <option value="08">08</option>
-                                <option value="09">09</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                            </select>
-                        </div>
-                        <div class="wufoo-date-part">
-                            <select id="field18_year" name="Field18Year" class="wufoo-select" required>
-                                <option value="">Year</option>
-                                <!-- JS will populate years -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="wufoo-error" id="field18-error">Please select an expiration date</div>
-                </div>
-            </div>
-            
-            <!-- Additional Fields Section -->
-            <div class="wufoo-section">
-                <h2 class="wufoo-section-title">Additional Information</h2>
-                
-                <!-- Alphanumeric only field -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label" for="field19_alphanum">Alphanumeric Reference Code</label>
-                    <input type="text" id="field19_alphanum" name="Field19" class="wufoo-input">
-                    <div class="wufoo-error" id="field19_alphanum-error">Only letters and numbers are allowed</div>
-                </div>
-                
-                <!-- Deliberately disabled field -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label" for="field20_disabled">Disabled Field</label>
-                    <input type="text" id="field20_disabled" name="Field20" class="wufoo-input" value="This field is disabled" disabled>
-                </div>
-                
-                <!-- Unusual prefixed input -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label" for="field21_amount">Amount</label>
-                    <div class="wufoo-prefix-input">
-                        <span class="wufoo-prefix">$</span>
-                        <input type="text" id="field21_amount" name="Field21" class="wufoo-input">
-                    </div>
-                </div>
-                
-                <!-- Unusual suffixed input -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label" for="field22_percent">Percentage</label>
-                    <div class="wufoo-suffix-input">
-                        <input type="text" id="field22_percent" name="Field22" class="wufoo-input">
-                        <span class="wufoo-suffix">%</span>
-                    </div>
-                </div>
-                
-                <!-- Custom time picker -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label" for="field23_time">Preferred Contact Time</label>
-                    <input type="time" id="field23_time" name="Field23" class="wufoo-input">
-                </div>
-                
-                <!-- Comments textarea -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label" for="field24_comments">Additional Comments</label>
-                    <textarea id="field24_comments" name="Field24" class="wufoo-input" rows="4"></textarea>
-                </div>
-                
-                <!-- Custom file input -->
-                <div class="wufoo-field">
-                    <label class="wufoo-label">Upload File</label>
+                    <label class="wufoo-label">Upload Document</label>
                     <div class="wufoo-file-input">
-                        <input type="file" id="field25_file" name="Field25">
+                        <input type="file" id="field6_file" name="Field6">
                         <div class="wufoo-file-label" id="file-label">Click to select a file</div>
                     </div>
                 </div>
-                
-                <!-- Terms and conditions checkbox -->
-                <div class="wufoo-field wufoo-required">
-                    <div class="wufoo-options">
-                        <label class="wufoo-option">
-                            <input type="checkbox" id="field26_terms" name="Field26" required>
-                            I agree to the <a href="#" id="termsLink">Terms and Conditions</a>
-                        </label>
-                    </div>
-                    <div class="wufoo-error" id="field26_terms-error">You must agree to the terms and conditions</div>
-                </div>
             </div>
-            
+
+            <!-- 7. Submit button -->
             <div class="wufoo-buttons">
                 <button type="submit" class="wufoo-button">Submit Form</button>
-                <button type="button" class="wufoo-button danger" id="modalButton">Open Modal</button>
-                <button type="reset" class="wufoo-button secondary">Reset Form</button>
             </div>
         </form>
-    </div>
-    
-    <!-- Modal with red herring form -->
-    <div class="wufoo-modal" id="wufooModal">
-        <div class="wufoo-modal-content">
-            <div class="wufoo-modal-header">
-                <h3 class="wufoo-modal-title">Red Herring Modal</h3>
-                <button class="wufoo-modal-close" id="modalClose">&times;</button>
-            </div>
-            <div class="wufoo-modal-body">
-                <p>This is a red herring modal instead of submitting the form.</p>
-                <p>In a real application, this might contain additional options or information.</p>
-            </div>
-            <div class="wufoo-modal-footer">
-                <button class="wufoo-button secondary" id="modalCancel">Close</button>
-            </div>
-        </div>
     </div>
     
     <script>
