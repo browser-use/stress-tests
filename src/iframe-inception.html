@@ -1,96 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nested Iframes Form</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        
-        h1 {
-            color: #6200ea;
-            text-align: center;
-            margin-top: 0;
-        }
-        
-        p {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .alert-success {
-            background-color: #e8f5e9;
-            border: 1px solid #66bb6a;
-            color: #2e7d32;
-        }
-        
-        .iframe-container {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nested Iframes Form</title>
+	<style>
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			margin: 0;
+			padding: 20px;
+			background-color: #f6f8fa;
+		}
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
+			background: white;
+			padding: 30px;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		}
+		h1 {
+			text-align: center;
+			color: #24292e;
+		}
+		.iframe-container {
+			border: 3px solid #0366d6;
+			border-radius: 6px;
+			padding: 15px;
+			margin: 20px 0;
+			background: #f0f6ff;
+		}
+		iframe {
+			width: 100%;
+			border: 2px solid #d1d5da;
+			border-radius: 4px;
+			background: white;
+		}
+		.alert {
+			padding: 15px;
+			background: #d4edda;
+			border: 1px solid #c3e6cb;
+			color: #155724;
+			border-radius: 4px;
+			display: none;
+		}
+	</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Nested Iframes Form</h1>
-        <p>This form is nested inside multiple levels of iframes, which can confuse autofill systems about the form's context.</p>
-        
-        <div class="alert alert-success" id="success-message">
-            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
-        </div>
-        
-        <div class="iframe-container">
-            <iframe src="iframe-inception-level1.html" id="level1-iframe" title="Level 1 Iframe"></iframe>
-        </div>
-    </div>
-    
-    <script>
-        // Message event listener to show success message
-        window.addEventListener('message', function(event) {
-            if (event.data && event.data.type === 'formSubmit') {
-                const successMessage = document.getElementById('success-message');
-                if (successMessage) {
-                    successMessage.style.display = 'block';
-                    
-                    // Hide success message after 3 seconds
-                    setTimeout(function() {
-                        successMessage.style.display = 'none';
-                    }, 3000);
-                }
-            }
-        });
-    </script>
+	<div class="container">
+		<h1>Nested Iframes Form</h1>
+		<p style="text-align: center; color: #586069;">This form is nested 3 levels deep in iframes</p>
+
+		<div class="alert" id="successMessage">
+			<strong>Success!</strong> The secret is: dumbledore
+		</div>
+
+		<div class="iframe-container">
+			<h3 style="margin-top:0;">Level 1 iframe</h3>
+			<iframe srcdoc='<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body { font-family: Arial; padding: 15px; background: #f8f9fa; }
+		.iframe-container { border: 2px solid #28a745; padding: 10px; background: #e8f5e9; border-radius: 4px; }
+	</style>
+</head>
+<body>
+	<h4 style="margin-top:0;">Level 2 iframe</h4>
+	<div class="iframe-container">
+		<iframe srcdoc="<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body { font-family: Arial; padding: 10px; }
+		.form-label { font-weight: 600; margin-bottom: 5px; display: block; }
+		.form-control { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+		.btn-primary { background: #0366d6; color: white; border: none; padding: 10px 30px; border-radius: 4px; cursor: pointer; }
+	</style>
+</head>
+<body>
+	<h5>Level 3 iframe - Actual Form</h5>
+	<form id=innerForm onsubmit=event.preventDefault();parent.parent.parent.document.getElementById(\'successMessage\').style.display=\'block\';setTimeout(()=>parent.parent.parent.document.getElementById(\'successMessage\').style.display=\'none\',3000)>
+		<label class=form-label>Name</label><input type=text class=form-control required>
+		<label class=form-label>Email</label><input type=email class=form-control required>
+		<label class=form-label>Age</label><input type=number class=form-control>
+		<label class=form-label>Birthdate</label><input type=date class=form-control>
+		<label class=form-label>Resume</label><input type=file class=form-control>
+		<label class=form-label>Satisfaction: <span id=satVal>50</span></label><input type=range id=satisfaction min=0 max=100 value=50 oninput=document.getElementById(\'satVal\').textContent=this.value>
+		<label class=form-label>Country</label><select class=form-control><option value=''>Select</option><option>USA</option><option>Canada</option><option>UK</option></select>
+		<label class=form-label>Interests</label><select class=form-control multiple size=3><option>Tech</option><option>Sports</option><option>Music</option></select>
+		<label class=form-label>Gender</label>
+		<div><input type=radio name=gender value=male>Male <input type=radio name=gender value=female>Female <input type=radio name=gender value=other>Other</div>
+		<label class=form-label>Preferences</label>
+		<div><input type=checkbox value=newsletter>Newsletter <input type=checkbox value=notifications>Notifications <input type=checkbox value=updates>Updates</div>
+		<label class=form-label>Comments</label><textarea class=form-control rows=3></textarea>
+		<button type=submit class=btn-primary>Submit</button>
+	</form>
+</body>
+</html>" width="100%" height="600"></iframe>
+	</div>
+</body>
+</html>' width="100%" height="680"></iframe>
+		</div>
+	</div>
 </body>
 </html>
