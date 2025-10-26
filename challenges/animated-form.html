@@ -495,7 +495,7 @@
 
                     <div class="reveal active" style="transition-delay: 0.1s;">
                         <div class="floating-label-group">
-                            <input type="email" id="email" name="email" class="floating-label-input" placeholder=" " autocomplete="off">
+                            <input type="email" id="email" name="email" class="floating-label-input" placeholder=" " required autocomplete="off">
                             <label for="email" class="floating-label required">Email Address</label>
                             <div class="invalid-feedback">Please enter a valid email address</div>
                         </div>
@@ -503,8 +503,8 @@
 
                     <div class="reveal" style="transition-delay: 0.2s;">
                         <div class="floating-label-group">
-                            <select id="country" name="country" class="floating-label-input" autocomplete="off">
-                                <option value=""></option>
+                            <select id="country" name="country" class="floating-label-input" required autocomplete="off">
+                                <option value="">Select a country</option>
                                 <option value="US">United States</option>
                                 <option value="CA">Canada</option>
                                 <option value="UK">United Kingdom</option>
@@ -513,57 +513,42 @@
                                 <option value="FR">France</option>
                             </select>
                             <label for="country" class="floating-label required">Country</label>
-                            <div class="invalid-feedback">Country is required</div>
+                            <div class="invalid-feedback">Please select a country</div>
                         </div>
                     </div>
 
                     <div class="reveal" style="transition-delay: 0.3s;">
                         <div class="floating-label-group">
-                            <select id="department" name="department" class="floating-label-input" autocomplete="off">
-                                <option value=""></option>
-                                <option value="sales">Sales</option>
-                                <option value="engineering">Engineering</option>
-                                <option value="marketing">Marketing</option>
-                                <option value="hr">Human Resources</option>
-                                <option value="finance">Finance</option>
-                            </select>
-                            <label for="department" class="floating-label required">Department</label>
-                            <div class="invalid-feedback">Department is required</div>
-                        </div>
-                    </div>
-
-                    <div class="reveal" style="transition-delay: 0.4s;">
-                        <div class="floating-label-group">
-                            <input type="date" id="startDate" name="startDate" class="floating-label-input" placeholder=" " autocomplete="off">
+                            <input type="date" id="startDate" name="startDate" class="floating-label-input" placeholder=" " required autocomplete="off">
                             <label for="startDate" class="floating-label required">Start Date</label>
                             <div class="invalid-feedback">Start date is required</div>
                         </div>
                     </div>
 
-                    <div class="reveal" style="transition-delay: 0.5s;">
+                    <div class="reveal" style="transition-delay: 0.4s;">
                         <label class="form-label required">Employment Type</label>
                         <div class="styled-radio-group">
-                            <input type="radio" class="styled-radio" id="typeFullTime" name="employmentType" value="full-time">
+                            <input type="radio" class="styled-radio" id="typeFullTime" name="employmentType" value="full-time" required>
                             <label for="typeFullTime" class="styled-radio-label">Full Time</label>
 
-                            <input type="radio" class="styled-radio" id="typePartTime" name="employmentType" value="part-time">
+                            <input type="radio" class="styled-radio" id="typePartTime" name="employmentType" value="part-time" required>
                             <label for="typePartTime" class="styled-radio-label">Part Time</label>
 
-                            <input type="radio" class="styled-radio" id="typeContract" name="employmentType" value="contract">
+                            <input type="radio" class="styled-radio" id="typeContract" name="employmentType" value="contract" required>
                             <label for="typeContract" class="styled-radio-label">Contract</label>
                         </div>
                         <div class="invalid-feedback">Employment type is required</div>
                     </div>
 
-                    <div class="reveal" style="transition-delay: 0.6s;">
-                        <label class="form-label">Upload Resume (PDF)</label>
-                        <input type="file" id="resume" name="resume" class="form-control" accept=".pdf" autocomplete="off">
+                    <div class="reveal" style="transition-delay: 0.5s;">
+                        <label class="form-label required">Upload Resume (PDF)</label>
+                        <input type="file" id="resume" name="resume" class="form-control" accept=".pdf" required autocomplete="off">
                         <div class="invalid-feedback">Resume is required</div>
                     </div>
 
                     <div class="spinner" id="submitSpinner"></div>
 
-                    <div class="navigation-buttons reveal" style="transition-delay: 0.7s;">
+                    <div class="navigation-buttons reveal" style="transition-delay: 0.6s;">
                         <div></div>
                         <button type="submit" class="btn-nav" id="submitButton">Submit Form</button>
                     </div>
@@ -672,18 +657,18 @@
             function updateProgress() {
                 const email = document.getElementById('email').value;
                 const country = document.getElementById('country').value;
-                const department = document.getElementById('department').value;
                 const startDate = document.getElementById('startDate').value;
                 const employmentType = document.querySelector('input[name="employmentType"]:checked');
+                const resume = document.getElementById('resume').files.length;
 
                 let filledFields = 0;
                 const totalFields = 5;
 
                 if (email && email.includes('@')) filledFields++;
-                if (country) filledFields++;
-                if (department) filledFields++;
+                if (country && country !== '') filledFields++;
                 if (startDate) filledFields++;
                 if (employmentType) filledFields++;
+                if (resume > 0) filledFields++;
 
                 const progress = (filledFields / totalFields) * 100;
                 progressBar.style.width = `${progress}%`;
@@ -695,38 +680,62 @@
                 let isValid = true;
 
                 // Helper function to validate field
-                function validateField(id, validationFunction) {
+                function validateField(id, validationFunction, errorMessage) {
                     const field = document.getElementById(id);
-                    if (!validationFunction(field.value)) {
+                    const value = field.type === 'file' ? field.files.length : field.value;
+
+                    if (!validationFunction(value)) {
                         field.classList.add('is-invalid');
-                        const feedbackElement = field.nextElementSibling?.nextElementSibling;
+                        const feedbackElement = field.nextElementSibling?.nextElementSibling ||
+                                              (field.type === 'file' ? field.nextElementSibling : null);
                         if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
                             feedbackElement.style.display = 'block';
+                            if (errorMessage) {
+                                feedbackElement.textContent = errorMessage;
+                            }
                         }
                         isValid = false;
+                        return false;
                     }
+                    return true;
                 }
 
                 // Validate email
                 validateField('email', value => {
                     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    return re.test(value);
-                });
+                    return value && re.test(value);
+                }, 'Please enter a valid email address');
 
-                // Validate country
-                validateField('country', value => value.trim() !== '');
-
-                // Validate department
-                validateField('department', value => value.trim() !== '');
+                // Validate country - ensure a value is actually selected
+                const countryField = document.getElementById('country');
+                if (!countryField.value || countryField.value.trim() === '') {
+                    countryField.classList.add('is-invalid');
+                    const feedbackElement = countryField.nextElementSibling?.nextElementSibling;
+                    if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                        feedbackElement.style.display = 'block';
+                    }
+                    isValid = false;
+                }
 
                 // Validate start date
-                validateField('startDate', value => value.trim() !== '');
+                validateField('startDate', value => value && value.trim() !== '', 'Start date is required');
 
                 // Validate employment type
                 const employmentType = document.querySelector('input[name="employmentType"]:checked');
                 if (!employmentType) {
                     const radioGroup = document.querySelector('.styled-radio-group');
                     const feedbackElement = radioGroup.nextElementSibling;
+                    if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                        feedbackElement.style.display = 'block';
+                    }
+                    isValid = false;
+                }
+
+                // Validate resume file upload
+                const resumeField = document.getElementById('resume');
+                if (!resumeField.files || resumeField.files.length === 0) {
+                    resumeField.classList.add('is-invalid');
+                    const feedbackElement = resumeField.nextElementSibling;
                     if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
                         feedbackElement.style.display = 'block';
                     }

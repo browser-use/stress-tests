@@ -225,9 +225,9 @@
         const formData = writable({
             email: '',
             theme: '',
-            language: '',
             birthDate: '',
-            contactPreference: ''
+            contactPreference: '',
+            profilePicture: ''
         });
 
         const errors = writable({});
@@ -272,6 +272,26 @@
                 newErrors.email = 'Please enter a valid email address';
             }
 
+            // Theme validation (dropdown)
+            if (!$formData.theme) {
+                newErrors.theme = 'Please select a theme';
+            }
+
+            // Birth date validation
+            if (!$formData.birthDate) {
+                newErrors.birthDate = 'Date of birth is required';
+            }
+
+            // Contact preference validation (radio)
+            if (!$formData.contactPreference) {
+                newErrors.contactPreference = 'Please select a contact preference';
+            }
+
+            // Profile picture validation
+            if (!$formData.profilePicture) {
+                newErrors.profilePicture = 'Profile picture is required';
+            }
+
             return newErrors;
         });
 
@@ -299,8 +319,13 @@
         
         // Handle input change with Svelte reactivity
         function handleInputChange(event) {
-            const { name, value } = event.target;
-            updateFormData(name, value);
+            const { name, value, type, files } = event.target;
+            if (type === 'file') {
+                // For file inputs, store the file name
+                updateFormData(name, files && files.length > 0 ? files[0].name : '');
+            } else {
+                updateFormData(name, value);
+            }
         }
 
         // Efficient update functions (no full re-render)
@@ -376,10 +401,11 @@
             formData.set({
                 email: '',
                 theme: '',
-                language: '',
                 birthDate: '',
-                contactPreference: ''
+                contactPreference: '',
+                profilePicture: ''
             });
+            showSuccess.set(false);
         }
 
         // Render function with Svelte-style reactivity
@@ -413,82 +439,81 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="theme" class="form-label">Preferred Theme</label>
-                            <select id="theme" name="theme" class="form-select">
+                            <label for="theme" class="form-label label-required">Preferred Theme</label>
+                            <select id="theme" name="theme" class="form-select ${currentErrors.theme ? 'error-field' : ''}" required>
                                 <option value="">Select a theme</option>
                                 <option value="light" ${currentFormData.theme === 'light' ? 'selected' : ''}>Light</option>
                                 <option value="dark" ${currentFormData.theme === 'dark' ? 'selected' : ''}>Dark</option>
                                 <option value="system" ${currentFormData.theme === 'system' ? 'selected' : ''}>System Default</option>
                             </select>
+                            ${currentErrors.theme ? `<div class="error-text">${currentErrors.theme}</div>` : ''}
                         </div>
 
                         <div class="mb-3">
-                            <label for="language" class="form-label">Preferred Language</label>
-                            <select id="language" name="language" class="form-select">
-                                <option value="">Select a language</option>
-                                <option value="en" ${currentFormData.language === 'en' ? 'selected' : ''}>English</option>
-                                <option value="es" ${currentFormData.language === 'es' ? 'selected' : ''}>Spanish</option>
-                                <option value="fr" ${currentFormData.language === 'fr' ? 'selected' : ''}>French</option>
-                                <option value="de" ${currentFormData.language === 'de' ? 'selected' : ''}>German</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="birthDate" class="form-label">Date of Birth</label>
+                            <label for="birthDate" class="form-label label-required">Date of Birth</label>
                             <input
                                 type="date"
                                 id="birthDate"
                                 name="birthDate"
-                                class="form-control"
+                                class="form-control ${currentErrors.birthDate ? 'error-field' : ''}"
                                 value="${currentFormData.birthDate || ''}"
+                                required
                             />
+                            ${currentErrors.birthDate ? `<div class="error-text">${currentErrors.birthDate}</div>` : ''}
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Contact Preference</label>
+                            <label class="form-label label-required">Contact Preference</label>
                             <div class="form-check">
                                 <input
-                                    class="form-check-input"
+                                    class="form-check-input ${currentErrors.contactPreference ? 'error-field' : ''}"
                                     type="radio"
                                     id="contactEmail"
                                     name="contactPreference"
                                     value="email"
                                     ${currentFormData.contactPreference === 'email' ? 'checked' : ''}
+                                    required
                                 />
                                 <label class="form-check-label" for="contactEmail">Email</label>
                             </div>
                             <div class="form-check">
                                 <input
-                                    class="form-check-input"
+                                    class="form-check-input ${currentErrors.contactPreference ? 'error-field' : ''}"
                                     type="radio"
                                     id="contactPhone"
                                     name="contactPreference"
                                     value="phone"
                                     ${currentFormData.contactPreference === 'phone' ? 'checked' : ''}
+                                    required
                                 />
                                 <label class="form-check-label" for="contactPhone">Phone</label>
                             </div>
                             <div class="form-check">
                                 <input
-                                    class="form-check-input"
+                                    class="form-check-input ${currentErrors.contactPreference ? 'error-field' : ''}"
                                     type="radio"
                                     id="contactNone"
                                     name="contactPreference"
                                     value="none"
                                     ${currentFormData.contactPreference === 'none' ? 'checked' : ''}
+                                    required
                                 />
                                 <label class="form-check-label" for="contactNone">Do Not Contact</label>
                             </div>
+                            ${currentErrors.contactPreference ? `<div class="error-text">${currentErrors.contactPreference}</div>` : ''}
                         </div>
 
                         <div class="mb-3">
-                            <label for="profilePicture" class="form-label">Profile Picture</label>
+                            <label for="profilePicture" class="form-label label-required">Profile Picture</label>
                             <input
                                 type="file"
                                 id="profilePicture"
-                                class="form-control"
+                                name="profilePicture"
+                                class="form-control ${currentErrors.profilePicture ? 'error-field' : ''}"
                                 accept="image/*"
+                                required
                             />
+                            ${currentErrors.profilePicture ? `<div class="error-text">${currentErrors.profilePicture}</div>` : ''}
                         </div>
                     </div>
 

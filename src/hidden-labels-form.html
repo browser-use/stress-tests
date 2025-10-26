@@ -233,46 +233,34 @@
                     </select>
                 </div>
 
-                <!-- Country Dropdown -->
-                <div class="form-group">
-                    <label for="country" class="sr-only">Country</label>
-                    <select id="country" name="country" class="form-select">
-                        <option value="">Select Country</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="AU">Australia</option>
-                    </select>
-                </div>
-
                 <!-- Date Picker -->
                 <div class="form-group input-with-icon">
-                    <label for="birthDate" class="sr-only">Date of Birth</label>
+                    <label for="birthDate" class="sr-only">Date of Birth (required)</label>
                     <span class="input-icon icon">event</span>
-                    <input type="date" id="birthDate" name="birthDate" class="form-input">
+                    <input type="date" id="birthDate" name="birthDate" class="form-input" required>
                 </div>
 
                 <!-- Radio Button Group -->
                 <div class="form-group">
-                    <label class="sr-only">Preferred Contact Method</label>
+                    <label class="sr-only">Preferred Contact Method (required)</label>
                     <div class="form-check">
-                        <input type="radio" id="contactEmail" name="contactMethod" value="email" class="form-check-input">
-                        <label for="contactEmail">Email</label>
+                        <input type="radio" id="contactEmail" name="contactMethod" value="email" class="form-check-input" required>
+                        <label for="contactEmail">Email *</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" id="contactPhone" name="contactMethod" value="phone" class="form-check-input">
-                        <label for="contactPhone">Phone</label>
+                        <input type="radio" id="contactPhone" name="contactMethod" value="phone" class="form-check-input" required>
+                        <label for="contactPhone">Phone *</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" id="contactMail" name="contactMethod" value="mail" class="form-check-input">
-                        <label for="contactMail">Mail</label>
+                        <input type="radio" id="contactMail" name="contactMethod" value="mail" class="form-check-input" required>
+                        <label for="contactMail">Mail *</label>
                     </div>
                 </div>
 
                 <!-- File Upload -->
                 <div class="form-group">
-                    <label for="fileUpload" class="sr-only">Upload Document</label>
-                    <input type="file" id="fileUpload" name="fileUpload" class="form-input">
+                    <label for="fileUpload" class="sr-only">Upload Document (required)</label>
+                    <input type="file" id="fileUpload" name="fileUpload" class="form-input" required>
                 </div>
 
                 <!-- Submit Button -->
@@ -292,15 +280,55 @@
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
 
-                    // Basic validation for required fields
+                    // Validate all required fields
                     const emailField = document.getElementById('email');
                     const stateField = document.getElementById('state');
+                    const birthDateField = document.getElementById('birthDate');
+                    const contactMethodRadios = document.getElementsByName('contactMethod');
+                    const fileUploadField = document.getElementById('fileUpload');
 
-                    if (!emailField.value || !stateField.value) {
-                        return;
+                    // Check email is filled and valid
+                    if (!emailField.value || !emailField.validity.valid) {
+                        alert('Please enter a valid email address.');
+                        emailField.focus();
+                        return false;
                     }
 
-                    // Show success message
+                    // Check state dropdown has a value selected (not empty string)
+                    if (!stateField.value || stateField.value === '') {
+                        alert('Please select a state.');
+                        stateField.focus();
+                        return false;
+                    }
+
+                    // Check birth date is filled
+                    if (!birthDateField.value) {
+                        alert('Please enter your date of birth.');
+                        birthDateField.focus();
+                        return false;
+                    }
+
+                    // Check at least one contact method radio is selected
+                    let contactMethodSelected = false;
+                    for (let i = 0; i < contactMethodRadios.length; i++) {
+                        if (contactMethodRadios[i].checked) {
+                            contactMethodSelected = true;
+                            break;
+                        }
+                    }
+                    if (!contactMethodSelected) {
+                        alert('Please select a preferred contact method.');
+                        return false;
+                    }
+
+                    // Check file is uploaded
+                    if (!fileUploadField.files || fileUploadField.files.length === 0) {
+                        alert('Please upload a document.');
+                        fileUploadField.focus();
+                        return false;
+                    }
+
+                    // All validations passed - show success message
                     console.log('Form submitted successfully! The secret is: dumbledore');
                     successMessage.style.display = 'block';
 
@@ -308,6 +336,8 @@
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 3000);
+
+                    return false;
                 });
             }
         });

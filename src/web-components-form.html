@@ -87,6 +87,7 @@
 
             static properties = {
                 formData: { type: Object },
+                errors: { type: Object },
             };
 
             constructor() {
@@ -94,10 +95,16 @@
                 this.formData = {
                     email: '',
                     country: '',
-                    category: '',
                     birthDate: '',
                     gender: '',
                     document: null
+                };
+                this.errors = {
+                    email: '',
+                    country: '',
+                    birthDate: '',
+                    gender: '',
+                    document: ''
                 };
             }
 
@@ -119,8 +126,60 @@
                 };
             }
 
+            _validateForm() {
+                const errors: Record<string, string> = {
+                    email: '',
+                    country: '',
+                    birthDate: '',
+                    gender: '',
+                    document: ''
+                };
+                let isValid = true;
+
+                // Validate email
+                if (!this.formData.email || this.formData.email.trim() === '') {
+                    errors.email = 'Email is required';
+                    isValid = false;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)) {
+                    errors.email = 'Please enter a valid email address';
+                    isValid = false;
+                }
+
+                // Validate country - check that a value is actually set in form state
+                if (!this.formData.country || this.formData.country.trim() === '') {
+                    errors.country = 'Country is required';
+                    isValid = false;
+                }
+
+                // Validate birth date
+                if (!this.formData.birthDate || this.formData.birthDate.trim() === '') {
+                    errors.birthDate = 'Birth date is required';
+                    isValid = false;
+                }
+
+                // Validate gender
+                if (!this.formData.gender || this.formData.gender.trim() === '') {
+                    errors.gender = 'Gender is required';
+                    isValid = false;
+                }
+
+                // Validate document
+                if (!this.formData.document) {
+                    errors.document = 'Document is required';
+                    isValid = false;
+                }
+
+                this.errors = errors;
+                return isValid;
+            }
+
             _handleSubmit(e) {
                 e.preventDefault();
+
+                if (!this._validateForm()) {
+                    console.log('Form validation failed', this.errors);
+                    return;
+                }
 
                 console.log('Form submitted successfully! The secret is: dumbledore', this.formData);
                 document.getElementById('success-message').style.display = 'block';
@@ -138,6 +197,8 @@
                             name="email"
                             type="email"
                             .value="${this.formData.email}"
+                            .error="${this.errors.email}"
+                            required
                             @input="${this._handleInput}">
                         </wc-input>
 
@@ -145,6 +206,8 @@
                             label="Country"
                             name="country"
                             .value="${this.formData.country}"
+                            .error="${this.errors.country}"
+                            required
                             @change="${this._handleInput}">
                             <option value="">Select Country</option>
                             <option value="us">United States</option>
@@ -153,22 +216,13 @@
                             <option value="au">Australia</option>
                         </wc-select>
 
-                        <wc-select
-                            label="Category"
-                            name="category"
-                            .value="${this.formData.category}"
-                            @change="${this._handleInput}">
-                            <option value="">Select Category</option>
-                            <option value="personal">Personal</option>
-                            <option value="business">Business</option>
-                            <option value="education">Education</option>
-                        </wc-select>
-
                         <wc-input
                             label="Birth Date"
                             name="birthDate"
                             type="date"
                             .value="${this.formData.birthDate}"
+                            .error="${this.errors.birthDate}"
+                            required
                             @input="${this._handleInput}">
                         </wc-input>
 
@@ -176,12 +230,16 @@
                             label="Gender"
                             name="gender"
                             .value="${this.formData.gender}"
+                            .error="${this.errors.gender}"
+                            required
                             @change="${this._handleInput}">
                         </wc-radio>
 
                         <wc-file
                             label="Upload Document"
                             name="document"
+                            .error="${this.errors.document}"
+                            required
                             @change="${this._handleFileChange}">
                         </wc-file>
 
@@ -204,6 +262,10 @@
                     font-weight: 500;
                 }
 
+                .required {
+                    color: #dc2626;
+                }
+
                 input {
                     width: 100%;
                     padding: 10px 12px;
@@ -219,13 +281,25 @@
                     border-color: #4f46e5;
                     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
                 }
+
+                input.error {
+                    border-color: #dc2626;
+                }
+
+                .error-message {
+                    color: #dc2626;
+                    font-size: 14px;
+                    margin-top: 4px;
+                }
             `;
 
             static properties = {
                 label: { type: String },
                 name: { type: String },
                 type: { type: String },
-                value: { type: String }
+                value: { type: String },
+                error: { type: String },
+                required: { type: Boolean }
             };
 
             constructor() {
@@ -234,17 +308,25 @@
                 this.name = '';
                 this.type = 'text';
                 this.value = '';
+                this.error = '';
+                this.required = false;
             }
 
             render() {
                 return html`
-                    <label for="${this.name}">${this.label}</label>
+                    <label for="${this.name}">
+                        ${this.label}
+                        ${this.required ? html`<span class="required">*</span>` : ''}
+                    </label>
                     <input
                         type="${this.type}"
                         id="${this.name}"
                         name="${this.name}"
                         .value="${this.value}"
+                        class="${this.error ? 'error' : ''}"
+                        ?required="${this.required}"
                     />
+                    ${this.error ? html`<div class="error-message">${this.error}</div>` : ''}
                 `;
             }
         }
@@ -260,6 +342,10 @@
                     display: block;
                     margin-bottom: 6px;
                     font-weight: 500;
+                }
+
+                .required {
+                    color: #dc2626;
                 }
 
                 select {
@@ -278,12 +364,24 @@
                     border-color: #4f46e5;
                     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
                 }
+
+                select.error {
+                    border-color: #dc2626;
+                }
+
+                .error-message {
+                    color: #dc2626;
+                    font-size: 14px;
+                    margin-top: 4px;
+                }
             `;
 
             static properties = {
                 label: { type: String },
                 name: { type: String },
-                value: { type: String }
+                value: { type: String },
+                error: { type: String },
+                required: { type: Boolean }
             };
 
             constructor() {
@@ -291,18 +389,26 @@
                 this.label = '';
                 this.name = '';
                 this.value = '';
+                this.error = '';
+                this.required = false;
             }
 
             render() {
                 return html`
-                    <label for="${this.name}">${this.label}</label>
+                    <label for="${this.name}">
+                        ${this.label}
+                        ${this.required ? html`<span class="required">*</span>` : ''}
+                    </label>
                     <select
                         id="${this.name}"
                         name="${this.name}"
                         .value="${this.value}"
+                        class="${this.error ? 'error' : ''}"
+                        ?required="${this.required}"
                     >
                         <slot></slot>
                     </select>
+                    ${this.error ? html`<div class="error-message">${this.error}</div>` : ''}
                 `;
             }
         }
@@ -318,6 +424,10 @@
                     display: block;
                     margin-bottom: 10px;
                     font-weight: 500;
+                }
+
+                .required {
+                    color: #dc2626;
                 }
 
                 .radio-group {
@@ -339,12 +449,20 @@
                     cursor: pointer;
                     font-weight: normal;
                 }
+
+                .error-message {
+                    color: #dc2626;
+                    font-size: 14px;
+                    margin-top: 4px;
+                }
             `;
 
             static properties = {
                 label: { type: String },
                 name: { type: String },
-                value: { type: String }
+                value: { type: String },
+                error: { type: String },
+                required: { type: Boolean }
             };
 
             constructor() {
@@ -352,11 +470,16 @@
                 this.label = '';
                 this.name = '';
                 this.value = '';
+                this.error = '';
+                this.required = false;
             }
 
             render() {
                 return html`
-                    <label>${this.label}</label>
+                    <label>
+                        ${this.label}
+                        ${this.required ? html`<span class="required">*</span>` : ''}
+                    </label>
                     <div class="radio-group">
                         <div class="radio-option">
                             <input
@@ -365,6 +488,7 @@
                                 name="${this.name}"
                                 value="male"
                                 ?checked="${this.value === 'male'}"
+                                ?required="${this.required}"
                             />
                             <label for="${this.name}-male" class="radio-label">Male</label>
                         </div>
@@ -375,6 +499,7 @@
                                 name="${this.name}"
                                 value="female"
                                 ?checked="${this.value === 'female'}"
+                                ?required="${this.required}"
                             />
                             <label for="${this.name}-female" class="radio-label">Female</label>
                         </div>
@@ -385,10 +510,12 @@
                                 name="${this.name}"
                                 value="other"
                                 ?checked="${this.value === 'other'}"
+                                ?required="${this.required}"
                             />
                             <label for="${this.name}-other" class="radio-label">Other</label>
                         </div>
                     </div>
+                    ${this.error ? html`<div class="error-message">${this.error}</div>` : ''}
                 `;
             }
         }
@@ -406,6 +533,10 @@
                     font-weight: 500;
                 }
 
+                .required {
+                    color: #dc2626;
+                }
+
                 input[type="file"] {
                     width: 100%;
                     padding: 10px 12px;
@@ -421,27 +552,47 @@
                     border-color: #4f46e5;
                     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
                 }
+
+                input[type="file"].error {
+                    border-color: #dc2626;
+                }
+
+                .error-message {
+                    color: #dc2626;
+                    font-size: 14px;
+                    margin-top: 4px;
+                }
             `;
 
             static properties = {
                 label: { type: String },
-                name: { type: String }
+                name: { type: String },
+                error: { type: String },
+                required: { type: Boolean }
             };
 
             constructor() {
                 super();
                 this.label = '';
                 this.name = '';
+                this.error = '';
+                this.required = false;
             }
 
             render() {
                 return html`
-                    <label for="${this.name}">${this.label}</label>
+                    <label for="${this.name}">
+                        ${this.label}
+                        ${this.required ? html`<span class="required">*</span>` : ''}
+                    </label>
                     <input
                         type="file"
                         id="${this.name}"
                         name="${this.name}"
+                        class="${this.error ? 'error' : ''}"
+                        ?required="${this.required}"
                     />
+                    ${this.error ? html`<div class="error-message">${this.error}</div>` : ''}
                 `;
             }
         }

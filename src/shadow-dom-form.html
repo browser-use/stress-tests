@@ -176,18 +176,27 @@
                 box-sizing: border-box;
             }
             
-            .form-input:focus, 
+            .form-input:focus,
             .form-select:focus,
             .form-textarea:focus {
                 border-color: var(--primary-color);
                 outline: none;
             }
-            
+
+            .form-input.invalid,
+            .form-select.invalid {
+                border-color: var(--error-color);
+            }
+
             .form-error {
                 color: var(--error-color);
                 font-size: 14px;
                 margin-top: 5px;
                 display: none;
+            }
+
+            .form-error.visible {
+                display: block;
             }
             
             .form-help {
@@ -246,13 +255,130 @@
             handleSubmit(event) {
                 event.preventDefault();
 
-                console.log('Form submitted successfully!');
+                // Validate all fields
+                const formData = this.collectFormData();
+                const validationErrors = this.validateForm(formData);
+
+                if (Object.keys(validationErrors).length > 0) {
+                    this.displayValidationErrors(validationErrors);
+                    return;
+                }
+
+                // Clear any existing validation errors
+                this.clearValidationErrors();
+
+                console.log('Form submitted successfully!', formData);
                 document.getElementById('success-message').style.display = 'block';
 
                 // Hide success message after 3 seconds
                 setTimeout(function() {
                     document.getElementById('success-message').style.display = 'none';
                 }, 3000);
+            }
+
+            collectFormData() {
+                const formData = {};
+                const fields = this.querySelectorAll('custom-form-field');
+
+                fields.forEach(field => {
+                    const input = field.querySelector('[slot="input"]');
+                    if (input) {
+                        if (input.type === 'radio') {
+                            const checked = field.querySelector('[slot="input"]:checked');
+                            if (checked) {
+                                formData[input.name] = checked.value;
+                            }
+                        } else if (input.type === 'file') {
+                            formData[input.name] = input.files.length > 0 ? input.files[0].name : '';
+                        } else {
+                            formData[input.name] = input.value;
+                        }
+                    }
+                });
+
+                return formData;
+            }
+
+            validateForm(formData) {
+                const errors = {};
+
+                // Email validation
+                if (!formData.email || formData.email.trim() === '') {
+                    errors.email = 'Email is required';
+                } else if (!this.isValidEmail(formData.email)) {
+                    errors.email = 'Please enter a valid email address';
+                }
+
+                // Country validation - check that a non-empty value is selected
+                if (!formData.country || formData.country === '') {
+                    errors.country = 'Please select a country';
+                }
+
+                // Date validation
+                if (!formData.date || formData.date === '') {
+                    errors.date = 'Date is required';
+                }
+
+                // Priority validation
+                if (!formData.priority || formData.priority === '') {
+                    errors.priority = 'Please select a priority';
+                }
+
+                // File validation
+                if (!formData.file || formData.file === '') {
+                    errors.file = 'Please upload a file';
+                }
+
+                return errors;
+            }
+
+            isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            displayValidationErrors(errors) {
+                const fields = this.querySelectorAll('custom-form-field');
+
+                fields.forEach(field => {
+                    const input = field.querySelector('[slot="input"]');
+                    if (input) {
+                        const fieldName = input.name;
+                        const shadowRoot = field.shadowRoot;
+                        const errorSlot = shadowRoot.querySelector('.form-error');
+                        const inputElement = shadowRoot.querySelector('.field-input-container').querySelector('slot[name="input"]');
+
+                        if (errors[fieldName]) {
+                            // Show error
+                            errorSlot.textContent = errors[fieldName];
+                            errorSlot.classList.add('visible');
+
+                            // Add invalid class to input
+                            input.classList.add('invalid');
+                        } else {
+                            // Clear error
+                            errorSlot.textContent = '';
+                            errorSlot.classList.remove('visible');
+                            input.classList.remove('invalid');
+                        }
+                    }
+                });
+            }
+
+            clearValidationErrors() {
+                const fields = this.querySelectorAll('custom-form-field');
+
+                fields.forEach(field => {
+                    const input = field.querySelector('[slot="input"]');
+                    if (input) {
+                        const shadowRoot = field.shadowRoot;
+                        const errorSlot = shadowRoot.querySelector('.form-error');
+
+                        errorSlot.textContent = '';
+                        errorSlot.classList.remove('visible');
+                        input.classList.remove('invalid');
+                    }
+                });
             }
         }
         
@@ -315,6 +441,7 @@
 
             // Email Field
             const emailField = document.createElement('custom-form-field');
+            emailField.setAttribute('required', '');
 
             const emailLabel = document.createElement('span');
             emailLabel.slot = 'label';
@@ -332,6 +459,7 @@
 
             // Country Select
             const countryField = document.createElement('custom-form-field');
+            countryField.setAttribute('required', '');
 
             const countryLabel = document.createElement('span');
             countryLabel.slot = 'label';
@@ -361,38 +489,9 @@
             countryField.appendChild(countryLabel);
             countryField.appendChild(countrySelect);
 
-            // Category Select
-            const categoryField = document.createElement('custom-form-field');
-
-            const categoryLabel = document.createElement('span');
-            categoryLabel.slot = 'label';
-            categoryLabel.textContent = 'Category';
-
-            const categorySelect = document.createElement('select');
-            categorySelect.name = 'category';
-            categorySelect.id = 'category';
-            categorySelect.className = 'form-select';
-            categorySelect.slot = 'input';
-
-            const categoryOptions = [
-                { value: '', text: 'Select Category' },
-                { value: 'work', text: 'Work' },
-                { value: 'personal', text: 'Personal' },
-                { value: 'other', text: 'Other' }
-            ];
-
-            categoryOptions.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.text;
-                categorySelect.appendChild(optionElement);
-            });
-
-            categoryField.appendChild(categoryLabel);
-            categoryField.appendChild(categorySelect);
-
             // Date Field
             const dateField = document.createElement('custom-form-field');
+            dateField.setAttribute('required', '');
 
             const dateLabel = document.createElement('span');
             dateLabel.slot = 'label';
@@ -410,6 +509,7 @@
 
             // Radio Buttons
             const radioField = document.createElement('custom-form-field');
+            radioField.setAttribute('required', '');
 
             const radioLabel = document.createElement('span');
             radioLabel.slot = 'label';
@@ -450,6 +550,7 @@
 
             // File Upload
             const fileField = document.createElement('custom-form-field');
+            fileField.setAttribute('required', '');
 
             const fileLabel = document.createElement('span');
             fileLabel.slot = 'label';
@@ -468,7 +569,6 @@
             // Add fields to section
             formSection.appendChild(emailField);
             formSection.appendChild(countryField);
-            formSection.appendChild(categoryField);
             formSection.appendChild(dateField);
             formSection.appendChild(radioField);
             formSection.appendChild(fileField);

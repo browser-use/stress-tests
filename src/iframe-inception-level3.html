@@ -121,16 +121,6 @@
             </div>
 
             <div class="form-group">
-                <label for="state" class="required">State</label>
-                <select id="state" name="state" required>
-                    <option value="">Select State</option>
-                    <option value="CA">California</option>
-                    <option value="NY">New York</option>
-                    <option value="TX">Texas</option>
-                </select>
-            </div>
-
-            <div class="form-group">
                 <label for="birthDate" class="required">Date of Birth</label>
                 <input type="date" id="birthDate" name="birthDate" required>
             </div>
@@ -173,7 +163,60 @@
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
 
-                    // Display local success message
+                    // Get all form fields
+                    const email = document.getElementById('email');
+                    const country = document.getElementById('country');
+                    const birthDate = document.getElementById('birthDate');
+                    const gender = document.querySelector('input[name="gender"]:checked');
+                    const file = document.getElementById('file');
+
+                    // Validate all fields
+                    let isValid = true;
+                    let errorMessage = '';
+
+                    // Check email
+                    if (!email.value || !email.value.trim()) {
+                        isValid = false;
+                        errorMessage = 'Please enter your email address.';
+                        email.focus();
+                    }
+                    // Validate email format
+                    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid email address.';
+                        email.focus();
+                    }
+                    // Check country dropdown - must have a value selected
+                    else if (!country.value || country.value === '') {
+                        isValid = false;
+                        errorMessage = 'Please select a country.';
+                        country.focus();
+                    }
+                    // Check birth date
+                    else if (!birthDate.value || !birthDate.value.trim()) {
+                        isValid = false;
+                        errorMessage = 'Please enter your date of birth.';
+                        birthDate.focus();
+                    }
+                    // Check gender radio buttons
+                    else if (!gender) {
+                        isValid = false;
+                        errorMessage = 'Please select your gender.';
+                    }
+                    // Check file upload
+                    else if (!file.files || file.files.length === 0) {
+                        isValid = false;
+                        errorMessage = 'Please upload a document.';
+                        file.focus();
+                    }
+
+                    // If validation fails, show alert and stop
+                    if (!isValid) {
+                        alert(errorMessage);
+                        return false;
+                    }
+
+                    // All validations passed - display local success message
                     localSuccessMessage.style.display = 'block';
 
                     // Notify the top frame via postMessage

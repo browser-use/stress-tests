@@ -64,10 +64,10 @@
         const App = () => {
             const [showSuccess, setShowSuccess] = useState(false);
             const { register, handleSubmit, formState: { errors } } = useForm({
+                mode: 'onSubmit',
                 defaultValues: {
                     email: '',
                     country: '',
-                    favoriteColor: '',
                     birthdate: '',
                     contactPreference: '',
                     fileUpload: null
@@ -101,7 +101,11 @@
                                     id="email"
                                     className={`form-control ${errors.email ? 'invalid-field' : ''}`}
                                     {...register('email', {
-                                        required: 'Email is required'
+                                        required: 'Email is required',
+                                        pattern: {
+                                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                            message: 'Invalid email address'
+                                        }
                                     })}
                                 />
                                 {errors.email && (
@@ -114,7 +118,10 @@
                                 <select
                                     id="country"
                                     className={`form-select ${errors.country ? 'invalid-field' : ''}`}
-                                    {...register('country', { required: 'Country is required' })}
+                                    {...register('country', {
+                                        required: 'Country is required',
+                                        validate: value => value !== '' || 'Please select a country'
+                                    })}
                                 >
                                     <option value="">Select country</option>
                                     <option value="US">United States</option>
@@ -128,41 +135,31 @@
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="favoriteColor" className="form-label">Favorite Color</label>
-                                <select
-                                    id="favoriteColor"
-                                    className="form-select"
-                                    {...register('favoriteColor')}
-                                >
-                                    <option value="">Select a color</option>
-                                    <option value="red">Red</option>
-                                    <option value="blue">Blue</option>
-                                    <option value="green">Green</option>
-                                    <option value="yellow">Yellow</option>
-                                    <option value="purple">Purple</option>
-                                    <option value="orange">Orange</option>
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="birthdate" className="form-label">Date of Birth</label>
+                                <label htmlFor="birthdate" className="form-label">Date of Birth <span className="text-danger">*</span></label>
                                 <input
                                     type="date"
                                     id="birthdate"
-                                    className="form-control"
-                                    {...register('birthdate')}
+                                    className={`form-control ${errors.birthdate ? 'invalid-field' : ''}`}
+                                    {...register('birthdate', {
+                                        required: 'Date of birth is required'
+                                    })}
                                 />
+                                {errors.birthdate && (
+                                    <div className="error-text">{errors.birthdate.message}</div>
+                                )}
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Contact Preference</label>
+                                <label className="form-label">Contact Preference <span className="text-danger">*</span></label>
                                 <div className="form-check">
                                     <input
                                         className="form-check-input"
                                         type="radio"
                                         id="contactEmail"
                                         value="email"
-                                        {...register('contactPreference')}
+                                        {...register('contactPreference', {
+                                            required: 'Please select a contact preference'
+                                        })}
                                     />
                                     <label className="form-check-label" htmlFor="contactEmail">Email</label>
                                 </div>
@@ -172,7 +169,9 @@
                                         type="radio"
                                         id="contactPhone"
                                         value="phone"
-                                        {...register('contactPreference')}
+                                        {...register('contactPreference', {
+                                            required: 'Please select a contact preference'
+                                        })}
                                     />
                                     <label className="form-check-label" htmlFor="contactPhone">Phone</label>
                                 </div>
@@ -182,20 +181,33 @@
                                         type="radio"
                                         id="contactMail"
                                         value="mail"
-                                        {...register('contactPreference')}
+                                        {...register('contactPreference', {
+                                            required: 'Please select a contact preference'
+                                        })}
                                     />
                                     <label className="form-check-label" htmlFor="contactMail">Mail</label>
                                 </div>
+                                {errors.contactPreference && (
+                                    <div className="error-text">{errors.contactPreference.message}</div>
+                                )}
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="fileUpload" className="form-label">Upload File</label>
+                                <label htmlFor="fileUpload" className="form-label">Upload File <span className="text-danger">*</span></label>
                                 <input
                                     type="file"
                                     id="fileUpload"
-                                    className="form-control"
-                                    {...register('fileUpload')}
+                                    className={`form-control ${errors.fileUpload ? 'invalid-field' : ''}`}
+                                    {...register('fileUpload', {
+                                        required: 'File is required',
+                                        validate: {
+                                            fileSelected: (value) => (value && value.length > 0) || 'Please select a file'
+                                        }
+                                    })}
                                 />
+                                {errors.fileUpload && (
+                                    <div className="error-text">{errors.fileUpload.message}</div>
+                                )}
                             </div>
                         </div>
 
