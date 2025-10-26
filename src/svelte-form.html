@@ -356,7 +356,7 @@
             if (!container) return;
 
             let successAlert = container.querySelector('.alert-success');
-            
+
             if (currentShowSuccess) {
                 if (!successAlert) {
                     successAlert = document.createElement('div');
@@ -370,49 +370,6 @@
                 }
             }
         }
-
-        function updateModalDisplay() {
-            const container = document.getElementById('svelte-form-root');
-            if (!container) return;
-
-            let modalOverlay = container.querySelector('.modal-overlay');
-            
-            if (currentShowModal) {
-                if (!modalOverlay) {
-                    modalOverlay = document.createElement('div');
-                    modalOverlay.className = 'modal-overlay svelte-fade-in';
-                    modalOverlay.innerHTML = `
-                        <div class="modal-container">
-                            <div class="modal-header">
-                                <h4>Red Herring Modal</h4>
-                                <button type="button" class="modal-close" onclick="closeModal()">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <p>This is a red herring modal instead of submitting the form.</p>
-                                <p>In a real application, this might contain additional options or information.</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(modalOverlay);
-                }
-            } else {
-                if (modalOverlay) {
-                    modalOverlay.remove();
-                }
-            }
-        }
-        
-        // Modal handlers using Svelte stores
-        function openModal() {
-            showModal.set(true);
-        }
-        
-        function closeModal() {
-            showModal.set(false);
-        }
         
         // Reset form using Svelte stores
         function resetForm() {
@@ -423,12 +380,6 @@
                 birthDate: '',
                 contactPreference: ''
             });
-        }
-        
-        // Terms link handler
-        function showTerms(event) {
-            event.preventDefault();
-            alert('Terms and Conditions would be displayed here.');
         }
 
         // Render function with Svelte-style reactivity
@@ -546,24 +497,6 @@
                         <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
                     </div>
                 </form>
-                
-                ${currentShowModal ? `
-                    <div class="modal-overlay svelte-fade-in">
-                        <div class="modal-container">
-                            <div class="modal-header">
-                                <h4>Red Herring Modal</h4>
-                                <button type="button" class="modal-close" onclick="closeModal()">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <p>This is a red herring modal instead of submitting the form.</p>
-                                <p>In a real application, this might contain additional options or information.</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                ` : ''}
             `;
             
             // Attach event listeners after rendering

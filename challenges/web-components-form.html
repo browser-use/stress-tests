@@ -1,597 +1,457 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Web Components Form</title>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			line-height: 1.6;
-			max-width: 800px;
-			margin: 0 auto;
-			padding: 20px;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Components Form</title>
+    <script src="https://unpkg.com/lit@2.8.0/polyfill-support.js"></script>
+    <script src="https://unpkg.com/lit@2.8.0/lit-element.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
 
-		.success-message {
-			background-color: #d4edda;
-			padding: 15px;
-			border: 1px solid #c3e6cb;
-			border-radius: 5px;
-			margin-bottom: 20px;
-			display: none;
-		}
-	</style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4f46e5;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            border: 1px solid #10b981;
+            color: #047857;
+        }
+    </style>
 </head>
 <body>
-	<h1>Web Components Form</h1>
-
-	<div class="success-message" id="success-message">
-		<strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
-	</div>
-
-	<wc-form id="web-components-form"></wc-form>
-
-	<script type="module">
-		import { LitElement, html, css } from 'https://unpkg.com/lit@2.8.0/index.js?module';
-
-		// Define form component using LitElement
-		class WCForm extends LitElement {
-			static styles = css`
-				:host {
-					display: block;
-				}
-
-				form {
-					background: #f9f9f9;
-					border: 1px solid #ddd;
-					padding: 20px;
-					border-radius: 5px;
-				}
-
-				fieldset {
-					margin-bottom: 20px;
-					border: 1px solid #ccc;
-					padding: 15px;
-				}
-
-				legend {
-					font-weight: bold;
-				}
-
-				label {
-					display: block;
-					margin-bottom: 5px;
-					font-weight: bold;
-				}
-
-				input, select, textarea {
-					width: 100%;
-					padding: 8px;
-					margin-bottom: 15px;
-					border: 1px solid #ccc;
-					border-radius: 4px;
-					box-sizing: border-box;
-				}
-
-				input[type="checkbox"], input[type="radio"] {
-					width: auto;
-					margin-right: 10px;
-				}
-
-				.radio-group, .checkbox-group {
-					margin-bottom: 15px;
-				}
-
-				.radio-label, .checkbox-label {
-					font-weight: normal;
-				}
-
-				button {
-					background-color: #4CAF50;
-					color: white;
-					padding: 10px 15px;
-					border: none;
-					border-radius: 4px;
-					cursor: pointer;
-					margin-right: 10px;
-				}
-
-				button:hover {
-					background-color: #45a049;
-				}
-
-				.required:after {
-					content: " *";
-					color: red;
-				}
-
-				.error {
-					color: red;
-					font-size: 0.8em;
-					display: block;
-				}
-			`;
-
-			static properties = {
-				formData: { type: Object },
-				errors: { type: Object }
-			};
-
-			constructor() {
-				super();
-				this.formData = {
-					textInput: '',
-					emailInput: '',
-					numberInput: null,
-					dateInput: '',
-					rangeInput: 0,
-					selectInput: '',
-					multipleSelect: [],
-					radioGroup: '',
-					checkboxes: [],
-					textareaInput: ''
-				};
-				this.errors = {};
-			}
-
-			_handleInput(e) {
-				const name = e.target.name;
-				let value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-
-				this.formData = {
-					...this.formData,
-					[name]: value
-				};
-			}
-
-			_handleSubmit(e) {
-				e.preventDefault();
-
-				let isValid = true;
-				let errors = {};
-
-				// Text input validation
-				if (!this.formData.textInput.trim()) {
-					errors.textInput = 'This field is required';
-					isValid = false;
-				}
-
-				// Email validation
-				if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.emailInput)) {
-					errors.emailInput = 'Please enter a valid email address';
-					isValid = false;
-				}
-
-				// Number validation
-				if (this.formData.numberInput && (parseInt(this.formData.numberInput) < 0 || parseInt(this.formData.numberInput) > 100)) {
-					errors.numberInput = 'Please enter a number between 0 and 100';
-					isValid = false;
-				}
-
-				this.errors = errors;
-
-				if (isValid) {
-					console.log('Form submitted successfully! The secret is: dumbledore', this.formData);
-					document.getElementById('success-message').style.display = 'block';
-
-					setTimeout(function() {
-						document.getElementById('success-message').style.display = 'none';
-					}, 3000);
-				}
-
-				this.requestUpdate();
-			}
-
-			render() {
-				return html`
-					<form @submit="${this._handleSubmit}">
-						<fieldset>
-							<legend>Form Fields</legend>
-
-							<wc-input
-								label="Text Input"
-								name="textInput"
-								.value="${this.formData.textInput}"
-								@input="${this._handleInput}"
-								required="true"
-								.error="${this.errors.textInput}">
-							</wc-input>
-
-							<wc-input
-								label="Email Address"
-								name="emailInput"
-								type="email"
-								.value="${this.formData.emailInput}"
-								@input="${this._handleInput}"
-								required="true"
-								.error="${this.errors.emailInput}">
-							</wc-input>
-
-							<wc-input
-								label="Number Input"
-								name="numberInput"
-								type="number"
-								.value="${this.formData.numberInput}"
-								@input="${this._handleInput}"
-								min="0"
-								max="100"
-								.error="${this.errors.numberInput}">
-							</wc-input>
-
-							<wc-input
-								label="Date Input"
-								name="dateInput"
-								type="date"
-								.value="${this.formData.dateInput}"
-								@input="${this._handleInput}">
-							</wc-input>
-
-							<wc-input
-								label="File Upload"
-								name="fileInput"
-								type="file">
-							</wc-input>
-
-							<wc-input
-								label="Range Slider"
-								name="rangeInput"
-								type="range"
-								.value="${this.formData.rangeInput}"
-								@input="${this._handleInput}"
-								min="0"
-								max="100"
-								step="10">
-							</wc-input>
-
-							<wc-select
-								label="Dropdown Selection"
-								name="selectInput"
-								.value="${this.formData.selectInput}"
-								@change="${this._handleInput}">
-								<option value="">Please select an option</option>
-								<option value="option1">Option 1</option>
-								<option value="option2">Option 2</option>
-								<option value="option3">Option 3</option>
-							</wc-select>
-
-							<wc-select
-								label="Multiple Selection"
-								name="multipleSelect"
-								multiple="true"
-								.value="${this.formData.multipleSelect}"
-								@change="${this._handleInput}">
-								<option value="option1">Option 1</option>
-								<option value="option2">Option 2</option>
-								<option value="option3">Option 3</option>
-							</wc-select>
-
-							<wc-radio-group
-								label="Radio Buttons"
-								name="radioGroup"
-								.value="${this.formData.radioGroup}"
-								@change="${this._handleInput}">
-							</wc-radio-group>
-
-							<wc-checkbox-group
-								label="Checkboxes"
-								name="checkboxes">
-							</wc-checkbox-group>
-
-							<wc-textarea
-								label="Text Area"
-								name="textareaInput"
-								.value="${this.formData.textareaInput}"
-								@input="${this._handleInput}">
-							</wc-textarea>
-						</fieldset>
-
-						<div>
-							<button type="submit" id="submit-button">Submit Form</button>
-							<button type="reset" @click="${() => this.formData = {
-								textInput: '',
-								emailInput: '',
-								numberInput: null,
-								dateInput: '',
-								rangeInput: 0,
-								selectInput: '',
-								multipleSelect: [],
-								radioGroup: '',
-								checkboxes: [],
-								textareaInput: ''
-							}}">Reset Form</button>
-						</div>
-					</form>
-				`;
-			}
-		}
-
-		class WCInput extends LitElement {
-			static styles = css`
-				:host {
-					display: block;
-				}
-
-				label {
-					display: block;
-					margin-bottom: 5px;
-					font-weight: bold;
-				}
-
-				.required::after {
-					content: " *";
-					color: red;
-				}
-
-				input {
-					width: 100%;
-					padding: 8px;
-					margin-bottom: 15px;
-					border: 1px solid #ccc;
-					border-radius: 4px;
-					box-sizing: border-box;
-				}
-
-				.error {
-					color: red;
-					font-size: 0.8em;
-					display: block;
-					margin-top: -10px;
-					margin-bottom: 10px;
-				}
-			`;
-
-			static properties = {
-				label: { type: String },
-				name: { type: String },
-				type: { type: String },
-				value: { type: String },
-				required: { type: Boolean },
-				min: { type: String },
-				max: { type: String },
-				step: { type: String },
-				error: { type: String }
-			};
-
-			constructor() {
-				super();
-				this.label = '';
-				this.name = '';
-				this.type = 'text';
-				this.value = '';
-				this.required = false;
-				this.error = '';
-			}
-
-			render() {
-				return html`
-					<label class="${this.required ? 'required' : ''}">${this.label}:</label>
-					<input
-						type="${this.type}"
-						name="${this.name}"
-						.value="${this.value}"
-						?required="${this.required}"
-						min="${this.min}"
-						max="${this.max}"
-						step="${this.step}"
-					/>
-					${this.error ? html`<span class="error">${this.error}</span>` : ''}
-				`;
-			}
-		}
-
-		class WCSelect extends LitElement {
-			static styles = css`
-				:host {
-					display: block;
-				}
-
-				label {
-					display: block;
-					margin-bottom: 5px;
-					font-weight: bold;
-				}
-
-				select {
-					width: 100%;
-					padding: 8px;
-					margin-bottom: 15px;
-					border: 1px solid #ccc;
-					border-radius: 4px;
-					box-sizing: border-box;
-				}
-			`;
-
-			static properties = {
-				label: { type: String },
-				name: { type: String },
-				value: { type: String },
-				multiple: { type: Boolean }
-			};
-
-			constructor() {
-				super();
-				this.label = '';
-				this.name = '';
-				this.value = '';
-				this.multiple = false;
-			}
-
-			render() {
-				return html`
-					<label>${this.label}:</label>
-					<select
-						name="${this.name}"
-						.value="${this.value}"
-						?multiple="${this.multiple}"
-						size="${this.multiple ? 3 : 1}"
-					>
-						<slot></slot>
-					</select>
-				`;
-			}
-		}
-
-		class WCRadioGroup extends LitElement {
-			static styles = css`
-				:host {
-					display: block;
-					margin-bottom: 15px;
-				}
-
-				label {
-					display: block;
-					margin-bottom: 5px;
-					font-weight: bold;
-				}
-
-				.radio-label {
-					font-weight: normal;
-				}
-
-				input[type="radio"] {
-					margin-right: 10px;
-				}
-			`;
-
-			static properties = {
-				label: { type: String },
-				name: { type: String },
-				value: { type: String }
-			};
-
-			constructor() {
-				super();
-				this.label = '';
-				this.name = '';
-				this.value = '';
-			}
-
-			render() {
-				return html`
-					<label>${this.label}:</label>
-					<div>
-						<input type="radio" id="radio1" name="${this.name}" value="radio1" ?checked="${this.value === 'radio1'}">
-						<label for="radio1" class="radio-label">Option 1</label>
-					</div>
-					<div>
-						<input type="radio" id="radio2" name="${this.name}" value="radio2" ?checked="${this.value === 'radio2'}">
-						<label for="radio2" class="radio-label">Option 2</label>
-					</div>
-					<div>
-						<input type="radio" id="radio3" name="${this.name}" value="radio3" ?checked="${this.value === 'radio3'}">
-						<label for="radio3" class="radio-label">Option 3</label>
-					</div>
-				`;
-			}
-		}
-
-		class WCCheckboxGroup extends LitElement {
-			static styles = css`
-				:host {
-					display: block;
-					margin-bottom: 15px;
-				}
-
-				label {
-					display: block;
-					margin-bottom: 5px;
-					font-weight: bold;
-				}
-
-				.checkbox-label {
-					font-weight: normal;
-				}
-
-				input[type="checkbox"] {
-					margin-right: 10px;
-				}
-			`;
-
-			static properties = {
-				label: { type: String },
-				name: { type: String }
-			};
-
-			constructor() {
-				super();
-				this.label = '';
-				this.name = '';
-			}
-
-			render() {
-				return html`
-					<label>${this.label}:</label>
-					<div>
-						<input type="checkbox" id="checkbox1" name="${this.name}" value="checkbox1">
-						<label for="checkbox1" class="checkbox-label">Option 1</label>
-					</div>
-					<div>
-						<input type="checkbox" id="checkbox2" name="${this.name}" value="checkbox2">
-						<label for="checkbox2" class="checkbox-label">Option 2</label>
-					</div>
-					<div>
-						<input type="checkbox" id="checkbox3" name="${this.name}" value="checkbox3">
-						<label for="checkbox3" class="checkbox-label">Option 3</label>
-					</div>
-				`;
-			}
-		}
-
-		class WCTextarea extends LitElement {
-			static styles = css`
-				:host {
-					display: block;
-				}
-
-				label {
-					display: block;
-					margin-bottom: 5px;
-					font-weight: bold;
-				}
-
-				textarea {
-					width: 100%;
-					padding: 8px;
-					margin-bottom: 15px;
-					border: 1px solid #ccc;
-					border-radius: 4px;
-					box-sizing: border-box;
-				}
-			`;
-
-			static properties = {
-				label: { type: String },
-				name: { type: String },
-				value: { type: String }
-			};
-
-			constructor() {
-				super();
-				this.label = '';
-				this.name = '';
-				this.value = '';
-			}
-
-			render() {
-				return html`
-					<label>${this.label}:</label>
-					<textarea
-						name="${this.name}"
-						.value="${this.value}"
-						rows="4"
-					></textarea>
-				`;
-			}
-		}
-
-		// Register the components
-		customElements.define('wc-form', WCForm);
-		customElements.define('wc-input', WCInput);
-		customElements.define('wc-select', WCSelect);
-		customElements.define('wc-radio-group', WCRadioGroup);
-		customElements.define('wc-checkbox-group', WCCheckboxGroup);
-		customElements.define('wc-textarea', WCTextarea);
-	</script>
+    <div class="container">
+        <h1>Web Components Form</h1>
+
+        <div class="alert alert-success" id="success-message">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+
+        <wc-form id="web-components-form"></wc-form>
+    </div>
+    
+    <script type="module">
+        import { LitElement, html, css } from 'https://unpkg.com/lit@2.8.0/index.js?module';
+
+        // Define form components using LitElement
+        class WCForm extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                }
+
+                button {
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    border: none;
+                    font-size: 16px;
+                    transition: all 0.2s;
+                    background-color: #4f46e5;
+                    color: white;
+                    width: 100%;
+                    margin-top: 20px;
+                }
+
+                button:hover {
+                    background-color: #4338ca;
+                }
+            `;
+
+            static properties = {
+                formData: { type: Object },
+            };
+
+            constructor() {
+                super();
+                this.formData = {
+                    email: '',
+                    country: '',
+                    category: '',
+                    birthDate: '',
+                    gender: '',
+                    document: null
+                };
+            }
+
+            _handleInput(e) {
+                const name = e.target.name;
+                const value = e.target.value;
+
+                this.formData = {
+                    ...this.formData,
+                    [name]: value
+                };
+            }
+
+            _handleFileChange(e) {
+                const file = e.target.files[0];
+                this.formData = {
+                    ...this.formData,
+                    document: file
+                };
+            }
+
+            _handleSubmit(e) {
+                e.preventDefault();
+
+                console.log('Form submitted successfully! The secret is: dumbledore', this.formData);
+                document.getElementById('success-message').style.display = 'block';
+
+                setTimeout(function() {
+                    document.getElementById('success-message').style.display = 'none';
+                }, 3000);
+            }
+
+            render() {
+                return html`
+                    <form @submit="${this._handleSubmit}">
+                        <wc-input
+                            label="Email"
+                            name="email"
+                            type="email"
+                            .value="${this.formData.email}"
+                            @input="${this._handleInput}">
+                        </wc-input>
+
+                        <wc-select
+                            label="Country"
+                            name="country"
+                            .value="${this.formData.country}"
+                            @change="${this._handleInput}">
+                            <option value="">Select Country</option>
+                            <option value="us">United States</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="ca">Canada</option>
+                            <option value="au">Australia</option>
+                        </wc-select>
+
+                        <wc-select
+                            label="Category"
+                            name="category"
+                            .value="${this.formData.category}"
+                            @change="${this._handleInput}">
+                            <option value="">Select Category</option>
+                            <option value="personal">Personal</option>
+                            <option value="business">Business</option>
+                            <option value="education">Education</option>
+                        </wc-select>
+
+                        <wc-input
+                            label="Birth Date"
+                            name="birthDate"
+                            type="date"
+                            .value="${this.formData.birthDate}"
+                            @input="${this._handleInput}">
+                        </wc-input>
+
+                        <wc-radio
+                            label="Gender"
+                            name="gender"
+                            .value="${this.formData.gender}"
+                            @change="${this._handleInput}">
+                        </wc-radio>
+
+                        <wc-file
+                            label="Upload Document"
+                            name="document"
+                            @change="${this._handleFileChange}">
+                        </wc-file>
+
+                        <button type="submit">Submit Form</button>
+                    </form>
+                `;
+            }
+        }
+
+        class WCInput extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 20px;
+                }
+
+                label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-weight: 500;
+                }
+
+                input {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    transition: border-color 0.2s;
+                    box-sizing: border-box;
+                }
+
+                input:focus {
+                    outline: none;
+                    border-color: #4f46e5;
+                    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+                }
+            `;
+
+            static properties = {
+                label: { type: String },
+                name: { type: String },
+                type: { type: String },
+                value: { type: String }
+            };
+
+            constructor() {
+                super();
+                this.label = '';
+                this.name = '';
+                this.type = 'text';
+                this.value = '';
+            }
+
+            render() {
+                return html`
+                    <label for="${this.name}">${this.label}</label>
+                    <input
+                        type="${this.type}"
+                        id="${this.name}"
+                        name="${this.name}"
+                        .value="${this.value}"
+                    />
+                `;
+            }
+        }
+
+        class WCSelect extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 20px;
+                }
+
+                label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-weight: 500;
+                }
+
+                select {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    transition: border-color 0.2s;
+                    background-color: white;
+                    box-sizing: border-box;
+                }
+
+                select:focus {
+                    outline: none;
+                    border-color: #4f46e5;
+                    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+                }
+            `;
+
+            static properties = {
+                label: { type: String },
+                name: { type: String },
+                value: { type: String }
+            };
+
+            constructor() {
+                super();
+                this.label = '';
+                this.name = '';
+                this.value = '';
+            }
+
+            render() {
+                return html`
+                    <label for="${this.name}">${this.label}</label>
+                    <select
+                        id="${this.name}"
+                        name="${this.name}"
+                        .value="${this.value}"
+                    >
+                        <slot></slot>
+                    </select>
+                `;
+            }
+        }
+
+        class WCRadio extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 20px;
+                }
+
+                label {
+                    display: block;
+                    margin-bottom: 10px;
+                    font-weight: 500;
+                }
+
+                .radio-group {
+                    display: flex;
+                    gap: 20px;
+                }
+
+                .radio-option {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                input[type="radio"] {
+                    cursor: pointer;
+                }
+
+                .radio-label {
+                    cursor: pointer;
+                    font-weight: normal;
+                }
+            `;
+
+            static properties = {
+                label: { type: String },
+                name: { type: String },
+                value: { type: String }
+            };
+
+            constructor() {
+                super();
+                this.label = '';
+                this.name = '';
+                this.value = '';
+            }
+
+            render() {
+                return html`
+                    <label>${this.label}</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input
+                                type="radio"
+                                id="${this.name}-male"
+                                name="${this.name}"
+                                value="male"
+                                ?checked="${this.value === 'male'}"
+                            />
+                            <label for="${this.name}-male" class="radio-label">Male</label>
+                        </div>
+                        <div class="radio-option">
+                            <input
+                                type="radio"
+                                id="${this.name}-female"
+                                name="${this.name}"
+                                value="female"
+                                ?checked="${this.value === 'female'}"
+                            />
+                            <label for="${this.name}-female" class="radio-label">Female</label>
+                        </div>
+                        <div class="radio-option">
+                            <input
+                                type="radio"
+                                id="${this.name}-other"
+                                name="${this.name}"
+                                value="other"
+                                ?checked="${this.value === 'other'}"
+                            />
+                            <label for="${this.name}-other" class="radio-label">Other</label>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        class WCFile extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    margin-bottom: 20px;
+                }
+
+                label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-weight: 500;
+                }
+
+                input[type="file"] {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    background-color: white;
+                    box-sizing: border-box;
+                }
+
+                input[type="file"]:focus {
+                    outline: none;
+                    border-color: #4f46e5;
+                    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+                }
+            `;
+
+            static properties = {
+                label: { type: String },
+                name: { type: String }
+            };
+
+            constructor() {
+                super();
+                this.label = '';
+                this.name = '';
+            }
+
+            render() {
+                return html`
+                    <label for="${this.name}">${this.label}</label>
+                    <input
+                        type="file"
+                        id="${this.name}"
+                        name="${this.name}"
+                    />
+                `;
+            }
+        }
+
+        // Register the components
+        customElements.define('wc-form', WCForm);
+        customElements.define('wc-input', WCInput);
+        customElements.define('wc-select', WCSelect);
+        customElements.define('wc-radio', WCRadio);
+        customElements.define('wc-file', WCFile);
+    </script>
 </body>
 </html>

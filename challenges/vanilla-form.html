@@ -20,23 +20,13 @@
             border-radius: 5px;
         }
 
-        fieldset {
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 15px;
-        }
-
-        legend {
-            font-weight: bold;
-        }
-
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
 
-        input, select, textarea {
+        input, select {
             width: 100%;
             padding: 8px;
             margin-bottom: 15px;
@@ -45,16 +35,16 @@
             box-sizing: border-box;
         }
 
-        input[type="checkbox"], input[type="radio"] {
+        input[type="radio"] {
             width: auto;
             margin-right: 10px;
         }
 
-        .radio-group, .checkbox-group {
+        .radio-group {
             margin-bottom: 15px;
         }
 
-        .radio-label, .checkbox-label {
+        .radio-label {
             font-weight: normal;
         }
 
@@ -65,166 +55,79 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 10px;
         }
 
         button:hover {
             background-color: #45a049;
-        }
-
-        .required:after {
-            content: " *";
-            color: red;
-        }
-
-        .error {
-            color: red;
-            font-size: 0.8em;
-            display: none;
         }
     </style>
 </head>
 <body>
     <h1>Vanilla HTML + JavaScript Form</h1>
 
-    <form id="vanillaForm" action="https://example.com/submit" method="POST" novalidate>
-        <fieldset>
-            <legend>Form Fields</legend>
+    <form id="vanillaForm" action="https://example.com/submit" method="POST">
+        <div>
+            <label for="email-input">Email Address:</label>
+            <input type="email" id="email-input" name="email-input">
+        </div>
 
+        <div>
+            <label for="country-select">Country:</label>
+            <select id="country-select" name="country-select">
+                <option value="">Please select a country</option>
+                <option value="usa">United States</option>
+                <option value="canada">Canada</option>
+                <option value="uk">United Kingdom</option>
+                <option value="australia">Australia</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="category-select">Category:</label>
+            <select id="category-select" name="category-select">
+                <option value="">Please select a category</option>
+                <option value="technology">Technology</option>
+                <option value="business">Business</option>
+                <option value="education">Education</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="date-input">Date:</label>
+            <input type="date" id="date-input" name="date-input">
+        </div>
+
+        <div class="radio-group">
+            <label>Subscription Type:</label>
             <div>
-                <label for="text-input" class="required">Text Input:</label>
-                <input type="text" id="text-input" name="text-input" required>
-                <span class="error" id="text-input-error">This field is required</span>
+                <input type="radio" id="radio1" name="subscription" value="free">
+                <label for="radio1" class="radio-label">Free</label>
             </div>
-
             <div>
-                <label for="email-input" class="required">Email Address:</label>
-                <input type="email" id="email-input" name="email-input" required>
-                <span class="error" id="email-input-error">Please enter a valid email address</span>
+                <input type="radio" id="radio2" name="subscription" value="basic">
+                <label for="radio2" class="radio-label">Basic</label>
             </div>
-
             <div>
-                <label for="number-input">Number Input:</label>
-                <input type="number" id="number-input" name="number-input" min="0" max="100">
-                <span class="error" id="number-input-error">Please enter a number between 0 and 100</span>
+                <input type="radio" id="radio3" name="subscription" value="premium">
+                <label for="radio3" class="radio-label">Premium</label>
             </div>
+        </div>
 
-            <div>
-                <label for="date-input">Date Input:</label>
-                <input type="date" id="date-input" name="date-input">
-            </div>
-
-            <div>
-                <label for="range-input">Range Slider:</label>
-                <input type="range" id="range-input" name="range-input" min="0" max="100" step="10">
-            </div>
-
-            <div>
-                <label for="file-input">File Upload:</label>
-                <input type="file" id="file-input" name="file-input">
-            </div>
-
-            <div>
-                <label for="select-input">Dropdown Selection:</label>
-                <select id="select-input" name="select-input">
-                    <option value="">Please select an option</option>
-                    <option value="option1">Option 1</option>
-                    <option value="option2">Option 2</option>
-                    <option value="option3">Option 3</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="multiple-select">Multiple Selection:</label>
-                <select id="multiple-select" name="multiple-select" multiple size="3">
-                    <option value="option1">Option 1</option>
-                    <option value="option2">Option 2</option>
-                    <option value="option3">Option 3</option>
-                </select>
-            </div>
-
-            <div class="radio-group">
-                <label>Radio Buttons:</label>
-                <div>
-                    <input type="radio" id="radio1" name="radio-group" value="radio1">
-                    <label for="radio1" class="radio-label">Option 1</label>
-                </div>
-                <div>
-                    <input type="radio" id="radio2" name="radio-group" value="radio2">
-                    <label for="radio2" class="radio-label">Option 2</label>
-                </div>
-                <div>
-                    <input type="radio" id="radio3" name="radio-group" value="radio3">
-                    <label for="radio3" class="radio-label">Option 3</label>
-                </div>
-            </div>
-
-            <div class="checkbox-group">
-                <label>Checkboxes:</label>
-                <div>
-                    <input type="checkbox" id="checkbox1" name="checkbox1" value="yes">
-                    <label for="checkbox1" class="checkbox-label">Option 1</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="checkbox2" name="checkbox2" value="yes">
-                    <label for="checkbox2" class="checkbox-label">Option 2</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="checkbox3" name="checkbox3" value="yes">
-                    <label for="checkbox3" class="checkbox-label">Option 3</label>
-                </div>
-            </div>
-
-            <div>
-                <label for="textarea-input">Text Area:</label>
-                <textarea id="textarea-input" name="textarea-input" rows="4"></textarea>
-            </div>
-        </fieldset>
+        <div>
+            <label for="file-input">Upload File:</label>
+            <input type="file" id="file-input" name="file-input">
+        </div>
 
         <div>
             <button type="submit" id="submit-button">Submit Form</button>
-            <button type="reset">Reset Form</button>
         </div>
     </form>
 
     <script>
-        // Form validation
         document.getElementById('vanillaForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            let isValid = true;
-
-            // Text input validation
-            const textInput = document.getElementById('text-input');
-            if (!textInput.value.trim()) {
-                document.getElementById('text-input-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('text-input-error').style.display = 'none';
-            }
-
-            // Email validation
-            const emailInput = document.getElementById('email-input');
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(emailInput.value)) {
-                document.getElementById('email-input-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('email-input-error').style.display = 'none';
-            }
-
-            // Number validation
-            const numberInput = document.getElementById('number-input');
-            if (numberInput.value && (parseInt(numberInput.value) < 0 || parseInt(numberInput.value) > 100)) {
-                document.getElementById('number-input-error').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('number-input-error').style.display = 'none';
-            }
-
-            if (isValid) {
-                console.log('Form submitted successfully! The secret is: dumbledore');
-                alert('Form submitted successfully! The secret is: dumbledore');
-            }
+            console.log('Form submitted successfully! The secret is: dumbledore');
+            alert('Form submitted successfully! The secret is: dumbledore');
         });
     </script>
 </body>

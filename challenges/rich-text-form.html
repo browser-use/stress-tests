@@ -1,256 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Rich Text Form with TinyMCE</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-	<style>
-		body {
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			min-height: 100vh;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 20px;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Fields Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #495057;
+            margin-bottom: 20px;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section-title {
+            color: #495057;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .editor-container {
+            margin-bottom: 20px;
+            border-radius: 0.25rem;
+        }
+        
+        .ql-container {
+            min-height: 100px;
+            border-bottom-left-radius: 0.25rem;
+            border-bottom-right-radius: 0.25rem;
+            background: #fff;
+        }
+        
+        .bio-editor .ql-container {
+            min-height: 150px;
+        }
+        
+        .ql-toolbar {
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+            background: #f8f9fa;
+        }
+        
+        .ql-editor {
+            line-height: 1.5;
+        }
+        
+        .ql-editor.ql-blank::before {
+            color: #6c757d;
+        }
+        
+        .is-invalid .ql-toolbar,
+        .is-invalid .ql-container {
+            border-color: #dc3545 !important;
+        }
+        
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 80%;
+            color: #dc3545;
+        }
 
-		.form-container {
-			background: white;
-			border-radius: 15px;
-			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-			padding: 40px;
-			max-width: 800px;
-			width: 100%;
-		}
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
 
-		h1 {
-			color: #667eea;
-			margin-bottom: 10px;
-			font-weight: 700;
-		}
+        .rating input {
+            display: none;
+        }
 
-		.subtitle {
-			color: #6c757d;
-			margin-bottom: 30px;
-		}
+        .rating label {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            margin: 0;
+            padding: 0;
+            font-size: 30px;
+            line-height: 40px;
+            text-align: center;
+            color: #ccc;
+        }
 
-		.form-label {
-			font-weight: 600;
-			color: #495057;
-			margin-bottom: 8px;
-		}
+        .rating label:before {
+            content: "★";
+        }
 
-		.form-control, .form-select {
-			border: 2px solid #e0e0e0;
-			border-radius: 8px;
-			padding: 10px 15px;
-			transition: all 0.3s ease;
-		}
+        .rating input:checked ~ label {
+            color: #ffc107;
+        }
 
-		.form-control:focus, .form-select:focus {
-			border-color: #667eea;
-			box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-		}
-
-		.btn-primary {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			border: none;
-			padding: 12px 40px;
-			font-weight: 600;
-			border-radius: 8px;
-			transition: transform 0.2s ease, box-shadow 0.2s ease;
-		}
-
-		.btn-primary:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-		}
-
-		.alert {
-			border-radius: 8px;
-			display: none;
-		}
-
-		.tox-tinymce {
-			border: 2px solid #e0e0e0 !important;
-			border-radius: 8px !important;
-		}
-
-		.form-check-input:checked {
-			background-color: #667eea;
-			border-color: #667eea;
-		}
-
-		.form-check-input:focus {
-			border-color: #667eea;
-			box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-		}
-	</style>
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffc107;
+        }
+        
+        .alert {
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+    </style>
 </head>
 <body>
-	<div class="form-container">
-		<h1 class="text-center">Rich Text Form</h1>
-		<p class="text-center subtitle">Experience a form with integrated rich text editor</p>
+    <div class="container">
+        <h1 class="text-center">Rich Text Fields Form</h1>
+        <p class="text-center description">
+            This form uses various rich text editors and advanced input fields that challenge autofill systems.
+        </p>
+        
+        <div class="alert alert-success" id="successMessage">
+            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+        </div>
+        
+        <form id="richTextForm">
+            <!-- Simplified Form -->
+            <div class="form-section">
+                <h2 class="form-section-title">Simple Rich Text Form</h2>
 
-		<div class="alert alert-success" id="successMessage">
-			<strong>Success!</strong> The secret is: dumbledore
-		</div>
+                <!-- Text field: Email with rich text editor -->
+                <div class="mb-3">
+                    <label for="email" class="form-label required">Email Address</label>
+                    <div class="editor-container" id="emailEditor">
+                        <div id="emailQuill"></div>
+                    </div>
+                    <div class="invalid-feedback" id="emailError">Email is required</div>
+                    <input type="hidden" name="email" id="email">
+                </div>
 
-		<form id="richTextForm">
-			<!-- Text Input -->
-			<div class="mb-3">
-				<label for="name" class="form-label">Full Name</label>
-				<input type="text" class="form-control" id="name" name="name" required>
-			</div>
+                <!-- Dropdown 1: Country -->
+                <div class="mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <select class="form-select" id="country" name="country">
+                        <option value="">Select a country</option>
+                        <option value="us">United States</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="ca">Canada</option>
+                        <option value="au">Australia</option>
+                        <option value="de">Germany</option>
+                    </select>
+                </div>
 
-			<!-- Email Input -->
-			<div class="mb-3">
-				<label for="email" class="form-label">Email Address</label>
-				<input type="email" class="form-control" id="email" name="email" required>
-			</div>
+                <!-- Dropdown 2: Experience Level -->
+                <div class="mb-3">
+                    <label for="experience" class="form-label">Experience Level</label>
+                    <select class="form-select" id="experience" name="experience">
+                        <option value="">Select experience level</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
 
-			<!-- Number Input -->
-			<div class="mb-3">
-				<label for="age" class="form-label">Age</label>
-				<input type="number" class="form-control" id="age" name="age" min="0" max="150">
-			</div>
+                <!-- Date picker -->
+                <div class="mb-3">
+                    <label for="birthDate" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="birthDate" name="birthDate">
+                </div>
 
-			<!-- Date Input -->
-			<div class="mb-3">
-				<label for="birthdate" class="form-label">Birthdate</label>
-				<input type="date" class="form-control" id="birthdate" name="birthdate">
-			</div>
+                <!-- Radio button group -->
+                <div class="mb-3">
+                    <label class="form-label">Preferred Contact Method</label>
+                    <div class="rating">
+                        <input type="radio" id="contact3" name="contactMethod" value="phone">
+                        <label for="contact3" title="Phone"></label>
+                        <input type="radio" id="contact2" name="contactMethod" value="sms">
+                        <label for="contact2" title="SMS"></label>
+                        <input type="radio" id="contact1" name="contactMethod" value="email">
+                        <label for="contact1" title="Email"></label>
+                    </div>
+                    <div class="form-text">Select your preferred contact method (email, SMS, or phone)</div>
+                </div>
 
-			<!-- File Input -->
-			<div class="mb-3">
-				<label for="resume" class="form-label">Upload Resume</label>
-				<input type="file" class="form-control" id="resume" name="resume" accept=".pdf,.doc,.docx">
-			</div>
+                <!-- File upload -->
+                <div class="mb-3">
+                    <label for="fileUpload" class="form-label">Upload Document</label>
+                    <input type="file" class="form-control" id="fileUpload" name="fileUpload">
+                </div>
+            </div>
 
-			<!-- Range Input -->
-			<div class="mb-3">
-				<label for="satisfaction" class="form-label">Satisfaction Level: <span id="satisfactionValue">50</span></label>
-				<input type="range" class="form-range" id="satisfaction" name="satisfaction" min="0" max="100" value="50">
-			</div>
+            <div class="d-flex gap-2 justify-content-center">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+                <button type="button" class="btn btn-secondary" id="resetButton">Reset</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Quill editor for email field
+            const emailQuill = new Quill('#emailQuill', {
+                theme: 'snow',
+                placeholder: 'Enter your email address',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic'],
+                        [{ 'color': [] }]
+                    ]
+                }
+            });
 
-			<!-- Select Dropdown -->
-			<div class="mb-3">
-				<label for="country" class="form-label">Country</label>
-				<select class="form-select" id="country" name="country">
-					<option value="">Select a country</option>
-					<option value="usa">United States</option>
-					<option value="canada">Canada</option>
-					<option value="uk">United Kingdom</option>
-					<option value="australia">Australia</option>
-					<option value="germany">Germany</option>
-				</select>
-			</div>
+            // Sync Quill editor with hidden input
+            function updateHiddenField(quill, hiddenField) {
+                const editor = document.getElementById(hiddenField);
+                editor.value = quill.getText().trim();
+            }
 
-			<!-- Multi-Select -->
-			<div class="mb-3">
-				<label for="interests" class="form-label">Interests (hold Ctrl/Cmd to select multiple)</label>
-				<select class="form-select" id="interests" name="interests" multiple size="5">
-					<option value="technology">Technology</option>
-					<option value="sports">Sports</option>
-					<option value="music">Music</option>
-					<option value="art">Art</option>
-					<option value="travel">Travel</option>
-				</select>
-			</div>
+            emailQuill.on('text-change', function() {
+                updateHiddenField(emailQuill, 'email');
+                document.getElementById('emailEditor').classList.remove('is-invalid');
+                document.getElementById('emailError').style.display = 'none';
+            });
 
-			<!-- Radio Buttons -->
-			<div class="mb-3">
-				<label class="form-label">Gender</label>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" id="male" value="male">
-					<label class="form-check-label" for="male">Male</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" id="female" value="female">
-					<label class="form-check-label" for="female">Female</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" id="other" value="other">
-					<label class="form-check-label" for="other">Other</label>
-				</div>
-			</div>
+            // Form validation and submission
+            const form = document.getElementById('richTextForm');
+            const emailInput = document.getElementById('email');
+            const successMessage = document.getElementById('successMessage');
 
-			<!-- Checkboxes -->
-			<div class="mb-3">
-				<label class="form-label">Preferences</label>
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" id="subscribe" name="preferences" value="subscribe">
-					<label class="form-check-label" for="subscribe">Subscribe to newsletter</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" id="notifications" name="preferences" value="notifications">
-					<label class="form-check-label" for="notifications">Enable notifications</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" id="sms" name="preferences" value="sms">
-					<label class="form-check-label" for="sms">SMS updates</label>
-				</div>
-			</div>
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-			<!-- Textarea with Rich Text Editor -->
-			<div class="mb-3">
-				<label for="comments" class="form-label">Additional Comments</label>
-				<textarea id="comments" name="comments" class="form-control"></textarea>
-			</div>
+                let isValid = true;
 
-			<!-- Submit Button -->
-			<div class="text-center">
-				<button type="submit" class="btn btn-primary">Submit Application</button>
-			</div>
-		</form>
-	</div>
+                // Validate email
+                if (emailQuill.getText().trim() === '') {
+                    isValid = false;
+                    document.getElementById('emailEditor').classList.add('is-invalid');
+                    document.getElementById('emailError').style.display = 'block';
+                } else {
+                    document.getElementById('emailEditor').classList.remove('is-invalid');
+                    document.getElementById('emailError').style.display = 'none';
+                }
 
-	<script>
-		// Initialize TinyMCE Rich Text Editor
-		tinymce.init({
-			selector: '#comments',
-			height: 300,
-			menubar: false,
-			plugins: [
-				'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-				'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-				'insertdatetime', 'media', 'table', 'help', 'wordcount'
-			],
-			toolbar: 'undo redo | formatselect | ' +
-				'bold italic backcolor | alignleft aligncenter ' +
-				'alignright alignjustify | bullist numlist outdent indent | ' +
-				'removeformat | help',
-			content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-		});
+                if (isValid) {
+                    console.log('Form submitted successfully! The secret is: dumbledore');
 
-		// Update range value display
-		document.getElementById('satisfaction').addEventListener('input', function(e) {
-			document.getElementById('satisfactionValue').textContent = e.target.value;
-		});
+                    // Collect form data
+                    const formData = new FormData(form);
+                    const formEntries = {};
 
-		// Form submission handler
-		document.getElementById('richTextForm').addEventListener('submit', function(e) {
-			e.preventDefault();
+                    for (let [key, value] of formData.entries()) {
+                        formEntries[key] = value;
+                    }
 
-			// Get the rich text content
-			const richTextContent = tinymce.get('comments').getContent();
+                    // Add data from rich text editor
+                    formEntries.email = document.getElementById('email').value;
 
-			// Show success message
-			document.getElementById('successMessage').style.display = 'block';
+                    console.log('Form Data:', formEntries);
 
-			// Hide after 3 seconds
-			setTimeout(function() {
-				document.getElementById('successMessage').style.display = 'none';
-			}, 3000);
+                    // Show success message
+                    successMessage.style.display = 'block';
 
-			// Log form data (in real application, this would be sent to server)
-			console.log('Form submitted with rich text content:', richTextContent);
-		});
-	</script>
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
+            });
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+            // Reset form
+            const resetButton = document.getElementById('resetButton');
+
+            resetButton.addEventListener('click', function() {
+                // Reset Quill editor
+                emailQuill.setText('');
+
+                // Reset hidden input
+                document.getElementById('email').value = '';
+
+                // Reset regular form elements
+                form.reset();
+
+                // Remove validation errors
+                document.getElementById('emailEditor').classList.remove('is-invalid');
+                document.getElementById('emailError').style.display = 'none';
+
+                // Hide success message
+                successMessage.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>

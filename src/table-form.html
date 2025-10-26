@@ -278,20 +278,36 @@
         </div>
         
         <form id="tableForm">
-            <!-- Personal Information Section -->
+            <!-- Form Section -->
             <div class="table-section">
-                <h2 class="table-section-title">Personal Information</h2>
+                <h2 class="table-section-title">Simple Form</h2>
                 <table>
                     <tr>
-                        <td width="50%" data-label="First Name:">
-                            <label for="firstName" class="required">First Name</label>
-                            <input type="text" id="firstName" name="firstName">
-                            <div class="invalid-feedback">First name is required</div>
+                        <td colspan="2" data-label="Email:">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email">
                         </td>
-                        <td width="50%" data-label="Last Name:">
-                            <label for="lastName" class="required">Last Name</label>
-                            <input type="text" id="lastName" name="lastName">
-                            <div class="invalid-feedback">Last name is required</div>
+                    </tr>
+                    <tr>
+                        <td width="50%" data-label="Country:">
+                            <label for="country">Country</label>
+                            <select id="country" name="country">
+                                <option value="">Select...</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="AU">Australia</option>
+                                <option value="DE">Germany</option>
+                            </select>
+                        </td>
+                        <td width="50%" data-label="Subscription Plan:">
+                            <label for="subscriptionPlan">Subscription Plan</label>
+                            <select id="subscriptionPlan" name="subscriptionPlan">
+                                <option value="">Select a plan...</option>
+                                <option value="free">Free</option>
+                                <option value="basic">Basic</option>
+                                <option value="premium">Premium</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -315,25 +331,11 @@
                                 </select>
                                 <select id="birthDay" name="birthDay">
                                     <option value="">Day</option>
-                                    <!-- Days will be populated by JavaScript -->
                                 </select>
                                 <select id="birthYear" name="birthYear">
                                     <option value="">Year</option>
-                                    <!-- Years will be populated by JavaScript -->
                                 </select>
                             </div>
-                            <input type="hidden" id="birthDate" name="birthDate">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="cell-phone" data-label="Phone:">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" placeholder="(___) ___-____">
-                        </td>
-                        <td class="cell-email" data-label="Email:">
-                            <label for="email" class="required">Email Address</label>
-                            <input type="email" id="email" name="email">
-                            <div class="invalid-feedback">Please enter a valid email address</div>
                         </td>
                     </tr>
                     <tr>
@@ -359,212 +361,21 @@
                                             <label class="form-check-label" for="genderOther">Other</label>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="gender" id="genderPreferNotToSay" value="prefer-not-to-say">
-                                            <label class="form-check-label" for="genderPreferNotToSay">Prefer not to say</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            
-            <!-- Address Section -->
-            <div class="table-section">
-                <h2 class="table-section-title">Address Information</h2>
-                <table>
-                    <tr>
-                        <td colspan="2" data-label="Street Address:">
-                            <label for="street" class="required">Street Address</label>
-                            <input type="text" id="street" name="street">
-                            <div class="invalid-feedback">Street address is required</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="cell-city" data-label="City:">
-                            <label for="city" class="required">City</label>
-                            <input type="text" id="city" name="city">
-                            <div class="invalid-feedback">City is required</div>
-                        </td>
-                        <td class="cell-state" data-label="State/Province:">
-                            <label for="state" class="required">State/Province</label>
-                            <select id="state" name="state">
-                                <option value="">Select...</option>
-                                <option value="AL">Alabama</option>
-                                <option value="AK">Alaska</option>
-                                <option value="AZ">Arizona</option>
-                                <option value="AR">Arkansas</option>
-                                <option value="CA">California</option>
-                                <option value="CO">Colorado</option>
-                                <option value="CT">Connecticut</option>
-                                <option value="DE">Delaware</option>
-                                <option value="FL">Florida</option>
-                                <option value="GA">Georgia</option>
-                                <option value="HI">Hawaii</option>
-                                <option value="ID">Idaho</option>
-                                <option value="IL">Illinois</option>
-                                <option value="IN">Indiana</option>
-                                <option value="IA">Iowa</option>
-                                <option value="KS">Kansas</option>
-                                <option value="KY">Kentucky</option>
-                            </select>
-                            <div class="invalid-feedback">State is required</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="cell-zip" data-label="Zip Code:">
-                            <label for="zipCode" class="required">Zip Code</label>
-                            <input type="text" id="zipCode" name="zipCode">
-                            <div class="invalid-feedback">Please enter a valid zip code</div>
-                        </td>
-                        <td class="cell-country" data-label="Country:">
-                            <label for="country" class="required">Country</label>
-                            <select id="country" name="country">
-                                <option value="">Select...</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                                <option value="UK">United Kingdom</option>
-                                <option value="AU">Australia</option>
-                                <option value="DE">Germany</option>
-                                <option value="FR">France</option>
-                                <option value="JP">Japan</option>
-                                <option value="CN">China</option>
-                                <option value="BR">Brazil</option>
-                                <option value="IN">India</option>
-                            </select>
-                            <div class="invalid-feedback">Country is required</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" data-label="Address Type:">
-                            <span class="cell-label">Address Type</span>
-                            <table class="table-nested">
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="addressType" id="addressHome" value="home" checked>
-                                            <label class="form-check-label" for="addressHome">Home</label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="addressType" id="addressWork" value="work">
-                                            <label class="form-check-label" for="addressWork">Work</label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="addressType" id="addressOther" value="other">
-                                            <label class="form-check-label" for="addressOther">Other</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            
-            <!-- Additional Information Section -->
-            <div class="table-section">
-                <h2 class="table-section-title">Additional Information</h2>
-                <table>
-                    <tr>
-                        <td colspan="2" data-label="Interests:">
-                            <span class="cell-label">Interests (select all that apply)</span>
-                            <table class="table-nested">
-                                <tr>
-                                    <td width="33%">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="interests" id="interestSports" value="sports">
-                                            <label class="form-check-label" for="interestSports">Sports</label>
-                                        </div>
-                                    </td>
-                                    <td width="33%">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="interests" id="interestMusic" value="music">
-                                            <label class="form-check-label" for="interestMusic">Music</label>
-                                        </div>
-                                    </td>
-                                    <td width="33%">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="interests" id="interestTravel" value="travel">
-                                            <label class="form-check-label" for="interestTravel">Travel</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="interests" id="interestReading" value="reading">
-                                            <label class="form-check-label" for="interestReading">Reading</label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="interests" id="interestMovies" value="movies">
-                                            <label class="form-check-label" for="interestMovies">Movies</label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="interests" id="interestTechnology" value="technology">
-                                            <label class="form-check-label" for="interestTechnology">Technology</label>
-                                        </div>
-                                    </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                     <tr>
-                        <td width="50%" data-label="Subscription Plan:">
-                            <label for="subscriptionPlan">Subscription Plan</label>
-                            <select id="subscriptionPlan" name="subscriptionPlan">
-                                <option value="">Select a plan...</option>
-                                <option value="free">Free</option>
-                                <option value="basic">Basic ($9.99/month)</option>
-                                <option value="premium">Premium ($19.99/month)</option>
-                                <option value="enterprise">Enterprise ($49.99/month)</option>
-                            </select>
-                        </td>
-                        <td width="50%" data-label="Referral Code:">
-                            <label for="referralCode">Referral Code</label>
-                            <input type="text" id="referralCode" name="referralCode">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" data-label="Special Instructions:">
-                            <label for="specialInstructions">Special Instructions</label>
-                            <textarea id="specialInstructions" name="specialInstructions" rows="4"></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" data-label="Disabled Field:">
-                            <label for="disabledField">System Generated ID (Disabled)</label>
-                            <input type="text" id="disabledField" name="disabledField" value="SYS-4872-XJKT" disabled class="cell-disabled">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" data-label="Terms and Conditions:">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms">
-                                <label class="form-check-label" for="agreeTerms">
-                                    I agree to the Terms and Conditions <span class="text-danger">*</span>
-                                </label>
-                                <div class="invalid-feedback">You must agree to the terms and conditions</div>
-                            </div>
+                        <td colspan="2" data-label="Upload File:">
+                            <label for="fileUpload">Upload File</label>
+                            <input type="file" id="fileUpload" name="fileUpload">
                         </td>
                     </tr>
                 </table>
             </div>
-            
+
             <div class="d-flex gap-2 justify-content-center">
                 <button type="submit" class="btn btn-primary">Submit Form</button>
-                <button type="button" class="btn btn-secondary" id="resetButton">Reset</button>
-                <button type="button" class="btn btn-info" id="autofillButton">Auto-fill Demo</button>
             </div>
         </form>
     </div>
@@ -572,272 +383,91 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('tableForm');
-            const resetButton = document.getElementById('resetButton');
-            const autofillButton = document.getElementById('autofillButton');
             const successMessage = document.getElementById('successMessage');
-            
+
             // Populate birth date selectors
             populateBirthDays();
             populateBirthYears();
-            
-            // Phone number formatting
-            const phoneInput = document.getElementById('phone');
-            phoneInput.addEventListener('input', function(e) {
-                const x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-            });
-            
+
             // Update days when month changes
             const birthMonthSelect = document.getElementById('birthMonth');
             birthMonthSelect.addEventListener('change', updateBirthDays);
-            
-            // Handle birth date changes to update hidden field
-            const birthDaySelect = document.getElementById('birthDay');
-            const birthYearSelect = document.getElementById('birthYear');
-            const birthDateHidden = document.getElementById('birthDate');
-            
-            [birthMonthSelect, birthDaySelect, birthYearSelect].forEach(select => {
-                select.addEventListener('change', updateBirthDate);
-            });
-            
-            // Form validation and submission
+
+            // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                if (validateForm()) {
-                    console.log('Form submitted successfully! The secret is: dumbledore');
-                    
-                    // Get form data
-                    const formData = new FormData(form);
-                    const formValues = {};
-                    
-                    for (let [key, value] of formData.entries()) {
-                        // Handle multiple checkboxes (interests)
-                        if (key === 'interests') {
-                            if (!formValues[key]) {
-                                formValues[key] = [];
-                            }
-                            formValues[key].push(value);
-                        } else {
-                            formValues[key] = value;
-                        }
-                    }
-                    
-                    console.log('Form Data:', formValues);
-                    
-                    // Show success message
-                    successMessage.style.display = 'block';
-                    
-                    // Hide success message after 3 seconds
-                    setTimeout(function() {
-                        successMessage.style.display = 'none';
-                    }, 3000);
+
+                console.log('Form submitted successfully! The secret is: dumbledore');
+
+                // Get form data
+                const formData = new FormData(form);
+                const formValues = {};
+
+                for (let [key, value] of formData.entries()) {
+                    formValues[key] = value;
                 }
+
+                console.log('Form Data:', formValues);
+
+                // Show success message
+                successMessage.style.display = 'block';
+
+                // Hide success message after 3 seconds
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                }, 3000);
             });
-            
-            // Reset form
-            resetButton.addEventListener('click', function() {
-                form.reset();
-                
-                // Clear validation classes
-                const inputs = form.querySelectorAll('input, select, textarea');
-                inputs.forEach(input => {
-                    input.classList.remove('is-invalid');
-                });
-                
-                // Reset birth date hidden field
-                birthDateHidden.value = '';
-                
-                // Reset days in birth day select
-                populateBirthDays();
-                
-                // Hide success message
-                successMessage.style.display = 'none';
-            });
-            
-            // Auto-fill demo
-            autofillButton.addEventListener('click', function() {
-                // Personal information
-                document.getElementById('firstName').value = 'John';
-                document.getElementById('lastName').value = 'Doe';
-                document.getElementById('email').value = 'john.doe@example.com';
-                document.getElementById('phone').value = '(555) 123-4567';
-                
-                // Birth date
-                document.getElementById('birthMonth').value = '06';
-                updateBirthDays();
-                document.getElementById('birthDay').value = '15';
-                document.getElementById('birthYear').value = '1985';
-                updateBirthDate();
-                
-                // Gender
-                document.getElementById('genderMale').checked = true;
-                
-                // Address
-                document.getElementById('street').value = '123 Main Street';
-                document.getElementById('city').value = 'Anytown';
-                document.getElementById('state').value = 'CA';
-                document.getElementById('zipCode').value = '90210';
-                document.getElementById('country').value = 'US';
-                document.getElementById('addressHome').checked = true;
-                
-                // Additional information
-                document.getElementById('interestTechnology').checked = true;
-                document.getElementById('interestReading').checked = true;
-                document.getElementById('subscriptionPlan').value = 'basic';
-                document.getElementById('referralCode').value = 'FRIEND50';
-                document.getElementById('specialInstructions').value = 'Please contact me during business hours only.';
-                document.getElementById('agreeTerms').checked = true;
-            });
-            
+
             // Helper functions
             function populateBirthDays() {
                 const daySelect = document.getElementById('birthDay');
-                
-                // Clear existing options
                 daySelect.innerHTML = '<option value="">Day</option>';
-                
-                // Add days 1-31
+
                 for (let i = 1; i <= 31; i++) {
-                    const day = i < 10 ? '0' + i : i;
                     const option = document.createElement('option');
-                    option.value = day;
+                    option.value = i;
                     option.textContent = i;
                     daySelect.appendChild(option);
                 }
             }
-            
+
             function updateBirthDays() {
                 const monthSelect = document.getElementById('birthMonth');
                 const daySelect = document.getElementById('birthDay');
-                const yearSelect = document.getElementById('birthYear');
                 const month = parseInt(monthSelect.value, 10);
-                const year = parseInt(yearSelect.value, 10);
-                
-                // Save current selection
+
                 const currentDay = daySelect.value;
-                
-                // Clear days
                 daySelect.innerHTML = '<option value="">Day</option>';
-                
-                // Get days in month
+
                 let daysInMonth = 31;
-                
                 if ([4, 6, 9, 11].includes(month)) {
                     daysInMonth = 30;
                 } else if (month === 2) {
-                    // Check for leap year
-                    if (year && ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0)) {
-                        daysInMonth = 29;
-                    } else {
-                        daysInMonth = 28;
-                    }
+                    daysInMonth = 29;
                 }
-                
-                // Add days
+
                 for (let i = 1; i <= daysInMonth; i++) {
-                    const day = i < 10 ? '0' + i : i;
                     const option = document.createElement('option');
-                    option.value = day;
+                    option.value = i;
                     option.textContent = i;
                     daySelect.appendChild(option);
                 }
-                
-                // Restore selection if possible
+
                 if (currentDay && parseInt(currentDay, 10) <= daysInMonth) {
                     daySelect.value = currentDay;
                 }
             }
-            
+
             function populateBirthYears() {
                 const yearSelect = document.getElementById('birthYear');
                 const currentYear = new Date().getFullYear();
-                
-                // Add years (current year - 100 to current year)
+
                 for (let i = currentYear; i >= currentYear - 100; i--) {
                     const option = document.createElement('option');
                     option.value = i;
                     option.textContent = i;
                     yearSelect.appendChild(option);
                 }
-            }
-            
-            function updateBirthDate() {
-                const month = document.getElementById('birthMonth').value;
-                const day = document.getElementById('birthDay').value;
-                const year = document.getElementById('birthYear').value;
-                const birthDateHidden = document.getElementById('birthDate');
-                
-                if (month && day && year) {
-                    birthDateHidden.value = `${year}-${month}-${day}`;
-                } else {
-                    birthDateHidden.value = '';
-                }
-            }
-            
-            function validateForm() {
-                let isValid = true;
-                
-                // Required fields
-                const requiredFields = [
-                    'firstName',
-                    'lastName',
-                    'email',
-                    'street',
-                    'city',
-                    'state',
-                    'zipCode',
-                    'country'
-                ];
-                
-                requiredFields.forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    if (!field.value.trim()) {
-                        field.classList.add('is-invalid');
-                        isValid = false;
-                    } else {
-                        field.classList.remove('is-invalid');
-                    }
-                });
-                
-                // Email validation
-                const emailField = document.getElementById('email');
-                if (emailField.value && !isValidEmail(emailField.value)) {
-                    emailField.classList.add('is-invalid');
-                    isValid = false;
-                }
-                
-                // Zip code validation
-                const zipField = document.getElementById('zipCode');
-                if (zipField.value && !isValidZipCode(zipField.value)) {
-                    zipField.classList.add('is-invalid');
-                    isValid = false;
-                }
-                
-                // Terms agreement
-                const termsCheckbox = document.getElementById('agreeTerms');
-                if (!termsCheckbox.checked) {
-                    termsCheckbox.classList.add('is-invalid');
-                    document.querySelector('label[for="agreeTerms"] + .invalid-feedback').style.display = 'block';
-                    isValid = false;
-                } else {
-                    termsCheckbox.classList.remove('is-invalid');
-                    document.querySelector('label[for="agreeTerms"] + .invalid-feedback').style.display = 'none';
-                }
-                
-                return isValid;
-            }
-            
-            function isValidEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            }
-            
-            function isValidZipCode(zipCode) {
-                // Simple validation for US and Canadian zip codes
-                const usZip = /^\d{5}(-\d{4})?$/;
-                const caZip = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-                return usZip.test(zipCode) || caZip.test(zipCode);
             }
         });
     </script>

@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React Final Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
             padding-bottom: 50px;
         }
-
+        
         .form-container {
             max-width: 800px;
             margin: 20px auto;
@@ -21,7 +22,7 @@
             border-radius: 12px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
-
+        
         .form-section {
             margin-bottom: 35px;
             padding: 25px;
@@ -29,7 +30,7 @@
             border-radius: 10px;
             border: 1px solid #e9ecef;
         }
-
+        
         .form-section h3 {
             margin-top: 0;
             margin-bottom: 20px;
@@ -38,29 +39,81 @@
             color: #495057;
             font-weight: 600;
         }
-
+        
         .error-text {
             color: #dc3545;
             font-size: 0.75rem;
             margin-top: 0.25rem;
             font-weight: 500;
         }
-
+        
         .error-field {
             border-color: #dc3545;
             background-color: #fff8f8;
         }
-
+        
         .label-required:after {
             content: " *";
             color: #dc3545;
         }
-
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .modal-header h4 {
+            margin: 0;
+            color: #495057;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .modal-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
         .btn-submit {
             background-color: #20c997;
             border-color: #20c997;
         }
-
+        
         .btn-submit:hover {
             background-color: #1ba87e;
             border-color: #1ba87e;
@@ -71,319 +124,354 @@
     <div class="container">
         <h1 class="mt-4 mb-3 text-center">React Final Form</h1>
         <p class="text-center mb-4">This is a fully interactive React Final Form implementation.</p>
-
+        
         <div class="alert alert-success" id="success-message" style="display: none;">
             <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
         </div>
-
+        
         <div id="root" class="form-container"></div>
     </div>
-
-    <script>
-        const { useState } = React;
-        const e = React.createElement;
-
-        // Simple form component
-        function SimpleForm() {
-            const [values, setValues] = useState({
-                textInput: '',
-                emailInput: '',
-                numberInput: '',
-                dateInput: '',
-                rangeInput: 50,
-                selectInput: '',
-                multipleSelect: [],
-                radioGroup: '',
-                checkbox1: false,
-                checkbox2: false,
-                checkbox3: false,
-                textareaInput: ''
-            });
-
+    
+    <script type="text/babel">
+        // Debug what's available
+        console.log('Available globals:', Object.keys(window).filter(k => k.includes('React')));
+        console.log('window.ReactFinalForm:', window.ReactFinalForm);
+        console.log('window["react-final-form"]:', window['react-final-form']);
+        
+        // Use global React, ReactDOM, and create a simple React Final Form polyfill
+        const { useState, Fragment, useContext, createContext } = React;
+        const { render, createRoot } = ReactDOM || {};
+        
+        // Create a context for the form state
+        const FormContext = createContext();
+        
+        // Simple React Final Form polyfill
+        const Form = ({ onSubmit, children, initialValues = {}, render }) => {
+            const [values, setValues] = useState(initialValues);
             const [errors, setErrors] = useState({});
             const [submitting, setSubmitting] = useState(false);
-
-            const handleSubmit = (event) => {
-                event.preventDefault();
+            const [pristine, setPristine] = useState(true);
+            
+            const handleSubmit = async (e) => {
+                e.preventDefault();
                 setSubmitting(true);
-
-                // Basic validation
-                const newErrors = {};
-                if (!values.textInput) newErrors.textInput = 'Text input is required';
-                if (!values.emailInput) {
-                    newErrors.emailInput = 'Email is required';
-                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.emailInput)) {
-                    newErrors.emailInput = 'Please enter a valid email address';
+                try {
+                    if (onSubmit) {
+                        await onSubmit(values);
+                    }
+                } finally {
+                    setSubmitting(false);
                 }
+            };
+            
+            const setFieldValue = (name, value) => {
+                setValues(prev => {
+                    const newValues = { ...prev };
+                    // Handle nested field names like "billingAddress.street"
+                    const keys = name.split('.');
+                    let current = newValues;
+                    for (let i = 0; i < keys.length - 1; i++) {
+                        if (!current[keys[i]]) current[keys[i]] = {};
+                        current = current[keys[i]];
+                    }
+                    current[keys[keys.length - 1]] = value;
+                    return newValues;
+                });
+                setPristine(false);
+            };
+            
+            const form = {
+                reset: () => {
+                    setValues(initialValues);
+                    setErrors({});
+                    setPristine(true);
+                }
+            };
+            
+            const renderProps = {
+                handleSubmit,
+                values,
+                errors,
+                submitting,
+                pristine,
+                form,
+                setFieldValue
+            };
+            
+            return (
+                <FormContext.Provider value={{ values, setFieldValue }}>
+                    <form onSubmit={handleSubmit}>
+                        {render ? render(renderProps) : children(renderProps)}
+                    </form>
+                </FormContext.Provider>
+            );
+        };
+        
+        const Field = ({ name, children, validate, type = "text", value: initialValue }) => {
+            const formContext = useContext(FormContext);
+            const [touched, setTouched] = useState(false);
+            const [error, setError] = useState('');
+            
+            // Get the current value from form state, handling nested paths
+            const getValue = (obj, path) => {
+                return path.split('.').reduce((current, key) => current?.[key], obj);
+            };
+            
+            const currentValue = getValue(formContext?.values, name) ?? initialValue ?? (type === 'checkbox' ? false : '');
+            
+            const input = {
+                value: currentValue,
+                checked: type === 'checkbox' ? currentValue : undefined,
+                onChange: (e) => {
+                    const newValue = type === 'checkbox' ? e.target.checked : e.target.value;
+                    formContext?.setFieldValue(name, newValue);
+                    
+                    // Run validation
+                    if (validate) {
+                        const validationError = validate(newValue);
+                        setError(validationError || '');
+                    }
+                },
+                onBlur: () => {
+                    setTouched(true);
+                    // Run validation on blur
+                    if (validate) {
+                        const validationError = validate(currentValue);
+                        setError(validationError || '');
+                    }
+                },
+                name
+            };
+            
+            const meta = {
+                touched,
+                error
+            };
+            
+            return children({ input, meta });
+        };
+        
+        
+        const App = () => {
+            const [showSuccess, setShowSuccess] = useState(false);
 
-                setErrors(newErrors);
+            const onSubmit = values => {
+                console.log('Form submitted successfully! The secret is: dumbledore', values);
+                setShowSuccess(true);
 
-                if (Object.keys(newErrors).length === 0) {
-                    console.log('Form submitted successfully! The secret is: dumbledore', values);
-                    document.getElementById('success-message').style.display = 'block';
+                // Also show the success message that's already in the HTML for compatibility
+                const successMessage = document.getElementById('success-message');
+                if (successMessage) {
+                    successMessage.style.display = 'block';
                     setTimeout(() => {
-                        document.getElementById('success-message').style.display = 'none';
+                        successMessage.style.display = 'none';
                     }, 3000);
                 }
-
-                setSubmitting(false);
             };
 
-            const handleChange = (name, value) => {
-                setValues(prev => ({ ...prev, [name]: value }));
-                if (errors[name]) {
-                    setErrors(prev => ({ ...prev, [name]: '' }));
-                }
-            };
+            // Options for select fields
+            const categoryOptions = [
+                { value: '', label: 'Select category' },
+                { value: 'electronics', label: 'Electronics' },
+                { value: 'clothing', label: 'Clothing' },
+                { value: 'books', label: 'Books' },
+                { value: 'home', label: 'Home & Garden' }
+            ];
 
-            const handleMultiSelectChange = (e) => {
-                const options = e.target.options;
-                const selected = [];
-                for (let i = 0; i < options.length; i++) {
-                    if (options[i].selected) {
-                        selected.push(options[i].value);
-                    }
-                }
-                handleChange('multipleSelect', selected);
-            };
+            const countryOptions = [
+                { value: '', label: 'Select country' },
+                { value: 'US', label: 'United States' },
+                { value: 'CA', label: 'Canada' },
+                { value: 'UK', label: 'United Kingdom' },
+                { value: 'AU', label: 'Australia' }
+            ];
 
-            return e('form', { onSubmit: handleSubmit },
-                e('fieldset', { className: 'form-section' },
-                    e('legend', null, 'Form Fields'),
+            const preferenceOptions = [
+                { value: 'email', label: 'Email' },
+                { value: 'sms', label: 'SMS' },
+                { value: 'phone', label: 'Phone Call' }
+            ];
 
-                    // Text Input
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'textInput', className: 'form-label label-required' }, 'Text Input'),
-                        e('input', {
-                            type: 'text',
-                            id: 'textInput',
-                            className: `form-control ${errors.textInput ? 'error-field' : ''}`,
-                            value: values.textInput,
-                            onChange: (e) => handleChange('textInput', e.target.value)
-                        }),
-                        errors.textInput && e('div', { className: 'error-text' }, errors.textInput)
-                    ),
+            return (
+                <Fragment>
+                    {showSuccess && (
+                        <div className="alert alert-success" style={{position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000}}>
+                            <strong>Success!</strong> Form submitted successfully! The secret is: dumbledore
+                        </div>
+                    )}
 
-                    // Email Input
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'emailInput', className: 'form-label label-required' }, 'Email Address'),
-                        e('input', {
-                            type: 'email',
-                            id: 'emailInput',
-                            className: `form-control ${errors.emailInput ? 'error-field' : ''}`,
-                            value: values.emailInput,
-                            onChange: (e) => handleChange('emailInput', e.target.value)
-                        }),
-                        errors.emailInput && e('div', { className: 'error-text' }, errors.emailInput)
-                    ),
+                    <Form
+                        onSubmit={onSubmit}
+                        initialValues={{}}
+                        render={({ handleSubmit, form, submitting, pristine, values }) => (
+                            <form id="final-form" onSubmit={handleSubmit}>
+                                <div className="form-section">
+                                    <h3>Simple Form</h3>
 
-                    // Number Input
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'numberInput', className: 'form-label' }, 'Number Input'),
-                        e('input', {
-                            type: 'number',
-                            id: 'numberInput',
-                            min: '0',
-                            max: '100',
-                            className: 'form-control',
-                            value: values.numberInput,
-                            onChange: (e) => handleChange('numberInput', e.target.value)
-                        })
-                    ),
+                                    {/* Text field - Email */}
+                                    <div className="mb-3">
+                                        <Field name="email">
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="email" className="form-label">Email Address</label>
+                                                    <input
+                                                        {...input}
+                                                        type="email"
+                                                        id="email"
+                                                        className="form-control"
+                                                        placeholder="your@email.com"
+                                                    />
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
 
-                    // Date Input
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'dateInput', className: 'form-label' }, 'Date Input'),
-                        e('input', {
-                            type: 'date',
-                            id: 'dateInput',
-                            className: 'form-control',
-                            value: values.dateInput,
-                            onChange: (e) => handleChange('dateInput', e.target.value)
-                        })
-                    ),
+                                    {/* Dropdown field 1 - Category */}
+                                    <div className="mb-3">
+                                        <Field name="category">
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="category" className="form-label">Category</label>
+                                                    <select
+                                                        {...input}
+                                                        id="category"
+                                                        className="form-select"
+                                                    >
+                                                        {categoryOptions.map(option => (
+                                                            <option key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
 
-                    // Range Slider
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'rangeInput', className: 'form-label' }, 'Range Slider'),
-                        e('input', {
-                            type: 'range',
-                            id: 'rangeInput',
-                            className: 'form-range',
-                            min: '0',
-                            max: '100',
-                            step: '10',
-                            value: values.rangeInput,
-                            onChange: (e) => handleChange('rangeInput', e.target.value)
-                        })
-                    ),
+                                    {/* Dropdown field 2 - Country */}
+                                    <div className="mb-3">
+                                        <Field name="country">
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="country" className="form-label">Country</label>
+                                                    <select
+                                                        {...input}
+                                                        id="country"
+                                                        className="form-select"
+                                                    >
+                                                        {countryOptions.map(option => (
+                                                            <option key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
 
-                    // File Upload
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'fileInput', className: 'form-label' }, 'File Upload'),
-                        e('input', {
-                            type: 'file',
-                            id: 'fileInput',
-                            className: 'form-control'
-                        })
-                    ),
+                                    {/* Date picker */}
+                                    <div className="mb-3">
+                                        <Field name="date">
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    <label htmlFor="date" className="form-label">Date</label>
+                                                    <input
+                                                        {...input}
+                                                        type="date"
+                                                        id="date"
+                                                        className="form-control"
+                                                    />
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
 
-                    // Dropdown Selection
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'selectInput', className: 'form-label' }, 'Dropdown Selection'),
-                        e('select', {
-                            id: 'selectInput',
-                            className: 'form-select',
-                            value: values.selectInput,
-                            onChange: (e) => handleChange('selectInput', e.target.value)
-                        },
-                            e('option', { value: '' }, 'Please select an option'),
-                            e('option', { value: 'option1' }, 'Option 1'),
-                            e('option', { value: 'option2' }, 'Option 2'),
-                            e('option', { value: 'option3' }, 'Option 3')
-                        )
-                    ),
+                                    {/* Radio button group */}
+                                    <div className="mb-3">
+                                        <label className="form-label">Preferred Contact Method</label>
+                                        <Field name="contactMethod">
+                                            {({ input, meta }) => (
+                                                <div>
+                                                    {preferenceOptions.map(option => (
+                                                        <div className="form-check" key={option.value}>
+                                                            <input
+                                                                {...input}
+                                                                type="radio"
+                                                                id={option.value}
+                                                                value={option.value}
+                                                                checked={input.value === option.value}
+                                                                className="form-check-input"
+                                                            />
+                                                            <label className="form-check-label" htmlFor={option.value}>
+                                                                {option.label}
+                                                            </label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
 
-                    // Multiple Selection
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'multipleSelect', className: 'form-label' }, 'Multiple Selection'),
-                        e('select', {
-                            id: 'multipleSelect',
-                            className: 'form-select',
-                            multiple: true,
-                            size: 3,
-                            value: values.multipleSelect,
-                            onChange: handleMultiSelectChange
-                        },
-                            e('option', { value: 'option1' }, 'Option 1'),
-                            e('option', { value: 'option2' }, 'Option 2'),
-                            e('option', { value: 'option3' }, 'Option 3')
-                        )
-                    ),
+                                    {/* File upload */}
+                                    <div className="mb-3">
+                                        <Field name="file">
+                                            {({ input: { value, onChange, ...input }, meta }) => (
+                                                <div>
+                                                    <label htmlFor="file" className="form-label">Upload File</label>
+                                                    <input
+                                                        {...input}
+                                                        type="file"
+                                                        id="file"
+                                                        className="form-control"
+                                                        onChange={({ target }) => onChange(target.files[0])}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
+                                </div>
 
-                    // Radio Buttons
-                    e('div', { className: 'mb-3' },
-                        e('label', { className: 'form-label' }, 'Radio Buttons'),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'radio',
-                                id: 'radio1',
-                                name: 'radioGroup',
-                                value: 'radio1',
-                                className: 'form-check-input',
-                                checked: values.radioGroup === 'radio1',
-                                onChange: (e) => handleChange('radioGroup', e.target.value)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'radio1' }, 'Option 1')
-                        ),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'radio',
-                                id: 'radio2',
-                                name: 'radioGroup',
-                                value: 'radio2',
-                                className: 'form-check-input',
-                                checked: values.radioGroup === 'radio2',
-                                onChange: (e) => handleChange('radioGroup', e.target.value)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'radio2' }, 'Option 2')
-                        ),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'radio',
-                                id: 'radio3',
-                                name: 'radioGroup',
-                                value: 'radio3',
-                                className: 'form-check-input',
-                                checked: values.radioGroup === 'radio3',
-                                onChange: (e) => handleChange('radioGroup', e.target.value)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'radio3' }, 'Option 3')
-                        )
-                    ),
-
-                    // Checkboxes
-                    e('div', { className: 'mb-3' },
-                        e('label', { className: 'form-label' }, 'Checkboxes'),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'checkbox',
-                                id: 'checkbox1',
-                                className: 'form-check-input',
-                                checked: values.checkbox1,
-                                onChange: (e) => handleChange('checkbox1', e.target.checked)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'checkbox1' }, 'Option 1')
-                        ),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'checkbox',
-                                id: 'checkbox2',
-                                className: 'form-check-input',
-                                checked: values.checkbox2,
-                                onChange: (e) => handleChange('checkbox2', e.target.checked)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'checkbox2' }, 'Option 2')
-                        ),
-                        e('div', { className: 'form-check' },
-                            e('input', {
-                                type: 'checkbox',
-                                id: 'checkbox3',
-                                className: 'form-check-input',
-                                checked: values.checkbox3,
-                                onChange: (e) => handleChange('checkbox3', e.target.checked)
-                            }),
-                            e('label', { className: 'form-check-label', htmlFor: 'checkbox3' }, 'Option 3')
-                        )
-                    ),
-
-                    // Textarea
-                    e('div', { className: 'mb-3' },
-                        e('label', { htmlFor: 'textareaInput', className: 'form-label' }, 'Text Area'),
-                        e('textarea', {
-                            id: 'textareaInput',
-                            className: 'form-control',
-                            rows: 4,
-                            value: values.textareaInput,
-                            onChange: (e) => handleChange('textareaInput', e.target.value)
-                        })
-                    )
-                ),
-
-                // Submit Button
-                e('div', { className: 'd-flex gap-2 mb-3' },
-                    e('button', {
-                        type: 'submit',
-                        className: 'btn btn-primary btn-submit',
-                        disabled: submitting
-                    }, submitting ? 'Submitting...' : 'Submit Form'),
-                    e('button', {
-                        type: 'button',
-                        className: 'btn btn-secondary',
-                        onClick: () => {
-                            setValues({
-                                textInput: '',
-                                emailInput: '',
-                                numberInput: '',
-                                dateInput: '',
-                                rangeInput: 50,
-                                selectInput: '',
-                                multipleSelect: [],
-                                radioGroup: '',
-                                checkbox1: false,
-                                checkbox2: false,
-                                checkbox3: false,
-                                textareaInput: ''
-                            });
-                            setErrors({});
-                        }
-                    }, 'Reset Form')
-                )
+                                {/* Submit button */}
+                                <div className="mb-3">
+                                    <button type="submit" className="btn btn-primary btn-submit" disabled={submitting}>
+                                        Submit Form
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    />
+                </Fragment>
             );
-        }
-
-        // Render the app
-        ReactDOM.render(React.createElement(SimpleForm), document.getElementById('root'));
+        };
+        
+        // Wait for the page to load before rendering
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, attempting to render React app');
+            try {
+                const rootElement = document.getElementById('root');
+                console.log('Root element found:', rootElement);
+                if (rootElement) {
+                    // Try createRoot first, fallback to legacy render
+                    if (ReactDOM.createRoot) {
+                        console.log('Using ReactDOM.createRoot');
+                        const root = ReactDOM.createRoot(rootElement);
+                        root.render(<App />);
+                    } else if (ReactDOM.render) {
+                        console.log('Using legacy ReactDOM.render');
+                        ReactDOM.render(<App />, rootElement);
+                    } else {
+                        console.error('Neither createRoot nor render available');
+                        console.log('ReactDOM methods available:', Object.keys(ReactDOM));
+                    }
+                    console.log('App rendered successfully');
+                } else {
+                    console.error('Root element not found');
+                }
+            } catch (error) {
+                console.error('Error rendering React app:', error);
+            }
+        });
     </script>
 </body>
 </html>

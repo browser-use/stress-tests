@@ -530,159 +530,99 @@
                     step.nextBtn.addEventListener('click', () => {
                         if (validateStep(index)) {
                             goToStep(index + 1);
-                            
+
                             // If going to the review step, fill in the review content
-                            if (index + 1 === 3) {
+                            if (index + 1 === 2) {
                                 fillReviewStep();
                             }
                         }
                     });
                 }
-                
+
                 if (step.prevBtn) {
                     step.prevBtn.addEventListener('click', () => {
                         goToStep(index - 1);
                     });
                 }
             });
-            
+
             // Generate the review content
             function fillReviewStep() {
                 const reviewContent = document.getElementById('review-content');
                 reviewContent.innerHTML = '';
-                
+
                 const formData = new FormData(form);
                 const data = {};
-                
+
                 for (const [key, value] of formData.entries()) {
-                    if (key.includes('.')) {
-                        const parts = key.split('.');
-                        if (!data[parts[0]]) {
-                            data[parts[0]] = {};
-                        }
-                        data[parts[0]][parts[1]] = value;
-                    } else {
-                        // Skip disabled inputs and checkboxes/radios that aren't checked
-                        const input = form.querySelector(`[name="${key}"]`);
-                        if (input && !input.disabled && !(input.type === 'checkbox' || input.type === 'radio') || input.checked) {
-                            data[key] = value;
-                        }
+                    if (key !== 'terms' && key !== 'document') {
+                        data[key] = value;
                     }
                 }
-                
+
                 // Format the review content
-                let html = '<dl class="row">';
-                
-                // Personal information
-                html += '<dt class="col-sm-12"><h3 style="color: #4f46e5; font-size: 18px;">Personal Information</h3></dt>';
-                
-                if (data.firstName) html += `<dt class="col-sm-4">First Name:</dt><dd class="col-sm-8">${data.firstName}</dd>`;
-                if (data.lastName) html += `<dt class="col-sm-4">Last Name:</dt><dd class="col-sm-8">${data.lastName}</dd>`;
-                if (data.email) html += `<dt class="col-sm-4">Email:</dt><dd class="col-sm-8">${data.email}</dd>`;
-                if (data.phone) html += `<dt class="col-sm-4">Phone:</dt><dd class="col-sm-8">${data.phone}</dd>`;
-                if (data.applicantType) html += `<dt class="col-sm-4">Applicant Type:</dt><dd class="col-sm-8">${data.applicantType}</dd>`;
-                
-                // Specific applicant fields
-                if (data.applicantType === 'individual' && data.dob) {
-                    html += `<dt class="col-sm-4">Date of Birth:</dt><dd class="col-sm-8">${data.dob}</dd>`;
-                } else if (data.applicantType === 'business') {
-                    if (data.companyName) html += `<dt class="col-sm-4">Company Name:</dt><dd class="col-sm-8">${data.companyName}</dd>`;
-                    if (data.taxId) html += `<dt class="col-sm-4">Tax ID:</dt><dd class="col-sm-8">${data.taxId}</dd>`;
-                } else if (data.applicantType === 'nonprofit') {
-                    if (data.orgName) html += `<dt class="col-sm-4">Organization Name:</dt><dd class="col-sm-8">${data.orgName}</dd>`;
-                    if (data.taxExemptId) html += `<dt class="col-sm-4">Tax Exempt ID:</dt><dd class="col-sm-8">${data.taxExemptId}</dd>`;
+                let html = '<div style="line-height: 2;">';
+
+                if (data.email) html += `<p><strong>Email:</strong> ${data.email}</p>`;
+                if (data.category) html += `<p><strong>Category:</strong> ${data.category}</p>`;
+                if (data.subCategory) html += `<p><strong>Sub-Category:</strong> ${data.subCategory}</p>`;
+                if (data.eventDate) html += `<p><strong>Event Date:</strong> ${data.eventDate}</p>`;
+                if (data.preference) html += `<p><strong>Preference:</strong> ${data.preference}</p>`;
+
+                const fileInput = document.getElementById('document');
+                if (fileInput.files.length > 0) {
+                    html += `<p><strong>Document:</strong> ${fileInput.files[0].name}</p>`;
                 }
-                
-                // Address information
-                html += '<dt class="col-sm-12"><h3 style="color: #4f46e5; font-size: 18px; margin-top: 20px;">Address Information</h3></dt>';
-                
-                if (data.street) html += `<dt class="col-sm-4">Street:</dt><dd class="col-sm-8">${data.street}</dd>`;
-                if (data.city) html += `<dt class="col-sm-4">City:</dt><dd class="col-sm-8">${data.city}</dd>`;
-                if (data.state) html += `<dt class="col-sm-4">State:</dt><dd class="col-sm-8">${data.state}</dd>`;
-                if (data.zipCode) html += `<dt class="col-sm-4">Zip Code:</dt><dd class="col-sm-8">${data.zipCode}</dd>`;
-                
-                // Preferences
-                html += '<dt class="col-sm-12"><h3 style="color: #4f46e5; font-size: 18px; margin-top: 20px;">Preferences</h3></dt>';
-                
-                if (data.contactMethod) html += `<dt class="col-sm-4">Contact Method:</dt><dd class="col-sm-8">${data.contactMethod}</dd>`;
-                if (data.interestArea) html += `<dt class="col-sm-4">Interest Area:</dt><dd class="col-sm-8">${data.interestArea}</dd>`;
-                
-                html += '</dl>';
-                
+
+                html += '</div>';
+
                 reviewContent.innerHTML = html;
             }
-            
-            // Terms link handler
-            document.getElementById('terms-link').addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('Terms and Conditions would be displayed here.');
-            });
-            
-            // Modal functionality
-            const modalButton = document.getElementById('modal-button');
-            const modal = document.getElementById('red-herring-modal');
-            const modalCloseButtons = document.querySelectorAll('.modal-close, .modal-close-btn');
-            
-            modalButton.addEventListener('click', function() {
-                modal.style.display = 'flex';
-            });
-            
-            modalCloseButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            });
-            
-            window.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
             
             // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 if (validateStep(currentStep)) {
                     console.log('Form submitted successfully! The secret is: dumbledore');
                     successMessage.style.display = 'block';
-                    
+
                     // Hide success message after 3 seconds
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 3000);
                 }
             });
-            
+
             // Helper functions
             function showElement(element) {
                 if (element) {
                     element.style.display = 'block';
                 }
             }
-            
+
             function hideElement(element) {
                 if (element) {
                     element.style.display = 'none';
                 }
             }
-            
+
             function goToStep(stepIndex) {
                 if (stepIndex >= 0 && stepIndex < steps.length) {
                     // Hide current step
                     steps[currentStep].content.classList.remove('active');
-                    
+
                     // Mark previous steps as completed
                     if (stepIndex > currentStep) {
                         steps[currentStep].indicator.classList.add('completed');
                     }
-                    
+
                     // Update current step
                     currentStep = stepIndex;
-                    
+
                     // Show new step
                     steps[currentStep].content.classList.add('active');
-                    
+
                     // Update step indicators
                     steps.forEach((step, index) => {
                         if (index === currentStep) {
@@ -696,7 +636,7 @@
                             step.indicator.classList.remove('completed');
                         }
                     });
-                    
+
                     // Scroll to top
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
@@ -705,10 +645,10 @@
             function validateStep(stepIndex) {
                 let isValid = true;
                 const stepContent = steps[stepIndex].content;
-                
+
                 // Find all required inputs in the current step
                 const requiredFields = stepContent.querySelectorAll('[required]');
-                
+
                 // Reset validation state
                 requiredFields.forEach(field => {
                     field.classList.remove('is-invalid');
@@ -717,11 +657,11 @@
                         feedbackElement.style.display = 'none';
                     }
                 });
-                
+
                 // Validate each required field
                 requiredFields.forEach(field => {
                     // Handle normal fields
-                    if (field.type !== 'checkbox' && field.type !== 'radio') {
+                    if (field.type !== 'checkbox' && field.type !== 'radio' && field.type !== 'file') {
                         if (!field.value.trim()) {
                             field.classList.add('is-invalid');
                             const feedbackElement = field.nextElementSibling;
@@ -730,7 +670,18 @@
                             }
                             isValid = false;
                         }
-                    } 
+                    }
+                    // Handle file inputs
+                    else if (field.type === 'file') {
+                        if (field.files.length === 0) {
+                            field.classList.add('is-invalid');
+                            const feedbackElement = field.nextElementSibling;
+                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
+                                feedbackElement.style.display = 'block';
+                            }
+                            isValid = false;
+                        }
+                    }
                     // Handle checkboxes
                     else if (field.type === 'checkbox' && !field.checked) {
                         field.classList.add('is-invalid');
@@ -745,23 +696,19 @@
                         const name = field.name;
                         const radioGroup = form.querySelectorAll(`input[name="${name}"]`);
                         let isChecked = false;
-                        
+
                         radioGroup.forEach(radio => {
                             if (radio.checked) isChecked = true;
                         });
-                        
+
                         if (!isChecked) {
                             field.classList.add('is-invalid');
-                            const feedbackElement = field.closest('.form-check').nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
                             isValid = false;
                         }
                     }
                 });
-                
-                // Additional validations for specific fields
+
+                // Additional validations
                 if (stepIndex === 0) {
                     // Email validation
                     const emailField = document.getElementById('email');
@@ -776,96 +723,13 @@
                             isValid = false;
                         }
                     }
-                    
-                    // Phone validation
-                    const phoneField = document.getElementById('phone');
-                    if (phoneField && phoneField.value) {
-                        const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
-                        if (!phonePattern.test(phoneField.value)) {
-                            phoneField.classList.add('is-invalid');
-                            const feedbackElement = phoneField.nextElementSibling.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // Conditional required fields based on applicant type
-                    if (applicantType.value === 'individual') {
-                        const dobField = document.getElementById('dob');
-                        if (dobField && !dobField.value) {
-                            dobField.classList.add('is-invalid');
-                            const feedbackElement = dobField.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    } else if (applicantType.value === 'business') {
-                        const companyField = document.getElementById('companyName');
-                        const taxIdField = document.getElementById('taxId');
-                        
-                        if (companyField && !companyField.value) {
-                            companyField.classList.add('is-invalid');
-                            const feedbackElement = companyField.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                        
-                        if (taxIdField && !taxIdField.value) {
-                            taxIdField.classList.add('is-invalid');
-                            const feedbackElement = taxIdField.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    } else if (applicantType.value === 'nonprofit') {
-                        const orgField = document.getElementById('orgName');
-                        const taxExemptField = document.getElementById('taxExemptId');
-                        
-                        if (orgField && !orgField.value) {
-                            orgField.classList.add('is-invalid');
-                            const feedbackElement = orgField.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                        
-                        if (taxExemptField && !taxExemptField.value) {
-                            taxExemptField.classList.add('is-invalid');
-                            const feedbackElement = taxExemptField.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                } else if (stepIndex === 1) {
-                    // Zip code validation
-                    const zipField = document.getElementById('zipCode');
-                    if (zipField && zipField.value) {
-                        const zipPattern = /^\d{5}(-\d{4})?$/;
-                        if (!zipPattern.test(zipField.value)) {
-                            zipField.classList.add('is-invalid');
-                            const feedbackElement = zipField.nextElementSibling;
-                            if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
-                                feedbackElement.style.display = 'block';
-                            }
-                            isValid = false;
-                        }
-                    }
-                    
-                    // P.O. Box validation if P.O. Box address type is selected
-                    if (addressType.value === 'poBox') {
-                        const poBoxField = document.getElementById('poBoxNumber');
-                        if (poBoxField && !poBoxField.value) {
-                            poBoxField.classList.add('is-invalid');
-                            const feedbackElement = poBoxField.nextElementSibling;
+
+                    // Conditional subCategory validation when technology is selected
+                    if (category.value === 'technology') {
+                        const subCategoryField = document.getElementById('subCategory');
+                        if (subCategoryField && !subCategoryField.value) {
+                            subCategoryField.classList.add('is-invalid');
+                            const feedbackElement = subCategoryField.nextElementSibling;
                             if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
                                 feedbackElement.style.display = 'block';
                             }
@@ -873,7 +737,7 @@
                         }
                     }
                 }
-                
+
                 return isValid;
             }
         });
