@@ -282,7 +282,7 @@
     <header>
         <h1>Browser Agent Evaluation Stress-Test</h1>
         <div class="score-container">
-            Score: <span class="score">0</span> / 31
+            Score: <span class="score">0</span> / 26
         </div>
     </header>
     <center>
@@ -559,34 +559,6 @@
             </script>
         </div>
 
-        <!-- Task: File Drop -->
-        <div class="task" id="file-drop">
-            <div class="task-badge"><a href="#file-drop" id="file-drop">file-drop</a></div>
-            <div class="task-title">Drag a file into this element</div>
-            <div class="drop-target" id="file-drop-area">Drop a file here</div>
-            <script>
-                const fileDropArea = document.getElementById('file-drop-area');
-
-                fileDropArea.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('highlight');
-                });
-
-                fileDropArea.addEventListener('dragleave', function() {
-                    this.classList.remove('highlight');
-                });
-
-                fileDropArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('highlight');
-                    if (e.dataTransfer.files.length > 0) {
-                        this.textContent = `Dropped file: ${e.dataTransfer.files[0].name}`;
-                        completeTask(document.getElementById('file-drop'));
-                    }
-                });
-            </script>
-        </div>
-
         <!-- Task: Multi-select -->
         <div class="task" id="multi-select">
             <div class="task-badge"><a href="#multi-select" id="multi-select">multi-select</a></div>
@@ -846,71 +818,6 @@
             </script>
         </div>
 
-        <!-- Task: Draw circle by hovering -->
-        <div class="task" id="draw-circle">
-            <div class="task-badge"><a href="#draw-circle" id="draw-circle">draw-circle</a></div>
-            <div class="task-title">Draw a circle with your mouse by hovering</div>
-            <div id="draw-container" style="width: 300px; height: 300px; position: relative; border: 1px solid #ddd; border-radius: 4px;">
-                <canvas id="draw-canvas" width="300" height="300" style="position: absolute; top: 0; left: 0;"></canvas>
-                <div id="draw-instructions" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                    Hover your mouse in a circular pattern
-                </div>
-            </div>
-            <script>
-                const drawCanvas = document.getElementById('draw-canvas');
-                const drawCtx = drawCanvas.getContext('2d');
-                const drawInstructions = document.getElementById('draw-instructions');
-                const centerX = drawCanvas.width / 2;
-                const centerY = drawCanvas.height / 2;
-                const radius = 100;
-                const pointsNeeded = 20;
-                
-                // Draw circle guide (faint)
-                drawCtx.beginPath();
-                drawCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-                drawCtx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
-                drawCtx.stroke();
-                
-                // For tracking points along the circle
-                const points = [];
-                const angleSegments = 8; // Divide circle into segments
-                const segmentStatus = new Array(angleSegments).fill(false);
-                
-                drawCanvas.addEventListener('mousemove', function(e) {
-                    const rect = drawCanvas.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    // Draw dot where mouse is
-                    drawCtx.beginPath();
-                    drawCtx.arc(x, y, 3, 0, Math.PI * 2);
-                    drawCtx.fillStyle = 'rgba(74, 107, 255, 0.5)';
-                    drawCtx.fill();
-                    
-                    // Calculate angle from center
-                    const dx = x - centerX;
-                    const dy = y - centerY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    // If within certain range from the circle
-                    if (Math.abs(distance - radius) < 20) {
-                        let angle = Math.atan2(dy, dx);
-                        if (angle < 0) angle += Math.PI * 2;
-                        
-                        // Determine which segment this angle falls into
-                        const segment = Math.floor((angle / (Math.PI * 2)) * angleSegments);
-                        segmentStatus[segment] = true;
-                        
-                        // If all segments have been touched
-                        if (segmentStatus.every(status => status)) {
-                            drawInstructions.textContent = "Great job! Circle completed!";
-                            completeTask(document.getElementById('draw-circle'));
-                        }
-                    }
-                });
-            </script>
-        </div>
-
         <!-- Task: Native Browser Confirmation Dialog -->
         <div class="task" id="cancel-dialog">
             <div class="task-badge"><a href="#cancel-dialog" id="cancel-dialog">cancel-dialog</a></div>
@@ -930,56 +837,6 @@
                         // User clicked Cancel
                         confirmButton.textContent = 'Operation Cancelled';
                         completeTask(document.getElementById('cancel-dialog'));
-                    }
-                });
-            </script>
-        </div>
-
-        <!-- Task: Geolocation Permission -->
-        <div class="task" id="geolocation-permission">
-            <div class="task-badge"><a href="#geolocation-permission" id="geolocation-permission">geolocation-permission</a></div>
-            <div class="task-title">Request geolocation permission and approve</div>
-            <style>
-                .permissions-status {
-                    padding: 1rem;
-                    margin: 1rem 0;
-                    border-radius: 4px;
-                    background-color: #f8f9fa;
-                }
-            </style>
-            <button id="request-location-button">Share My Location</button>
-            <div class="permissions-status" id="geolocation-status">Permission status: Not requested</div>
-            <script>
-                const requestLocationButton = document.getElementById('request-location-button');
-                const geolocationStatus = document.getElementById('geolocation-status');
-
-                requestLocationButton.addEventListener('click', function() {
-                    if ('geolocation' in navigator) {
-                        geolocationStatus.textContent = 'Permission status: Requesting...';
-                        
-                        navigator.geolocation.getCurrentPosition(
-                            function(position) {
-                                // Success callback
-                                const lat = position.coords.latitude.toFixed(4);
-                                const lng = position.coords.longitude.toFixed(4);
-                                geolocationStatus.textContent = `Permission granted! Location: ${lat}, ${lng}`;
-                                geolocationStatus.style.color = 'var(--success-color)';
-                                completeTask(document.getElementById('geolocation-permission'));
-                            },
-                            function(error) {
-                                // Error callback
-                                geolocationStatus.textContent = `Permission denied: ${error.message}`;
-                                geolocationStatus.style.color = 'var(--secondary-color)';
-                            },
-                            {
-                                enableHighAccuracy: false,
-                                timeout: 5000,
-                                maximumAge: 0
-                            }
-                        );
-                    } else {
-                        geolocationStatus.textContent = 'Geolocation is not supported in this browser';
-                        geolocationStatus.style.color = 'var(--secondary-color)';
                     }
                 });
             </script>
@@ -1153,39 +1010,6 @@
                 tooltipSecretInput.addEventListener('input', function() {
                     if (this.value.trim().toLowerCase() === 'octopus') {
                         completeTask(document.getElementById('tooltip-secret'));
-                    }
-                });
-            </script>
-        </div>
-
-        <!-- Task: Resizable textarea -->
-        <div class="task" id="resize-textarea">
-            <div class="task-badge"><a href="#resize-textarea" id="resize-textarea">resize-textarea</a></div>
-            <div class="task-title">Resize this textarea to reveal a secret word</div>
-            <textarea id="resizable-textarea" style="resize: both; min-height: 50px; min-width: 200px; max-width: 100%; width: 200px; height: 50px; overflow: auto; margin-bottom: 10px;" placeholder="Resize me to reveal a secret word..."></textarea>
-            <div style="position: absolute; bottom: 5px; right: 5px; font-size: 10px; color: #ccc; pointer-events: none; display: none;" id="resize-secret">Secret: giraffe</div>
-            <div style="margin-top: 10px;">
-                <input type="text" id="resize-secret-input" placeholder="Type the secret word here">
-            </div>
-            <script>
-                const resizableTextarea = document.getElementById('resizable-textarea');
-                const resizeSecret = document.getElementById('resize-secret');
-                const resizeSecretInput = document.getElementById('resize-secret-input');
-                
-                resizableTextarea.addEventListener('mouseup', checkTextareaSize);
-                resizableTextarea.addEventListener('touchend', checkTextareaSize);
-                
-                function checkTextareaSize() {
-                    if (resizableTextarea.offsetWidth > 300 && resizableTextarea.offsetHeight > 100) {
-                        resizeSecret.style.display = 'block';
-                    } else {
-                        resizeSecret.style.display = 'none';
-                    }
-                }
-                
-                resizeSecretInput.addEventListener('input', function() {
-                    if (this.value.trim().toLowerCase() === 'giraffe') {
-                        completeTask(document.getElementById('resize-textarea'));
                     }
                 });
             </script>
@@ -1444,30 +1268,6 @@
             </script>
         </div>
 
-        <!-- Task: Audio Transcription -->
-        <div class="task" id="audio-transcription">
-            <div class="task-badge"><a href="#audio-transcription" id="audio-transcription">audio-transcription</a></div>
-            <div class="task-title">Play this audio snippet and transcribe the word into this field</div>
-            <div style="margin: 1rem 0;">
-                <audio id="audio-snippet" controls>
-                    <source src="task29-audio.ogg" type="audio/ogg">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-            <div style="margin-top: 10px;">
-                <input type="text" id="transcription-input" placeholder="Type the word in the audio snippet here">
-            </div>
-            <script>
-                const transcriptionInput = document.getElementById('transcription-input');
-                
-                transcriptionInput.addEventListener('input', function() {
-                    if (this.value.trim().toLowerCase() === 'gossip') {
-                        completeTask(document.getElementById('audio-transcription'));
-                    }
-                });
-            </script>
-        </div>
-        
         <!-- Task: Dropdown Selections -->
         <div class="task" id="dropdown-selections">
             <div class="task-badge"><a href="#dropdown-selections" id="dropdown-selections">dropdown-selections</a></div>
