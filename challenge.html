@@ -701,35 +701,6 @@
             </script>
         </div>
 
-        <!-- Task: Naughty phone input -->
-        <div class="task" id="phone-input">
-            <div class="task-badge"><a href="#phone-input" id="phone-input">phone-input</a></div>
-            <div class="task-title">Enter the phone number 555-1234 in this (deliberately misbehaving) input field</div>
-            <input type="text" id="phone-input-field" placeholder="Enter 555-1234">
-            <script>
-                const phoneInputField = document.getElementById('phone-input-field');
-                let isFirstKeyIgnored = true;
-                
-                phoneInputField.addEventListener('keydown', function(e) {
-                    if (isFirstKeyIgnored) {
-                        isFirstKeyIgnored = false;
-                        e.preventDefault();
-                        return false;
-                    }
-                });
-                
-                phoneInputField.addEventListener('input', function() {
-                    if (this.value === '555-1234') {
-                        completeTask(document.getElementById('phone-input'));
-                    }
-                });
-                
-                phoneInputField.addEventListener('focus', function() {
-                    isFirstKeyIgnored = true;
-                });
-            </script>
-        </div>
-
         <!-- Task: Details element -->
         <div class="task" id="expand-details">
             <div class="task-badge"><a href="#expand-details" id="expand-details">expand-details</a></div>

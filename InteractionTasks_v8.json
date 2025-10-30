@@ -71,209 +71,202 @@
     },
     {
         "task_id": "11",
-        "name": "Phone Input",
-        "confirmed_task": "Go to the URL and enter a phone number into the input field to complete the task. https://browser-use.github.io/stress-tests/challenges/phone-input.html",
-        "category": "CORE_INTERACTION",
-        "ground_truth": "successfully"
-    },
-    {
-        "task_id": "12",
         "name": "Expand Details",
         "confirmed_task": "Go to the URL and click to expand the HTML details element to complete the challenge. https://browser-use.github.io/stress-tests/challenges/expand-details.html",
         "category": "CORE_INTERACTION",
         "ground_truth": "successfully"
     },
     {
-        "task_id": "13",
+        "task_id": "12",
         "name": "Dropdown Selections",
         "confirmed_task": "Go to the URL and select options from the dropdown menus to complete the task. https://browser-use.github.io/stress-tests/challenges/dropdown-selections.html",
         "category": "CORE_INTERACTION",
         "ground_truth": "successfully"
     },
     {
-        "task_id": "14",
+        "task_id": "13",
         "name": "Contenteditable Div",
         "confirmed_task": "Go to the URL and type text into the contenteditable div element to complete the challenge. https://browser-use.github.io/stress-tests/challenges/contenteditable-div.html",
         "category": "CORE_INTERACTION",
         "ground_truth": "successfully"
     },
     {
-        "task_id": "15",
+        "task_id": "14",
         "name": "Vanilla Form",
         "confirmed_task": "Go to the URL and complete the vanilla HTML form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/vanilla-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "16",
+        "task_id": "15",
         "name": "jQuery Bootstrap Form",
         "confirmed_task": "Go to the URL and complete the jQuery Bootstrap form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/jquery-bootstrap-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "17",
+        "task_id": "16",
         "name": "AngularJS Form",
         "confirmed_task": "Go to the URL and complete the AngularJS form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/angularjs-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "18",
+        "task_id": "17",
         "name": "Angular Form",
         "confirmed_task": "Go to the URL and complete the Angular form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/angular-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "19",
+        "task_id": "18",
         "name": "React Hook Form",
         "confirmed_task": "Go to the URL and complete the React Hook Form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/react-hook-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "20",
+        "task_id": "19",
         "name": "Formik Form",
         "confirmed_task": "Go to the URL and complete the Formik form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/formik-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "21",
+        "task_id": "20",
         "name": "Svelte Form",
         "confirmed_task": "Go to the URL and complete the Svelte form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/svelte-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "22",
+        "task_id": "21",
         "name": "Ember Form",
         "confirmed_task": "Go to the URL and complete the Ember form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/ember-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "23",
+        "task_id": "22",
         "name": "Vue Form",
         "confirmed_task": "Go to the URL and complete the Vue form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/vue-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "24",
+        "task_id": "23",
         "name": "Material UI Form",
         "confirmed_task": "Go to the URL and complete the Material-UI form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/material-ui-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "25",
+        "task_id": "24",
         "name": "Wufoo Style Form",
         "confirmed_task": "Go to the URL and complete the Wufoo-style form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/wufoo-style-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "26",
+        "task_id": "25",
         "name": "Shadow DOM Form",
         "confirmed_task": "Go to the URL and complete the Shadow DOM form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/shadow-dom-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "27",
+        "task_id": "26",
         "name": "Dynamic Form",
         "confirmed_task": "Go to the URL and complete the dynamic form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/dynamic-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "28",
+        "task_id": "27",
         "name": "Progressive Form",
         "confirmed_task": "Go to the URL and complete the progressive multi-step form by filling in all required fields through multiple steps. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/progressive-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "29",
+        "task_id": "28",
         "name": "React Native Web Form",
         "confirmed_task": "Go to the URL and complete the React Native Web form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/react-native-web-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "30",
+        "task_id": "29",
         "name": "Iframe Inception Form",
         "confirmed_task": "Go to the URL and complete the form within the nested iframe structure by filling in all required fields. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/iframe-inception-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "31",
+        "task_id": "30",
         "name": "Hidden Labels Form",
         "confirmed_task": "Go to the URL and complete the form with hidden labels by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/hidden-labels-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "32",
+        "task_id": "31",
         "name": "Non-Latin Form",
         "confirmed_task": "Go to the URL and complete the form with non-Latin characters by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/non-latin-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "33",
+        "task_id": "32",
         "name": "Contenteditable Form",
         "confirmed_task": "Go to the URL and complete the contenteditable form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/contenteditable-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "34",
+        "task_id": "33",
         "name": "Rich Text Form",
         "confirmed_task": "Go to the URL and complete the rich text form by filling in all required fields including the rich text editor. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/rich-text-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "35",
+        "task_id": "34",
         "name": "Table Form",
         "confirmed_task": "Go to the URL and complete the table-based form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/table-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "36",
+        "task_id": "35",
         "name": "Animated Form",
         "confirmed_task": "Go to the URL and complete the animated form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/animated-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "37",
+        "task_id": "36",
         "name": "Internationalization Form",
         "confirmed_task": "Go to the URL and complete the internationalization form by filling in all required fields and submitting. If needed, create a file. Validate that the form was filled and submitted successfully. https://browser-use.github.io/stress-tests/challenges/i18n-form.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "dumbledore"
     },
     {
-        "task_id": "38",
+        "task_id": "37",
         "name": "Iframe Inception Level 1",
         "confirmed_task": "Go to the URL and complete the iframe inception challenge level 1. https://browser-use.github.io/stress-tests/challenges/iframe-inception-level1.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "successfully"
     },
     {
-        "task_id": "39",
+        "task_id": "38",
         "name": "Iframe Inception Level 2",
         "confirmed_task": "Go to the URL and complete the iframe inception challenge level 2. https://browser-use.github.io/stress-tests/challenges/iframe-inception-level2.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "successfully"
     },
     {
-        "task_id": "40",
+        "task_id": "39",
         "name": "Iframe Inception Level 3",
         "confirmed_task": "Go to the URL and complete the iframe inception challenge level 3. https://browser-use.github.io/stress-tests/challenges/iframe-inception-level3.html",
         "category": "FRAMEWORK_FORM",
