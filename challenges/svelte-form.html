@@ -342,6 +342,9 @@
                         radioInputs.forEach(radio => {
                             radio.checked = radio.value === currentFormData[key];
                         });
+                    } else if (input.type === 'file') {
+                        // Don't try to set value of file inputs - they're read-only for security
+                        // File inputs are handled by the browser
                     } else {
                         input.value = currentFormData[key] || '';
                     }
