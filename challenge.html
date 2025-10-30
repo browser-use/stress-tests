@@ -206,12 +206,6 @@
             outline: none;
         }
 
-        .multi-select {
-            width: 100%;
-            max-width: 300px;
-            height: 100px;
-        }
-
         .canvas-container {
             margin: 1rem 0;
         }
@@ -473,29 +467,6 @@
                 document.getElementById('hover-target').addEventListener('mouseleave', function() {
                     this.textContent = 'Hover over me';
                     clearTimeout(hoverTimeout);
-                });
-            </script>
-        </div>
-
-        <!-- Task: Multi-select -->
-        <div class="task" id="multi-select">
-            <div class="task-badge"><a href="#multi-select" id="multi-select">multi-select</a></div>
-            <div class="task-title">Select any 3 options in this multi-select-list</div>
-            <select class="multi-select" id="multi-select-element" multiple>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-                <option value="option4">Option 4</option>
-                <option value="option5">Option 5</option>
-            </select>
-            <div><small>Hold Ctrl/Cmd to select multiple options</small></div>
-            <script>
-                const multiSelectElement = document.getElementById('multi-select-element');
-                multiSelectElement.addEventListener('change', function() {
-                    const selectedOptions = Array.from(this.selectedOptions);
-                    if (selectedOptions.length >= 2) {
-                        completeTask(document.getElementById('multi-select'));
-                    }
                 });
             </script>
         </div>

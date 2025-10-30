@@ -366,36 +366,63 @@
                 },
 
                 validate: function() {
+                    // Get values directly from DOM as fallback
+                    const emailInput = document.getElementById('email');
+                    const countrySelect = document.getElementById('country');
+                    const birthDateInput = document.getElementById('birthDate');
+                    const contactMethodRadio = document.querySelector('input[name="contactMethod"]:checked');
+                    const fileInput = document.getElementById('fileUpload');
+
                     const model = this.get('model');
                     const errors = {};
 
+                    // Update model from DOM if needed
+                    if (emailInput && emailInput.value) {
+                        this.set('model.email', emailInput.value);
+                    }
+                    if (countrySelect && countrySelect.value) {
+                        this.set('model.country', countrySelect.value);
+                    }
+                    if (birthDateInput && birthDateInput.value) {
+                        this.set('model.birthDate', birthDateInput.value);
+                    }
+                    if (contactMethodRadio && contactMethodRadio.value) {
+                        this.set('model.contactMethod', contactMethodRadio.value);
+                    }
+
                     // Email validation
-                    if (!model.email || model.email.trim() === '') {
+                    const email = emailInput ? emailInput.value : model.email;
+                    if (!email || email.trim() === '') {
                         errors.email = { validation: 'Email is required' };
-                    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(model.email)) {
+                    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                         errors.email = { validation: 'Please enter a valid email address' };
                     }
 
-                    // Country validation - check actual model value, not just visual selection
-                    if (!model.country || model.country.trim() === '') {
+                    // Country validation
+                    const country = countrySelect ? countrySelect.value : model.country;
+                    if (!country || country.trim() === '') {
                         errors.country = { validation: 'Country is required' };
                     }
 
                     // Birth date validation
-                    if (!model.birthDate || model.birthDate.trim() === '') {
+                    const birthDate = birthDateInput ? birthDateInput.value : model.birthDate;
+                    if (!birthDate || birthDate.trim() === '') {
                         errors.birthDate = { validation: 'Date of Birth is required' };
                     }
 
                     // Contact method validation
-                    if (!model.contactMethod || model.contactMethod.trim() === '') {
+                    const contactMethod = contactMethodRadio ? contactMethodRadio.value : model.contactMethod;
+                    if (!contactMethod || contactMethod.trim() === '') {
                         errors.contactMethod = { validation: 'Preferred Contact Method is required' };
                     }
 
                     // File upload validation
-                    const fileInput = document.getElementById('fileUpload');
                     if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
                         errors.fileUpload = { validation: 'File upload is required' };
                     }
+
+                    console.log('Validation - Email:', email, 'Country:', country, 'BirthDate:', birthDate, 'Contact:', contactMethod, 'File:', fileInput?.files?.length);
+                    console.log('Validation errors:', errors);
 
                     this.set('changeset.error', errors);
                     return Object.keys(errors).length === 0;
