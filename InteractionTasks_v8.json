@@ -271,5 +271,12 @@
         "confirmed_task": "Go to the URL and complete the iframe inception challenge level 3. https://browser-use.github.io/stress-tests/challenges/iframe-inception-level3.html",
         "category": "FRAMEWORK_FORM",
         "ground_truth": "successfully"
+    },
+    {
+        "task_id": "40",
+        "name": "Reference Number Form",
+        "confirmed_task": "Go to the URL and complete the reference number form by filling in all required fields and submitting. Validate that a reference number starting with 'REF-' is generated. https://browser-use.github.io/stress-tests/challenges/reference-number-form.html",
+        "category": "FRAMEWORK_FORM",
+        "ground_truth": "REF-"
     }
 ]
