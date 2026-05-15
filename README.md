@@ -68,8 +68,6 @@ The Wufoo-style form is specifically designed to challenge autofill systems with
 2. Test your autofill browser extension against each form
 3. Check for proper field recognition and filling
 
-To run Browser Use agents against these stress tests from an always-on VPS or Telegram, see [Browser Use Box](https://browser-use.com/bux) and the [15-second demo](https://www.tiktok.com/@browser_use/video/7639824093721758989).
-
 ## Development
 
 This is a purely frontend project with no build steps required. All forms are self-contained in their respective HTML files.
